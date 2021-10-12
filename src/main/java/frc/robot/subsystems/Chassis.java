@@ -9,27 +9,27 @@ import frc.robot.utilities.Utils;
 /**
  * Subsystem to control the entire drive base
  */
-public class Chassis extends SubsystemBase 
+public class Chassis extends SubsystemBase
 {
 
     //                      ^ Front
     //                      |
     //           ________________________
-    //          /						 \
-    //          |	1				2	 |
-    //          |						 |
-    //          |						 |
-    //          |						 |
-    //          |						 |
-    //          |  						 |
-    //          |						 |
-    //          |						 |
-    //          |	3				4	 |
-    //          |						 |
+    //          /                        \
+    //          |    1                2   |
+    //          |                         |
+    //          |                         |
+    //          |                         |
+    //          |                         |
+    //          |                         |
+    //          |                         |
+    //          |                         |
+    //          |    3                4   |
+    //          |                         |
     //          \________________________/
-    
+
     private SwervePod pod1 = new SwervePod(Constants.POD_1_DRIVE, Constants.POD_1_TURN, Constants.POD_FRONT_LEFT);
-    private SwervePod pod2 = new SwervePod(Constants.POD_2_DRIVE,Constants.POD_2_TURN, Constants.POD_FRONT_RIGHT);
+    private SwervePod pod2 = new SwervePod(Constants.POD_2_DRIVE, Constants.POD_2_TURN, Constants.POD_FRONT_RIGHT);
     private SwervePod pod3 = new SwervePod(Constants.POD_3_DRIVE, Constants.POD_3_TURN, Constants.POD_BACK_LEFT);
     private SwervePod pod4 = new SwervePod(Constants.POD_4_DRIVE, Constants.POD_4_TURN, Constants.POD_BACK_RIGHT);
 
@@ -37,7 +37,7 @@ public class Chassis extends SubsystemBase
 
     public Chassis()
     {
-        for(SwervePod pod : pods)
+        for (SwervePod pod : pods)
         {
             pod.zeroEncoder();
         }

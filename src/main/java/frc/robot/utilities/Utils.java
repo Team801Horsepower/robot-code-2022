@@ -3,14 +3,16 @@ package frc.robot.utilities;
 public class Utils
 {
     public static double map(final double value, final double input_min, final double input_max,
-            final double output_min, final double output_max) {
+            final double output_min, final double output_max)
+    {
         final double scaler = (output_max - output_min) / (input_max - input_min);
         final double value_scaled = ((value - input_min) * scaler) + output_min;
 
         return value_scaled;
     }
 
-    public static double magnitude(final double x, final double y) {
+    public static double magnitude(final double x, final double y)
+    {
         return Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
     }
 
@@ -20,7 +22,7 @@ public class Utils
      * @param y
      * @return an angle from 0 to 2PI
      */
-    public static double angle(final double x, final double y) 
+    public static double angle(final double x, final double y)
     {
         return normalizeAngle(Math.atan2(y, x));  // returns 0 to 2PI
     }
@@ -63,23 +65,25 @@ public class Utils
      */
     public static double normalizeAngle(double angle)
     {
-        while(angle < 0) {
+        while (angle < 0)
+        {
             angle += 2 * Math.PI;
         }
-        while(angle >= 2*Math.PI) {
+        while (angle >= 2*Math.PI)
+        {
             angle -= 2 * Math.PI;
         }
         return angle;
     }
 
     /**
-     * 
+     *
      */
     public static <X extends Comparable<X>> X max (X[] list)
     {
         X max = list[0];
-        
-        for(X x : list)
+
+        for (X x : list)
             if (x.compareTo(max) > 0)
                 max = x;
 
