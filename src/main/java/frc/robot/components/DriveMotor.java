@@ -8,8 +8,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.Constants;
 
-public class DriveMotor
-{
+public class DriveMotor {
     private double currentRPM = 0.0;
     private double desiredRPM = 0.0;
 
@@ -22,8 +21,7 @@ public class DriveMotor
      * @param motorID of the Spark Max
      * @param motorIndex of the motor index
      */
-    public DriveMotor(int motorID, int motorIndex)
-    {
+    public DriveMotor(int motorID, int motorIndex) {
         sparkMotor = new CANSparkMax(motorID, MotorType.kBrushless);
         sparkPID = sparkMotor.getPIDController();
         sparkEncoder = sparkMotor.getEncoder();
@@ -37,15 +35,15 @@ public class DriveMotor
 
         sparkMotor.setInverted(Constants.DRIVE_INVERT[motorIndex]);
         sparkMotor.setIdleMode(Constants.DRIVE_IDLEMODE[motorIndex]);
-        sparkMotor.setSmartCurrentLimit(Constants.DRIVE_MAX_CURRENT_STALL, Constants.DRIVE_MAX_CURRENT_RUN);
+        sparkMotor.setSmartCurrentLimit(Constants.DRIVE_MAX_CURRENT_STALL,
+                Constants.DRIVE_MAX_CURRENT_RUN);
     }
 
     /**
      * 
      * @param rpm desired RPMs of the motor shaft
      */
-    public void setDesiredRPM(double rpm)
-    {
+    public void setDesiredRPM(double rpm) {
         desiredRPM = rpm;
         sparkPID.setReference(desiredRPM, ControlType.kDutyCycle);
     }
@@ -54,8 +52,7 @@ public class DriveMotor
      * 
      * @return motor shaft velocity in RPM
      */
-    public double getCurrentRPM()
-    {
+    public double getCurrentRPM() {
         currentRPM = sparkEncoder.getVelocity();
         return currentRPM;
     }
