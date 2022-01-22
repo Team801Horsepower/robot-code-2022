@@ -1,9 +1,9 @@
 package frc.robot.components;
 
 
-import com.revrobotics.CANEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.EncoderType;
+import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 // import edu.wpi.first.wpilibj.CAN;
@@ -17,7 +17,7 @@ public class TurnMotor {
 
   // private CANPIDController sparkPID;
   private CANSparkMax sparkMotor;
-  private CANEncoder sparkEncoder;
+  private RelativeEncoder sparkEncoder;
 
   private PID anglePID = null;
 
@@ -35,9 +35,9 @@ public class TurnMotor {
 
     // for the Neo 550 motor built in encoder we need to do the external gear reductions math in the
     // setPositionConversionFactor
-    sparkEncoder = sparkMotor.getEncoder(EncoderType.kHallSensor, 42); // Spark Neo 550 motor built
-                                                                       // in encoder (need to do the
-                                                                       // external gear red)
+    sparkEncoder = sparkMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42); // Spark Neo 550 motor built
+    // in encoder (need to do the
+    // external gear red)
 
     // sparkEncoder.setPositionConversionFactor(2 * Math.PI); // for the CRT and other shaft encoder
 

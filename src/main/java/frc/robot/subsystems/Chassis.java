@@ -105,7 +105,7 @@ public class Chassis extends SubsystemBase {
         // Angles of rotation of each wheel
         // Each wheel needs to be perpendicular to the angle from the center to it
         double[] rotationAngles = {thetaChassis - Math.PI / 2, // Angle for first wheel to turn the
-                                                               // robot clockwise
+                // robot clockwise
                 -thetaChassis - Math.PI / 2, // Angle for second wheel " " " " "
                 -thetaChassis + Math.PI / 2, // Angle for third wheel " " " " "
                 thetaChassis + Math.PI / 2 // Angle for fourth wheel " " " " "
