@@ -1,5 +1,3 @@
-package frc.robot.subsystems;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -161,7 +159,7 @@ public class Chassis extends SubsystemBase {
 
     /**
      * A function that gives every pod angle
-     * 
+     *
      * @return An array of every angle of every pod in the order specified above
      */
     public double[] getAngles() {
