@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.Constants;
+import frc.robot.architecture.SpeedMotor;
 
 public class DriveMotor implements SpeedMotor {
     private double currentSpeed = 0.0;
@@ -43,6 +44,7 @@ public class DriveMotor implements SpeedMotor {
      * 
      * @param speed desired speed of the motor shaft in radians/sec
      */
+    @Override
     public void setDesiredSpeed(double speed) {
         desiredSpeed = speed;
         sparkPID.setReference(desiredSpeed, ControlType.kDutyCycle);
@@ -52,6 +54,7 @@ public class DriveMotor implements SpeedMotor {
      * 
      * @return motor shaft velocity in radians/sec
      */
+    @Override
     public double getCurrentSpeed() {
         currentSpeed = sparkEncoder.getVelocity();
         return currentSpeed;

@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 // import edu.wpi.first.wpilibj.CAN;
 import frc.robot.Constants;
+import frc.robot.architecture.AngleMotor;
 import frc.robot.utilities.*;
 
 public class TurnMotor implements AngleMotor {

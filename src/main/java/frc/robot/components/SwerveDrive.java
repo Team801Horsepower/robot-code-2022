@@ -1,77 +1,108 @@
 package frc.robot.components;
 
-import frc.robot.Constants;
-import frc.robot.utilities.Utils;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import frc.robot.architecture.Drive;
+import frc.robot.architecture.SwerveModule;
 
-interface SpeedMotorConstructor {
-    SpeedMotor constructor();
-}
-interface AngleMotorConstructor {
-    AngleMotor constructor();
-}
+/**
+ * Implements a standard Swerve Drive system.
+ */
+public class SwerveDrive extends Drive {
 
-public class SwerveDrive {
-    private final static double thetaChassis = Utils.angle(Constants.ROBOT_LENGTH, Constants.ROBOT_WIDTH);
-    private final static double[] rotationAngles = {
-            thetaChassis - Math.PI / 2, // Angle for first wheel to turn the
-            -thetaChassis - Math.PI / 2, // Angle for second wheel " " " " "
-            -thetaChassis + Math.PI / 2, // Angle for third wheel " " " " "
-            thetaChassis + Math.PI / 2 // Angle for fourth wheel " " " " "
-    };
+    private final SwerveDriveKinematics kinematics;
+    private SwerveModule[] modules;
 
-    private SwervePod[] pods;
+    private Gyro gyro;
+    private Pose2d currentPose;
+    private SwerveDriveOdometry odometry;
 
-    public SwerveDrive(SpeedMotorConstructor driveMotorConstructor, AngleMotorConstructor turnMotorConstructor) {
-        pods = new SwervePod[4];
-        for (int i = 0; i < 4; i++) {
-            SwervePod pod = new SwervePod(driveMotorConstructor.constructor(), turnMotorConstructor.constructor());
-            pod.init();
-            pods[i] = pod;
+
+    /**
+     * Creates a new instance of {@code SwerveDrive}.
+     * 
+     * @param modules An array of {@code SwerveModules}.
+     * @param offsets An array describing the offset of each {@code SwerveModule} from the center of
+     *        the robot.
+     * @param gyro A reference to a {@code Gyro} to use during odometry.
+     */
+    public SwerveDrive(SwerveModule[] modules, Translation2d[] offsets, Gyro gyro) {
+        this(modules, offsets, gyro, new Pose2d());
+    }
+
+    /**
+     * Creates a new instance of {@code SwerveDrive}.
+     * 
+     * @param modules An array of {@code SwerveModules}.
+     * @param offsets An array describing the offset of each {@code SwerveModule} from the center of
+     *        the robot.
+     * @param gyro A reference to a {@code Gyro} to use during odometry.
+     * @param initalPose A {@code Pose2d} describing the starting configuration of the robot.
+     */
+    public SwerveDrive(SwerveModule[] modules, Translation2d[] offsets, Gyro gyro,
+            Pose2d initialPose) {
+        assert modules.length == offsets.length;
+
+        this.kinematics = new SwerveDriveKinematics(offsets);
+        this.modules = modules;
+
+        this.gyro = gyro;
+        this.currentPose = initialPose;
+        this.odometry = new SwerveDriveOdometry(kinematics,
+                Rotation2d.fromDegrees(-gyro.getAngle()), initialPose);
+    }
+
+    @Override
+    public void init() {
+        for (SwerveModule module : modules) {
+            module.init();
         }
     }
 
+    @Override
     public void periodic() {
-        for (SwervePod pod : pods) {
-            pod.periodic();
+        for (SwerveModule module : modules) {
+            module.periodic();
+        }
+        currentPose =
+                odometry.update(Rotation2d.fromDegrees(-gyro.getAngle()), getCurrentModuleStates());
+    }
+
+    @Override
+    public void setDesiredSpeeds(ChassisSpeeds speeds) {
+        SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
+
+        for (int i = 0; i < modules.length; i++) {
+            modules[i].setDesiredState(moduleStates[i]);
         }
     }
 
-    public void driveAt(double speed, double angle, double rotation) {
-        double[] translationVector = {angle, speed};
-
-        double[][] rotationVectors = new double[4][2];
-
-        for (int i = 0; i < 4; i++) {
-            rotationVectors[i] = new double[] {rotationAngles[i], rotation};
+    @Override
+    public ChassisSpeeds getCurrentSpeeds() {
+        return kinematics.toChassisSpeeds(getCurrentModuleStates());
+    }
+    
+    private SwerveModuleState[] getCurrentModuleStates() {
+        SwerveModuleState[] moduleStates = new SwerveModuleState[modules.length];
+        for (int i = 0; i < moduleStates.length; i++) {
+            moduleStates[i] = modules[i].getCurrentState();
         }
+        return moduleStates;
+    }
 
-        double[][] podVectors = new double[4][2];
+    @Override
+    public Pose2d getCurrentPose() {
+        return currentPose;
+    }
 
-        for (int i = 0; i < 4; i++) {
-            podVectors[i] = Utils.addVectors(translationVector, rotationVectors[i]);
-        }
-
-        double maxVectorMagnitude = 0;
-
-        for (int i = 0; i < 4; i++) {
-            if (podVectors[i][1] > maxVectorMagnitude) {
-                maxVectorMagnitude = podVectors[i][1];
-            }
-        }
-
-        if (maxVectorMagnitude > 1.0) {
-            for (int i = 0; i < 4; i++) {
-                podVectors[i][1] /= maxVectorMagnitude;
-            }
-        }
-
-        for (int i = 0; i < 4; i++) {
-            if (speed != 0 || rotation != 0) {
-                pods[i].setDesiredAngle(podVectors[i][0]);
-                pods[i].setDesiredSpeed(podVectors[i][1]);
-            } else {
-                pods[i].setDesiredSpeed(0);
-            }
-        }
+    @Override
+    public void resetPose(Pose2d newPose) {
+        odometry.resetPosition(newPose, Rotation2d.fromDegrees(-gyro.getAngle()));
     }
 }

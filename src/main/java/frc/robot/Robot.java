@@ -54,7 +54,9 @@ public class Robot extends TimedRobot {
      * reset any subsystem information you want to clear when the robot is disabled.
      */
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        robotContainer.reset();
+    }
 
     @Override
     public void disabledPeriodic() {
@@ -66,7 +68,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        m_autonomousCommand = robotContainer.getAutonomousCommand();
 
         // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {
