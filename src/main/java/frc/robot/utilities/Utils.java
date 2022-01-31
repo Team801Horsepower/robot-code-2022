@@ -72,7 +72,7 @@ public class Utils {
     }
 
     /**
-     *
+     * 
      */
     public static <X extends Comparable<X>> X max(X[] list) {
         X max = list[0];

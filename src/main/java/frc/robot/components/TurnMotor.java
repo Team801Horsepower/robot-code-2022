@@ -3,7 +3,7 @@ package frc.robot.components;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.SparkMaxRelativeEncoder.Type;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 // import edu.wpi.first.wpilibj.CAN;
@@ -36,9 +36,9 @@ public class TurnMotor implements AngleMotor {
 
     // for the Neo 550 motor built in encoder we need to do the external gear reductions math in the
     // setPositionConversionFactor
-    sparkEncoder = sparkMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42); // Spark Neo 550 motor built
-    // in encoder (need to do the
-    // external gear red)
+    sparkEncoder = sparkMotor.getEncoder(Type.kHallSensor, 42); // Spark Neo 550 motor built in
+                                                                // encoder (need to do the external
+                                                                // gear red)
 
     // sparkEncoder.setPositionConversionFactor(2 * Math.PI); // for the CRT and other shaft encoder
 
@@ -65,11 +65,11 @@ public class TurnMotor implements AngleMotor {
     desiredAngle = currentAngle;
 
     // initially setup the PID parameters
-    anglePID.setOutputLimits(Constants.OutputLowLimit, Constants.OutputHighLimit);
-    anglePID.setMaxIOutput(Constants.MaxIOutput);
-    anglePID.setOutputRampRate(Constants.OutputRampRate);
-    anglePID.setOutputFilter(Constants.OutputFilter);
-    anglePID.setSetpointRange(Constants.SetpointRange, Constants.SetpointRange);
+    anglePID.setOutputLimits(Constants.TURN_OUTPUT_LIMIT_LOW, Constants.TURN_OUTPUT_LIMIT_HIGH);
+    anglePID.setMaxIOutput(Constants.TURN_MAX_I_OUT);
+    anglePID.setOutputRampRate(Constants.TURN_OUTPUT_RAMPRATE);
+    anglePID.setOutputFilter(Constants.TURN_OUTPUT_FILTER);
+    anglePID.setSetpointRange(Constants.TURN_SETPOINT_RANGE);
     anglePID.setContinousInputRange(2 * Math.PI); // sets circular continuous input range
     anglePID.setContinous(true); // lets PID know we are working with a continuous range [0-360)
 
@@ -79,8 +79,14 @@ public class TurnMotor implements AngleMotor {
 
   }
 
+  @Override
   public void init() {
     sparkEncoder.setPosition(0.0);
+  }
+
+  @Override
+  public void periodic() {
+    processTurn();
   }
 
   // process loop, called every execution cycle
@@ -104,6 +110,7 @@ public class TurnMotor implements AngleMotor {
 
   // takes -PI to PI and processes the output to the motor controller.
   // This must be called repeatedly in the main robot loop.
+  @Override
   public void setDesiredAngle(double angle) {
     // convert to always positive angle between 0 and 2PI
     if (angle < 0) {
@@ -129,4 +136,9 @@ public class TurnMotor implements AngleMotor {
 
     vTheta = anglePID.getOutput(currentAngle, desiredAngle);
   }
+
+  public void zeroEncoder() {
+    sparkEncoder.setPosition(0.0);
+  }
+
 }

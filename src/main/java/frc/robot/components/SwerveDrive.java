@@ -9,7 +9,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.architecture.Drive;
-import frc.robot.architecture.SwerveModule;
 
 /**
  * Implements a standard Swerve Drive system.
@@ -87,7 +86,7 @@ public class SwerveDrive extends Drive {
     public ChassisSpeeds getCurrentSpeeds() {
         return kinematics.toChassisSpeeds(getCurrentModuleStates());
     }
-    
+
     private SwerveModuleState[] getCurrentModuleStates() {
         SwerveModuleState[] moduleStates = new SwerveModuleState[modules.length];
         for (int i = 0; i < moduleStates.length; i++) {

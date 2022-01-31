@@ -1,7 +1,9 @@
-package frc.robot.architecture;
+package frc.robot.components;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.robot.architecture.AngleMotor;
+import frc.robot.architecture.SpeedMotor;
 
 /** A class which implements the boilerplate code for running a typical swerve module. */
 public class SwerveModule {
