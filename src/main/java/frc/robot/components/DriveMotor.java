@@ -40,20 +40,12 @@ public class DriveMotor implements SpeedMotor {
                 Constants.DRIVE_MAX_CURRENT_RUN);
     }
 
-    /**
-     * 
-     * @param speed desired speed of the motor shaft in radians/sec
-     */
     @Override
     public void setDesiredSpeed(double speed) {
         desiredSpeed = speed;
         sparkPID.setReference(desiredSpeed, ControlType.kDutyCycle);
     }
 
-    /**
-     * 
-     * @return motor shaft velocity in radians/sec
-     */
     @Override
     public double getCurrentSpeed() {
         currentSpeed = sparkEncoder.getVelocity();

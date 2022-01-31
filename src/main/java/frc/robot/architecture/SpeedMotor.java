@@ -21,16 +21,16 @@ public interface SpeedMotor {
     }
 
     /**
-     * Requests the motor rotate at the desired speed (rpm).
+     * Requests the motor rotate at the desired speed.
      * 
-     * @param speed The speed to rotate in RPM.
+     * @param speed The speed to rotate in rad/s.
      */
     public void setDesiredSpeed(double speed);
 
     /**
      * Returns the current speed of the motor.
      * 
-     * @return The speed the motor is running at in RPM.
+     * @return The speed the motor is running at in rad/s.
      * @apiNote This is not necessarily the last 
      * desired speed.
      */

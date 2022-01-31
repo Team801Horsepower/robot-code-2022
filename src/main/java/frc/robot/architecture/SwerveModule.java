@@ -5,38 +5,38 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 /** A class which implements the boilerplate code for running a typical swerve module. */
 public class SwerveModule {
-    
+
     private SpeedMotor driveMotor;
     private AngleMotor turnMotor;
-    
+
     private double lastAngle;
     private boolean flipFlag;
 
-    protected double metersPerRotation;
+    protected double metersPerRad;
 
     private SwerveModuleState state;
-    
+
     /**
      * Creates a new `SwerveModule` instance
      * 
      * @param driveMotor A motor which implements the `SpeedMotor` interface.
      * @param turnMotor A motor which implements the `TurnMotor` interface.
-     * @param metersPerRotation A conversion constant with the units meters/rotation 
-     * which converts from rotations to meters. (Depends on gear ratios, wheel size, etc.)
+     * @param metersPerRad A conversion constant with the units meters/rad which converts from
+     *        radians to meters. (Depends on gear ratios, wheel size, etc.)
      */
-    public SwerveModule(SpeedMotor driveMotor, AngleMotor turnMotor, double metersPerRotation) {
+    public SwerveModule(SpeedMotor driveMotor, AngleMotor turnMotor, double metersPerRad) {
         this.driveMotor = driveMotor;
         this.turnMotor = turnMotor;
-        this.metersPerRotation = metersPerRotation;
+        this.metersPerRad = metersPerRad;
         this.state = new SwerveModuleState();
     }
-    
+
     /** Initializes both motors. */
     public void init() {
         driveMotor.init();
         turnMotor.init();
     }
-    
+
     /** Calls `.periodic()` on both motors. */
     public void periodic() {
         driveMotor.periodic();
@@ -52,9 +52,9 @@ public class SwerveModule {
         setDesiredAngle(state.angle.getRadians());
         setDesiredSpeed(state.speedMetersPerSecond);
     }
-    
+
     /**
-     * Requests the module to drive at the desired speed (m/s).
+     * Requests the module to drive at the desired speed.
      * 
      * @param speed The speed to rotate in m/s.
      */
@@ -62,9 +62,9 @@ public class SwerveModule {
         if (flipFlag) {
             speed = -speed;
         }
-        driveMotor.setDesiredSpeed(60 * speed / metersPerRotation);
+        driveMotor.setDesiredSpeed(speed / metersPerRad);
     }
-    
+
     /**
      * Requests the module face the desired angle.
      * 
@@ -74,24 +74,24 @@ public class SwerveModule {
         angle %= 2 * Math.PI;
         double errorAngle = Math.abs(angle - lastAngle);
         lastAngle = angle;
-        
+
         if (errorAngle > Math.PI / 2 && errorAngle < 3 * Math.PI / 2) {
             flipFlag = !flipFlag;
         }
-        
+
         if (flipFlag) {
             angle = (angle + Math.PI) % (2 * Math.PI);
         }
-        
+
         turnMotor.setDesiredAngle(angle);
     }
-    
+
     /**
      * Returns the current Speed and Angle in a `SwerveModuleState`.
      */
     public SwerveModuleState getCurrentState() {
         state.angle = new Rotation2d(turnMotor.getCurrentAngle());
-        state.speedMetersPerSecond = driveMotor.getCurrentSpeed() * metersPerRotation / 60;
+        state.speedMetersPerSecond = driveMotor.getCurrentSpeed() * metersPerRad;
         return state;
     }
 }
