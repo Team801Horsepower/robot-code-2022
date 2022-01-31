@@ -17,7 +17,7 @@ public final class Constants {
         public static int DRIVE_MAX_RPM = 18730;
         public static int DRIVE_MAX_CURRENT_STALL = 40;
         public static int DRIVE_MAX_CURRENT_RUN = 30;
-
+        public static double DRIVE_METERS_PER_ROTATION = 0.6;
 
         public static double TURN_P = 0.5; // 0.5 gives a little overshoot on the test stand.
         public static double TURN_I = 0.004; // 0.004

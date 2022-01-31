@@ -8,9 +8,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 // import edu.wpi.first.wpilibj.CAN;
 import frc.robot.Constants;
+import frc.robot.architecture.AngleMotor;
 import frc.robot.utilities.*;
 
-public class TurnMotor {
+public class TurnMotor implements AngleMotor {
   // heading about a unit circle in radians.
   private double currentAngle = 0.0; // rotates about the Z axis [0,2PI) rad.
   private double desiredAngle = 0.0; // rotates about the Z axis [0,2PI) rad.
@@ -78,6 +79,10 @@ public class TurnMotor {
 
   }
 
+  public void init() {
+    sparkEncoder.setPosition(0.0);
+  }
+
   // process loop, called every execution cycle
   public void processTurn() {
     // get PID error signal to send to the motor
@@ -124,9 +129,4 @@ public class TurnMotor {
 
     vTheta = anglePID.getOutput(currentAngle, desiredAngle);
   }
-
-  public void zeroEncoder() {
-    sparkEncoder.setPosition(0.0);
-  }
-
 }
