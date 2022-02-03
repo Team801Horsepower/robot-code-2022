@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class DriveWithJoysticks extends CommandBase {
@@ -28,10 +29,13 @@ public class DriveWithJoysticks extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        double x = RobotContainer.io.getDriverExpoLeftX(2.5);
+        double y = RobotContainer.io.getDriverExpoLeftY(2.5);
         if (RobotContainer.winch.safeToDrive()) {
-            RobotContainer.chassis.drive(RobotContainer.io.getDriverExpoLeftX(2.5),
-                    -RobotContainer.io.getDriverExpoLeftY(2.5),
-                    RobotContainer.io.getDriverExpoRightX(2.5)); // TODO changed sign of X right may
+            RobotContainer.chassis.drive(
+                -y/4,
+                -x/4,
+                RobotContainer.io.getDriverExpoRightX(2.5)); // TODO changed sign of X right may
                                                                  // need to be done elsewhere
         } else {
             RobotContainer.chassis.stop();

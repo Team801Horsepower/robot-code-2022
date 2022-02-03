@@ -12,7 +12,7 @@ public class SwerveModule {
     private AngleMotor turnMotor;
 
     private double lastAngle;
-    private boolean flipFlag;
+    private boolean flipFlag = false;
 
     protected double metersPerRad;
 

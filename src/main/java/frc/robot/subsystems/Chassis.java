@@ -84,8 +84,11 @@ public class Chassis extends SubsystemBase {
                         new SwerveModule(new DriveMotor(Constants.POD_4_DRIVE, 1),
                                 new TurnMotor(Constants.POD_4_TURN, 1),
                                 Constants.DRIVE_METERS_PER_ROTATION),},
-                new Translation2d[] {new Translation2d(1, 1), new Translation2d(-1, 1),
-                        new Translation2d(-1, -1), new Translation2d(-1, 1)},
+                new Translation2d[] {
+                    new Translation2d(-1, 1),
+                    new Translation2d(-1, -1),
+                    new Translation2d(1, -1),
+                    new Translation2d(1, 1)},
                 gyro);
 
         headingPID = new PID(Constants.HEADING_P, Constants.HEADING_I, Constants.HEADING_D);
@@ -123,22 +126,25 @@ public class Chassis extends SubsystemBase {
         initialized = true;
     }
 
+    public void periodic() {
+        drive.periodic();
+    }
+
     /**
      * This method will be called once per scheduler run in Autonomous
      */
 
     public void directionDrive(double speed, double angle) {
+
         drive.setDesiredSpeeds(0, 0, angle);
-        drive.periodic();
     }
 
     public void stop() {
         drive.setDesiredSpeeds(new ChassisSpeeds());
     }
 
-    public void drive(double x, double y, double omega) {
-        drive.setDesiredSpeeds(x, y, omega);
-        IMUAngleProcessing();
+    public void drive(double forward, double leftward, double omega) {
+        drive.setDesiredSpeeds(forward, leftward, omega);
     }
 
     // grab the imu heading and crunch out the values used for navigation and
