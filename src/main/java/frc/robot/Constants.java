@@ -51,7 +51,9 @@ public final class Constants {
 
     public static boolean TURN_INVERT[] = {false, false, false, false};
     public static IdleMode TURN_IDLEMODE[] =
-            {IdleMode.kBrake, IdleMode.kBrake, IdleMode.kBrake, IdleMode.kBrake};
+            // TODO: Switch back to kBrake before competition
+            // {IdleMode.kBrake, IdleMode.kBrake, IdleMode.kBrake, IdleMode.kBrake};
+            {IdleMode.kCoast, IdleMode.kCoast, IdleMode.kCoast, IdleMode.kCoast};
 
     public static int TURN_MAX_CURRENT_STALL = 30;
     public static int TURN_MAX_CURRENT_RUN = 20;

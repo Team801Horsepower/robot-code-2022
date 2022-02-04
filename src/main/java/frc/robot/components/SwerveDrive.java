@@ -92,8 +92,6 @@ public class SwerveDrive extends Drive {
         for (int i = 0; i < moduleStates.length; i++) {
             moduleStates[i] = modules[i].getCurrentState();
         }
-        System.out.print("State:" + modules[0].getCurrentState());
-        System.out.println();
         return moduleStates;
     }
 

@@ -55,7 +55,6 @@ public class RobotContainer {
     public RobotContainer() {
         // Set the default commands for each subsystem
         winch.setDefaultCommand(new WinchUp());
-        chassis.init();
         // Configure the button bindings
         configureButtonBindings();
     }

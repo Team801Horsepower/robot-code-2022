@@ -78,7 +78,8 @@ public class SwerveModule {
         lastAngle = angle;
 
         if (errorAngle > Math.PI / 2 && errorAngle < 3 * Math.PI / 2) {
-            flipFlag = !flipFlag;
+            // TODO: Re-enable flipFlag
+            // flipFlag = !flipFlag;
         }
 
         if (flipFlag) {

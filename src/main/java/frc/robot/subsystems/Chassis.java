@@ -143,8 +143,17 @@ public class Chassis extends SubsystemBase {
         drive.setDesiredSpeeds(new ChassisSpeeds());
     }
 
-    public void drive(double forward, double leftward, double omega) {
+    public void robotDrive(double forward, double leftward, double omega) {
         drive.setDesiredSpeeds(forward, leftward, omega);
+    }
+
+    public void fieldDrive(double fieldForward, double fieldLeftward, double omega) {
+        double yawAngle = -gyro.getYaw() * Math.PI / 180;
+        double magnitude = Math.sqrt(Math.pow(fieldForward, 2) + Math.pow(fieldLeftward, 2));
+        double robotAngle = (Math.PI / 2) - yawAngle + ((Math.atan2(fieldLeftward, fieldForward) + 2 * Math.PI) % (2 * Math.PI));
+        double robotForward = Math.sin(robotAngle) * magnitude;
+        double robotLeftward = -Math.cos(robotAngle) * magnitude;
+        drive.setDesiredSpeeds(robotForward, robotLeftward, omega);
     }
 
     // grab the imu heading and crunch out the values used for navigation and

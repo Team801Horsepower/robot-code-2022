@@ -32,7 +32,8 @@ public class DriveWithJoysticks extends CommandBase {
         double x = RobotContainer.io.getDriverExpoLeftX(2.5);
         double y = RobotContainer.io.getDriverExpoLeftY(2.5);
         if (RobotContainer.winch.safeToDrive()) {
-            RobotContainer.chassis.drive(
+            // TODO: Allow switching between robotDrive and fieldDrive
+            RobotContainer.chassis.fieldDrive(
                 -y/4,
                 -x/4,
                 RobotContainer.io.getDriverExpoRightX(2.5)); // TODO changed sign of X right may
