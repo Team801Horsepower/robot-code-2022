@@ -31,12 +31,18 @@ public class RobotDriveWithJoysticks extends CommandBase {
     public void execute() {
         double x = RobotContainer.io.getDriverExpoLeftX(2.5);
         double y = RobotContainer.io.getDriverExpoLeftY(2.5);
+
+        double mag = x*x + y*y;
+        if (mag > 1) {
+            x /= mag;
+            y /= mag;
+        }
+
         if (RobotContainer.winch.safeToDrive()) {
             RobotContainer.chassis.robotDrive(
                 -y,
                 -x,
-                RobotContainer.io.getDriverExpoRightX(2.5)); // TODO changed sign of X right may
-                                                                 // need to be done elsewhere
+                RobotContainer.io.getDriverExpoRightX(2.5));
         } else {
             RobotContainer.chassis.stop();
         }

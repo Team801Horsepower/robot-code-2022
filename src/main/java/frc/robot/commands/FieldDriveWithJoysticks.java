@@ -8,7 +8,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class FieldDriveWithJoysticks extends CommandBase {
@@ -31,12 +30,18 @@ public class FieldDriveWithJoysticks extends CommandBase {
     public void execute() {
         double x = RobotContainer.io.getDriverExpoLeftX(2.5);
         double y = RobotContainer.io.getDriverExpoLeftY(2.5);
+        
+        double mag = x*x + y*y;
+        if (mag > 1) {
+            x /= mag;
+            y /= mag;
+        }
+
         if (RobotContainer.winch.safeToDrive()) {
             RobotContainer.chassis.fieldDrive(
                 -y,
                 -x,
-                RobotContainer.io.getDriverExpoRightX(2.5)); // TODO changed sign of X right may
-                                                                 // need to be done elsewhere
+                RobotContainer.io.getDriverExpoRightX(2.5));
         } else {
             RobotContainer.chassis.stop();
         }
