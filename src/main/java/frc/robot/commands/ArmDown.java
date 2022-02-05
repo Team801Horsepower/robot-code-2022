@@ -17,7 +17,6 @@ public class ArmDown extends CommandBase
    */
   public ArmDown() 
   {
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.arm);
   }
 

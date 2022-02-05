@@ -15,7 +15,6 @@ public class FieldDriveWithJoysticks extends CommandBase {
      * Creates a new FieldDriveWithJoysticks.
      */
     public FieldDriveWithJoysticks() {
-        // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(RobotContainer.chassis);
     }
 

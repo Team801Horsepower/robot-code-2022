@@ -8,9 +8,8 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
-import com.revrobotics.CANPIDController;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -19,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Magazine extends SubsystemBase
 {
     private CANSparkMax sparkMotor;
-    private CANPIDController sparkPID;
+    private SparkMaxPIDController sparkPID;
 
     /**
      * Creates a new Magazine
@@ -35,16 +34,16 @@ public class Magazine extends SubsystemBase
 
     public void forward()
     {
-        sparkPID.setReference(Constants.MAGAZINE_SPEED, ControlType.kDutyCycle);
+        sparkPID.setReference(Constants.MAGAZINE_SPEED, CANSparkMax.ControlType.kDutyCycle);
     }
 
     public void stop()
     {
-        sparkPID.setReference(0, ControlType.kDutyCycle);
+        sparkPID.setReference(0, CANSparkMax.ControlType.kDutyCycle);
     }
 
     public void reverse()
     {
-        sparkPID.setReference(-Constants.MAGAZINE_SPEED, ControlType.kDutyCycle);
+        sparkPID.setReference(-Constants.MAGAZINE_SPEED, CANSparkMax.ControlType.kDutyCycle);
     }
 }

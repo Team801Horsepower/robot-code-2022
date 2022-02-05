@@ -17,10 +17,8 @@ public class ForwardGather extends CommandBase
      */
     public ForwardGather()
     {
-        // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(RobotContainer.gatherer);
         addRequirements(RobotContainer.magazine);
-        //addRequirements(RobotContainer.shooter);
     }
 
     // Called when the command is initially scheduled.
@@ -29,7 +27,6 @@ public class ForwardGather extends CommandBase
     {
         RobotContainer.gatherer.forward();
         RobotContainer.magazine.forward();
-        //RobotContainer.shooter.holdDown();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -45,7 +42,6 @@ public class ForwardGather extends CommandBase
     {
         RobotContainer.gatherer.stop();
         RobotContainer.magazine.stop();
-        //RobotContainer.shooter.stop();
     }
 
     // Returns true when the command should end.

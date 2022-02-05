@@ -8,19 +8,18 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
-import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Winch extends SubsystemBase 
 {
-  private CANPIDController winchPID;
+  private SparkMaxPIDController winchPID;
   private CANSparkMax winchMotor;
-  private CANEncoder winchEncoder;
+  private RelativeEncoder winchEncoder;
 
   /**
    * Creates a new LifterWinch.
@@ -30,7 +29,7 @@ public class Winch extends SubsystemBase
     // Winch Settings
     winchMotor = new CANSparkMax(Constants.winchMotorID, MotorType.kBrushless);
     winchPID = winchMotor.getPIDController();
-    winchEncoder = winchMotor.getEncoder(EncoderType.kHallSensor, Constants.NEO_ENCODER_CNTS_PER_REV);
+    winchEncoder = winchMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.NEO_ENCODER_CNTS_PER_REV);
     winchEncoder.setPositionConversionFactor(1);
 
     winchPID.setP(Constants.WINCH_P);
@@ -47,7 +46,7 @@ public class Winch extends SubsystemBase
   public void winchUp(double y) // in lead screw rotations...
   {
     //Manual control of the winch.
-    winchPID.setReference(y, ControlType.kDutyCycle);
+    winchPID.setReference(y, CANSparkMax.ControlType.kDutyCycle);
 
   }
 

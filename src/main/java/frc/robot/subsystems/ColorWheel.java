@@ -8,26 +8,24 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
-import com.revrobotics.CANDigitalInput;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
+import com.revrobotics.SparkMaxLimitSwitch;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.EncoderType;
-import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ColorWheel extends SubsystemBase 
 {
-  private CANPIDController spinnerPID;
+  private SparkMaxPIDController spinnerPID;
   private CANSparkMax spinnerMotor;;
-  private CANEncoder spinnerEncoder;
+  private RelativeEncoder spinnerEncoder;
 
   
   private boolean spinnerZeroedFlag;
 
-  private CANDigitalInput m_reverseLimit;
+  private SparkMaxLimitSwitch m_reverseLimit;
 
   /**
    * Creates a new color wheel spinner gizmo subsystem.
@@ -36,7 +34,7 @@ public class ColorWheel extends SubsystemBase
   {
     spinnerMotor = new CANSparkMax(Constants.colorWheelMotorID, MotorType.kBrushless);
     spinnerPID = spinnerMotor.getPIDController();
-    spinnerEncoder = spinnerMotor.getEncoder(EncoderType.kHallSensor, 42);
+    spinnerEncoder = spinnerMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
     spinnerPID.setP(Constants.COLORWHEEL_P);
     spinnerPID.setI(Constants.COLORWHEEL_I);
     spinnerPID.setD(Constants.COLORWHEEL_D);
@@ -55,7 +53,7 @@ public class ColorWheel extends SubsystemBase
     spinnerZeroedFlag = false;
 
     // limit switch is zero point (fully retracted)
-    m_reverseLimit = spinnerMotor.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+    m_reverseLimit = spinnerMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
     m_reverseLimit.enableLimitSwitch(true); 
   }
 
@@ -64,13 +62,13 @@ public class ColorWheel extends SubsystemBase
     if(spinnerEncoder.getPosition() < Constants.SPINNER_MAX_HEIGHT - 2 )  // The -2 accounts for any small error in the encoder value
     {
       spinnerPID.setOutputRange(Constants.COLORWHEEL_MIN_OUTPUT, Constants.COLORWHEEL_MAX_OUTPUT_RAISE);
-      spinnerPID.setReference( Constants.SPINNER_MAX_HEIGHT, ControlType.kPosition );
+      spinnerPID.setReference( Constants.SPINNER_MAX_HEIGHT, CANSparkMax.ControlType.kPosition);
     }
     else
     {
       spinnerPID.setOutputRange(Constants.COLORWHEEL_MIN_OUTPUT, Constants.COLORWHEEL_MAX_OUTPUT_SPIN);
       //convert color wheel rotations to motorshaft rotations 80 shatf rotations = 1 color wheel rotation
-      spinnerPID.setReference(spinnerEncoder.getPosition() + rotations * 80, ControlType.kPosition);
+      spinnerPID.setReference(spinnerEncoder.getPosition() + rotations * 80, CANSparkMax.ControlType.kPosition);
     }
   }
 
@@ -80,7 +78,7 @@ public class ColorWheel extends SubsystemBase
   {
     spinnerZeroedFlag = false;
     // run till the limit switch stops it... 
-    spinnerPID.setReference(-0.4, ControlType.kDutyCycle);  
+    spinnerPID.setReference(-0.4, CANSparkMax.ControlType.kDutyCycle);  
   }
 
   public void spinnerResetting() 
@@ -88,11 +86,11 @@ public class ColorWheel extends SubsystemBase
     // This method will be called once per scheduler run
     // test if at the fully retracted position and reset the encoder to zero
     // flag keeps from banging the encoder every scheduler run.
-    if(m_reverseLimit.get() && !spinnerZeroedFlag)
+    if(m_reverseLimit.isPressed() && !spinnerZeroedFlag)
     {
       spinnerEncoder.setPosition(0);
       spinnerZeroedFlag = true;
-      spinnerPID.setReference(0, ControlType.kPosition);
+      spinnerPID.setReference(0, CANSparkMax.ControlType.kPosition);
     }
   }
 

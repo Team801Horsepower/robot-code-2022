@@ -18,7 +18,6 @@ public class ArmLow extends CommandBase
    */
   public ArmLow() 
   {
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.arm);
   }
 

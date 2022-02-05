@@ -4,9 +4,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.architecture.Drive;
 import frc.robot.components.SwerveModule;
@@ -15,9 +13,6 @@ import frc.robot.components.SwerveDrive;
 import frc.robot.components.TurnMotor;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
-import frc.robot.utilities.Utils;
-import frc.robot.utilities.PID;
-import frc.robot.utilities.RollingAverage;
 
 // import java.util.Map;
 import edu.wpi.first.networktables.NetworkTable;
@@ -35,8 +30,6 @@ public class Chassis extends SubsystemBase {
 
     private AHRS gyro;
     private Drive drive;
-
-    private boolean initialized = false;
 
     NetworkTableEntry error_x;
     NetworkTableEntry error_y;
@@ -88,7 +81,6 @@ public class Chassis extends SubsystemBase {
     public void init() {
         gyro.calibrate();
         drive.init();
-        initialized = true;
     }
 
     public void periodic() {

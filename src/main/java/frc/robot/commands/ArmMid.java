@@ -18,7 +18,6 @@ public class ArmMid extends CommandBase
    */
   public ArmMid() 
   {
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.arm);
   }
 

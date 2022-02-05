@@ -9,22 +9,21 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
-import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase
 {
-  private CANPIDController shooterPID;
-  private CANPIDController breachPID;
+  private SparkMaxPIDController shooterPID;
+  private SparkMaxPIDController breachPID;
   private CANSparkMax shooterMotor;
   private CANSparkMax breachMotor;
-  private CANEncoder shooterEncoder;
+  private RelativeEncoder shooterEncoder;
 
 
   /**
@@ -34,7 +33,7 @@ public class Shooter extends SubsystemBase
   {
     shooterMotor = new CANSparkMax(Constants.shooterMotorID, MotorType.kBrushless);
     shooterPID = shooterMotor.getPIDController();
-    shooterEncoder = shooterMotor.getEncoder(EncoderType.kHallSensor, 42);
+    shooterEncoder = shooterMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
     shooterPID.setP(Constants.SHOOTER_P);
     shooterPID.setI(Constants.SHOOTER_I);
     shooterPID.setD(Constants.SHOOTER_D);
@@ -55,27 +54,27 @@ public class Shooter extends SubsystemBase
   //TODO: find correct speed
   public void enableShooter()
   {
-    shooterPID.setReference(Constants.SHOOTER_RPM, ControlType.kVelocity);
+    shooterPID.setReference(Constants.SHOOTER_RPM, CANSparkMax.ControlType.kVelocity);
     holdDown();
   }
 
 
   public void popUp()
   {
-    breachPID.setReference(Constants.BREACH_UPSPEED, ControlType.kDutyCycle);
+    breachPID.setReference(Constants.BREACH_UPSPEED, CANSparkMax.ControlType.kDutyCycle);
   }
 
 
   public void holdDown()
   {
-    breachPID.setReference(Constants.BREACH_DOWNSPEED, ControlType.kDutyCycle);
+    breachPID.setReference(Constants.BREACH_DOWNSPEED, CANSparkMax.ControlType.kDutyCycle);
   }
 
 
   public void stop()
   {
-    shooterPID.setReference(0, ControlType.kDutyCycle);
-    breachPID.setReference(0, ControlType.kDutyCycle);
+    shooterPID.setReference(0, CANSparkMax.ControlType.kDutyCycle);
+    breachPID.setReference(0, CANSparkMax.ControlType.kDutyCycle);
   }
 
 

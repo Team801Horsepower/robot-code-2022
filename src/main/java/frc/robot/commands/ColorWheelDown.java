@@ -16,7 +16,6 @@ public class ColorWheelDown extends CommandBase {
    */
   public ColorWheelDown() 
   {
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.colorWheel);
   }
 

@@ -17,7 +17,6 @@ public class ReverseGather extends CommandBase
      */
     public ReverseGather()
     {
-        // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(RobotContainer.gatherer);
         addRequirements(RobotContainer.magazine);
     }

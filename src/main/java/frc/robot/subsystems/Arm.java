@@ -9,25 +9,24 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 import frc.robot.commands.ArmDown;
-import com.revrobotics.CANDigitalInput;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
+import com.revrobotics.SparkMaxLimitSwitch;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.EncoderType;
-import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
+import com.revrobotics.SparkMaxRelativeEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase 
 {
-  private CANPIDController armPID;
+  private SparkMaxPIDController armPID;
   private CANSparkMax armMotor;
-  private CANEncoder armEncoder;
+  private RelativeEncoder armEncoder;
 
   private boolean armZeroedFlag;
 
-  private CANDigitalInput m_reverseLimit;
+  private SparkMaxLimitSwitch m_reverseLimit;
 
 
   /**
@@ -42,7 +41,7 @@ public class Arm extends SubsystemBase
     armMotor.setSmartCurrentLimit(Constants.ARM_MAX_CURRENT_STALL, Constants.ARM_MAX_CURRENT_RUN);
 
     armPID = armMotor.getPIDController();
-    armEncoder = armMotor.getEncoder(EncoderType.kHallSensor, Constants.NEO_ENCODER_CNTS_PER_REV);
+    armEncoder = armMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.NEO_ENCODER_CNTS_PER_REV);
     armPID.setP(Constants.ARM_P);
     armPID.setI(Constants.ARM_I);
     armPID.setD(Constants.ARM_D);
@@ -56,7 +55,7 @@ public class Arm extends SubsystemBase
     armZeroedFlag = false;
 
     // limit switch is zero point (fully retracted)
-    m_reverseLimit = armMotor.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+    m_reverseLimit = armMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
     m_reverseLimit.enableLimitSwitch(true);
   }
     
@@ -89,7 +88,7 @@ public class Arm extends SubsystemBase
     // This method will be called once per scheduler run
     // test if at the fully retracted position and reset the encoder to zero
     // flag keeps from banging the encoder every scheduler run.
-    if(m_reverseLimit.get() && !armZeroedFlag)
+    if(m_reverseLimit.isPressed() && !armZeroedFlag)
     {
       armEncoder.setPosition(0);
       armZeroedFlag = true;

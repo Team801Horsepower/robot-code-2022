@@ -18,7 +18,6 @@ public class ArmHigh extends CommandBase
    */
   public ArmHigh() 
   {
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.arm);
   }
 

@@ -8,7 +8,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class RobotDriveWithJoysticks extends CommandBase {
@@ -16,7 +15,6 @@ public class RobotDriveWithJoysticks extends CommandBase {
      * Creates a new RobotDriveWithJoysticks.
      */
     public RobotDriveWithJoysticks() {
-        // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(RobotContainer.chassis);
     }
 
