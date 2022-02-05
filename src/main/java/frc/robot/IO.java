@@ -8,6 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -15,6 +17,25 @@ import edu.wpi.first.wpilibj.XboxController;
  */
 public class IO
 {
+    public enum Button {
+        DriverA(driver, XboxController.Button.kA.value),
+        DriverB(driver, XboxController.Button.kB.value),
+        DriverX(driver, XboxController.Button.kX.value),
+        DriverY(driver, XboxController.Button.kY.value),
+        DriverLeftBumper(driver, XboxController.Button.kLeftBumper.value),
+        DriverRightBumper(driver, XboxController.Button.kRightBumper.value),
+        ManipulatorA(manipulator, XboxController.Button.kA.value),
+        ManipulatorB(manipulator, XboxController.Button.kB.value),
+        ManipulatorX(manipulator, XboxController.Button.kX.value),
+        ManipulatorY(manipulator, XboxController.Button.kY.value),
+        ManipulatorLeftBumper(manipulator, XboxController.Button.kLeftBumper.value),
+        ManipulatorRightBumper(manipulator, XboxController.Button.kRightBumper.value);
+        JoystickButton value;
+        Button(GenericHID hid, int buttonId) {
+            value = new JoystickButton(hid, buttonId);
+        }
+    }
+
     public static  XboxController driver = new XboxController(0);
 //    public static Joystick driver = new Joystick(0);
 //    public static Joystick manipulator = new Joystick(1);
@@ -41,7 +62,7 @@ public class IO
      */
     public double getDriverRightX()
     {
-        return deadbandFilter(driver.getRightX(), 0.1); 
+        return deadbandFilter(driver.getRightX(), 0.1);
     }
 
     /**
@@ -49,7 +70,7 @@ public class IO
      */
     public double getDriverRightY()
     {
-        return deadbandFilter(driver.getRightY(), 0.1); 
+        return deadbandFilter(driver.getRightY(), 0.1);
     }
 
 
@@ -89,7 +110,7 @@ public class IO
         return getExponential(getDriverRightY(), exponent);
     }
 
-  
+
     /**
      * @return the horizontal axis value from the left driver controller
      */
@@ -111,7 +132,7 @@ public class IO
      */
     public double getManipulatorRightX()
     {
-        return deadbandFilter(manipulator.getRightX(), 0.1); 
+        return deadbandFilter(manipulator.getRightX(), 0.1);
     }
 
     /**
@@ -119,15 +140,15 @@ public class IO
      */
     public double getManipulatorRightY()
     {
-        return deadbandFilter(manipulator.getRightY(), 0.1); 
+        return deadbandFilter(manipulator.getRightY(), 0.1);
     }
-   
+
     private double deadbandFilter(double value, double deadband)
     {
         return Math.abs(value) > deadband ? value : 0;
     }
 
-    
+
     /**
      * This function takes a joystick input and applies an exponential scaling
      */
