@@ -29,6 +29,7 @@ import frc.robot.subsystems.Magazine;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Winch;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.ColorWheel;
 
 /**
@@ -47,6 +48,7 @@ public class RobotContainer {
     public static final Winch winch = new Winch();
     public static final Shooter shooter = new Shooter();
     public static final ColorWheel colorWheel = new ColorWheel();
+    public static final Vision vision = new Vision();
 
     private final Command m_autoCommand = new FieldDriveWithJoysticks();
 
