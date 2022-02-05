@@ -38,27 +38,10 @@ public class Chassis extends SubsystemBase {
 
     private boolean initialized = false;
 
-    // Speed component for rotation about the Z axis. [-x, x]
-    private static double vTheta;
-
-    // heading about a unit circle in radians.
-    private final double joystickTurnMultiplier = 50.0;
-    private static double desiredHeading; // rotates about the Z axis [0,360) deg.
-    private static double currentHeading; // rotates about the Z axis [0,360) deg.
-
-    private final double headingThreshold = 0.05;
-    private final int headingAverageNumberOfSamples = 5;
-
-    private PID headingPID;
-    private RollingAverage averageHeading;
-
     NetworkTableEntry error_x;
     NetworkTableEntry error_y;
 
     public Chassis() {
-
-        vTheta = 0;
-
         try {
             /* Communicate w/navX-MXP via the MXP SPI Bus. */
             /* Alternatively: I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB */
@@ -90,24 +73,6 @@ public class Chassis extends SubsystemBase {
                     new Translation2d(1, -1),
                     new Translation2d(1, 1)},
                 gyro);
-
-        headingPID = new PID(Constants.HEADING_P, Constants.HEADING_I, Constants.HEADING_D);
-        averageHeading = new RollingAverage(headingAverageNumberOfSamples);
-
-        // set initial desired heading to the current actual heading.
-        desiredHeading = currentHeading = gyro.getYaw();
-
-        // initially setup the PID parameters
-        headingPID.setOutputLimits(Constants.HEADING_OUTPUT_LIMIT_LOW,
-                Constants.HEADING_OUTPUT_LIMIT_HIGH);
-        headingPID.setMaxIOutput(Constants.HEADING_MAX_I_OUT);
-        headingPID.setOutputRampRate(Constants.HEADING_OUTPUT_RAMPRATE);
-        headingPID.setOutputFilter(Constants.HEADING_OUTPUT_FILTER);
-        headingPID.setAngleUnits(PID.AngleUnit.degrees);
-        headingPID.setSetpointRange(Constants.HEADING_SETPOINT_RANGE);
-        headingPID.setContinousInputRange(360);
-        headingPID.setContinous(true); // lets PID know we are working with a continuous range
-                                       // [0-360)
 
         NetworkTableInstance networkTableInst = NetworkTableInstance.getDefault();
 
@@ -144,7 +109,7 @@ public class Chassis extends SubsystemBase {
     }
 
     public void robotDrive(double forward, double leftward, double omega) {
-        drive.setDesiredSpeeds(forward, leftward, omega);
+        drive.setDesiredSpeeds(forward * Constants.MAX_ROBOT_SPEED, leftward * Constants.MAX_ROBOT_SPEED, omega);
     }
 
     public void fieldDrive(double fieldForward, double fieldLeftward, double omega) {
@@ -153,31 +118,6 @@ public class Chassis extends SubsystemBase {
         double robotAngle = (Math.PI / 2) - yawAngle + ((Math.atan2(fieldLeftward, fieldForward) + 2 * Math.PI) % (2 * Math.PI));
         double robotForward = Math.sin(robotAngle) * magnitude;
         double robotLeftward = -Math.cos(robotAngle) * magnitude;
-        drive.setDesiredSpeeds(robotForward, robotLeftward, omega);
+        robotDrive(robotForward, robotLeftward, omega);
     }
-
-    // grab the imu heading and crunch out the values used for navigation and
-    // telemetry.
-    // This method produces the heading input component to the motors from the PID
-    // that holds the
-    // desired angle. The error from the PID is sent to the motors in the vTheta
-    // variable.
-    private double IMUAngleProcessing() {
-        // in degrees +/- 0 to 180 where CCW is - and CW is + //TODO Verify CW is
-        // negative angle
-        double yawAngle = gyro.getYaw();
-
-        // System.out.printf("yawAngle: %.4f desired: %.4f curr: %.4f\n", yawAngle, desiredHeading,
-        // currentHeading);
-
-        // convert imu angle range to our [0, 360) range
-        if (yawAngle < 0) {
-            currentHeading = yawAngle + 360;
-        } else {
-            currentHeading = yawAngle;
-        }
-
-        return headingPID.getOutput(currentHeading, desiredHeading);
-    }
-
 }
