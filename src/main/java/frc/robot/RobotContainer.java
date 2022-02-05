@@ -7,9 +7,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.FieldDriveWithJoysticks;
 import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.WinchUp;
@@ -60,6 +62,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         IO.Button.DriverLeftBumper.value.whileHeld(new RobotDriveWithJoysticks());
+        IO.Button.DriverX.value.whileHeld(new DriveToPose(new Pose2d()));
     }
 
     /** Reinitializes all the subsystems without a reboot */

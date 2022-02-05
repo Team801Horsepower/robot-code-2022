@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -31,6 +31,8 @@ public class Chassis extends SubsystemBase {
     private AHRS gyro;
     private Drive drive;
 
+    private Pose2d pose;
+
     NetworkTableEntry error_x;
     NetworkTableEntry error_y;
 
@@ -45,6 +47,8 @@ public class Chassis extends SubsystemBase {
         } catch (RuntimeException ex) {
             DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
         }
+
+        pose = new Pose2d();
 
         drive = new SwerveDrive(
                 new SwerveModule[] {
@@ -85,6 +89,7 @@ public class Chassis extends SubsystemBase {
 
     public void periodic() {
         drive.periodic();
+        pose = drive.getCurrentPose();
     }
 
     /**
@@ -111,5 +116,9 @@ public class Chassis extends SubsystemBase {
         double robotForward = Math.sin(robotAngle) * magnitude;
         double robotLeftward = -Math.cos(robotAngle) * magnitude;
         robotDrive(robotForward, robotLeftward, omega);
+    }
+
+    public Pose2d getCurrentPose() {
+        return pose;
     }
 }

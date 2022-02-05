@@ -31,6 +31,7 @@ public class IO
         ManipulatorLeftBumper(manipulator, XboxController.Button.kLeftBumper.value),
         ManipulatorRightBumper(manipulator, XboxController.Button.kRightBumper.value);
         JoystickButton value;
+        
         Button(GenericHID hid, int buttonId) {
             value = new JoystickButton(hid, buttonId);
         }
