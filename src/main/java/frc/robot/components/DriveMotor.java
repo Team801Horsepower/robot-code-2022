@@ -20,7 +20,7 @@ public class DriveMotor implements SpeedMotor {
     private RelativeEncoder sparkEncoder;
 
     /**
-     * 
+     *
      * @param motorID of the Spark Max
      * @param motorIndex of the motor index
      */
@@ -45,11 +45,11 @@ public class DriveMotor implements SpeedMotor {
     @Override
     public void setDesiredSpeed(double speed) {
         if (speed > MAX_SPEED) {
-            speed = MAX_SPEED;
             System.err.println("Tried to exceed max speed: " + speed + " rad/s (max is " + MAX_SPEED + " rad/s)");
+            speed = MAX_SPEED;
         }
         desiredSpeed = speed;
-        sparkPID.setReference(desiredSpeed, ControlType.kDutyCycle);
+        sparkPID.setReference(desiredSpeed * Math.PI / 30.0, ControlType.kDutyCycle);
     }
 
     @Override

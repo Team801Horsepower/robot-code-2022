@@ -32,7 +32,8 @@ public final class Constants {
     public static int DRIVE_MAX_RPM = 18730;
     public static int DRIVE_MAX_CURRENT_STALL = 40;
     public static int DRIVE_MAX_CURRENT_RUN = 30;
-    public static double DRIVE_METERS_PER_ROTATION = 1.0; // TODO Measure this value and put in
+    public static double MAX_ROBOT_SPEED = 10.0;
+    public static double DRIVE_METERS_PER_RADIAN = 0.31918 * 0.183139 / 2.0 * Math.PI; // TODO Measure this value and put in
                                                           // Pod Implementation
 
     public static double MAGAZINE_RPM = 300;
