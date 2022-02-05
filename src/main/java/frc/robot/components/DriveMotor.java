@@ -46,7 +46,7 @@ public class DriveMotor implements SpeedMotor {
     public void setDesiredSpeed(double speed) {
         desiredSpeed = speed / (2 * Math.PI) * 60.0;
         if (desiredSpeed > MAX_RPM) {
-            System.err.println("Tried to exceed max speed: " + desiredSpeed + " rad/s (max is " + MAX_SPEED + " rad/s)");
+            System.err.println("Tried to exceed max speed: " + desiredSpeed + " rad/s (max is " + MAX_RPM + " rad/s)");
             desiredSpeed = MAX_RPM;
         }
         sparkPID.setReference(desiredSpeed, ControlType.kVelocity);
@@ -54,7 +54,7 @@ public class DriveMotor implements SpeedMotor {
 
     @Override
     public double getCurrentSpeed() {
-        currentSpeed = sparkEncoder.getVelocity();
+        currentSpeed = sparkEncoder.getVelocity() * 2 * Math.PI / 60;
         return currentSpeed;
     }
 }

@@ -32,8 +32,8 @@ public final class Constants {
     public static int DRIVE_MAX_RPM = 18730;
     public static int DRIVE_MAX_CURRENT_STALL = 40;
     public static int DRIVE_MAX_CURRENT_RUN = 30;
-    public static double MAX_ROBOT_SPEED = 5.0;
-    public static double DRIVE_METERS_PER_RADIAN = 0.31918 * 0.1875 / 2.0 * Math.PI;
+    public static double MAX_ROBOT_SPEED = 1.0;
+    public static double DRIVE_METERS_PER_RADIAN = 0.31918 * 0.1875 / (2*Math.PI);
 
     public static double MAGAZINE_RPM = 300;
     public static double MAGAZINE_REVERSE_TIME = 2; // TODO: (In seconds) change to real value
