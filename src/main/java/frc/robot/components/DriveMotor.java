@@ -10,6 +10,8 @@ import frc.robot.Constants;
 import frc.robot.architecture.SpeedMotor;
 
 public class DriveMotor implements SpeedMotor {
+    public static final double MAX_SPEED = 5650.0 / 30.0 * Math.PI;
+
     private double currentSpeed = 0.0;
     private double desiredSpeed = 0.0;
 
@@ -42,6 +44,10 @@ public class DriveMotor implements SpeedMotor {
 
     @Override
     public void setDesiredSpeed(double speed) {
+        if (speed > MAX_SPEED) {
+            speed = MAX_SPEED;
+            System.err.println("Tried to exceed max speed: " + speed + " rad/s (max is " + MAX_SPEED + " rad/s)");
+        }
         desiredSpeed = speed;
         sparkPID.setReference(desiredSpeed, ControlType.kDutyCycle);
     }
