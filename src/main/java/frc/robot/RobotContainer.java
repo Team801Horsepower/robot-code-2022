@@ -17,7 +17,8 @@ import frc.robot.commands.ArmLow;
 import frc.robot.commands.ArmMid;
 import frc.robot.commands.ColorWheelDown;
 import frc.robot.commands.ColorWheelUp;
-import frc.robot.commands.DriveWithJoysticks;
+import frc.robot.commands.FieldDriveWithJoysticks;
+import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.WinchUp;
 import frc.robot.commands.ForwardGather;
 import frc.robot.commands.ReverseGather;
@@ -47,7 +48,7 @@ public class RobotContainer {
     public static final Shooter shooter = new Shooter();
     public static final ColorWheel colorWheel = new ColorWheel();
 
-    private final Command m_autoCommand = new DriveWithJoysticks();
+    private final Command m_autoCommand = new FieldDriveWithJoysticks();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -66,39 +67,7 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        JoystickButton armStowButton =
-                new JoystickButton(IO.driver, XboxController.Button.kX.value);
-        armStowButton.whenPressed(new ArmDown());
-
-        JoystickButton armLowButton = new JoystickButton(IO.driver, XboxController.Button.kA.value);
-        armLowButton.whenPressed(new ArmLow());
-
-        JoystickButton armMidButton = new JoystickButton(IO.driver, XboxController.Button.kB.value);
-        armMidButton.whenPressed(new ArmMid());
-
-        JoystickButton armHighButton =
-                new JoystickButton(IO.driver, XboxController.Button.kY.value);
-        armHighButton.whenPressed(new ArmHigh());
-
-        JoystickButton spinnerUpButton =
-                new JoystickButton(IO.manipulator, XboxController.Button.kY.value);
-        spinnerUpButton.whenPressed(new ColorWheelUp());
-
-        JoystickButton spinnerDownButton =
-                new JoystickButton(IO.manipulator, XboxController.Button.kX.value);
-        spinnerDownButton.whenPressed(new ColorWheelDown());
-
-        JoystickButton fwdGatherButton =
-                new JoystickButton(IO.driver, XboxController.Button.kLeftBumper.value);
-        fwdGatherButton.whileHeld(new ForwardGather());
-
-        JoystickButton revGatherButton =
-                new JoystickButton(IO.driver, XboxController.Button.kRightBumper.value);
-        revGatherButton.whileHeld(new ReverseGather());
-
-        JoystickButton shootTrigger =
-                new JoystickButton(IO.manipulator, XboxController.Button.kRightBumper.value);
-        shootTrigger.whileHeld(new Shoot());
+        IO.Button.DriverLeftBumper.value.whileHeld(new RobotDriveWithJoysticks());
     }
 
     /** Reinitializes all the subsystems without a reboot */

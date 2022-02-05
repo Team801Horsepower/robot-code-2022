@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
-public class DriveWithJoysticks extends CommandBase {
+public class FieldDriveWithJoysticks extends CommandBase {
     /**
-     * Creates a new DriveWithJoysticks.
+     * Creates a new FieldDriveWithJoysticks.
      */
-    public DriveWithJoysticks() {
+    public FieldDriveWithJoysticks() {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(RobotContainer.chassis);
     }
@@ -32,10 +32,9 @@ public class DriveWithJoysticks extends CommandBase {
         double x = RobotContainer.io.getDriverExpoLeftX(2.5);
         double y = RobotContainer.io.getDriverExpoLeftY(2.5);
         if (RobotContainer.winch.safeToDrive()) {
-            // TODO: Allow switching between robotDrive and fieldDrive
             RobotContainer.chassis.fieldDrive(
-                -y/4,
-                -x/4,
+                -y,
+                -x,
                 RobotContainer.io.getDriverExpoRightX(2.5)); // TODO changed sign of X right may
                                                                  // need to be done elsewhere
         } else {
