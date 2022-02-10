@@ -12,6 +12,8 @@ import frc.robot.components.DriveMotor;
 import frc.robot.components.SwerveDrive;
 import frc.robot.components.TurnMotor;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 // import java.util.Map;
@@ -32,6 +34,7 @@ public class Chassis extends SubsystemBase {
     private Drive drive;
 
     private Pose2d pose;
+    private Field2d field = new Field2d();
 
     NetworkTableEntry error_x;
     NetworkTableEntry error_y;
@@ -49,6 +52,7 @@ public class Chassis extends SubsystemBase {
         }
 
         pose = new Pose2d();
+        SmartDashboard.putData("Field", field);
 
         drive = new SwerveDrive(
                 new SwerveModule[] {
@@ -90,6 +94,7 @@ public class Chassis extends SubsystemBase {
     public void periodic() {
         drive.periodic();
         pose = drive.getCurrentPose();
+        field.setRobotPose(pose);
     }
 
     /**
