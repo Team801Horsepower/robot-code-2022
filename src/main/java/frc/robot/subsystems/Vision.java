@@ -23,7 +23,7 @@ public class Vision extends SubsystemBase {
     
     double cameraHeightMeters = Units.inchesToMeters(30);
     double targetHeightMeters = Units.inchesToMeters(67.5);
-    double cameraPitchRadians = Units.degreesToRadians(16.3);
+    double cameraPitchRadians = Units.degreesToRadians(16.7);
 
     if (result.hasTargets()) {
       double range1 = 
@@ -32,7 +32,12 @@ public class Vision extends SubsystemBase {
                   targetHeightMeters, 
                   cameraPitchRadians, 
                   Units.degreesToRadians(result.getBestTarget().getPitch()));
-      System.out.println("Range:" + range1);
+      double avgArea = 0;
+      for (var target : result.getTargets()) {
+        avgArea += target.getArea();
+      }
+      avgArea /= result.getTargets().size();
+      System.out.println("Range:" + range1 + " Avg Area: " + avgArea);
     }
 
 
