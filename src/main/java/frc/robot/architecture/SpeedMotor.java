@@ -1,24 +1,19 @@
 package frc.robot.architecture;
 
 /**
- * Defines the methods for motors which
- * can rotate at a specific rate.
+ * Defines the methods for motors which can rotate at a specific rate.
  */
 public interface SpeedMotor {
 
     /**
-     * Performs any required initialization.
-     * (ex. zero the encoder)
+     * Performs any required initialization. (ex. zero the encoder)
      */
-    public default void init() {
-    }
+    public default void init() {}
 
     /**
-     * Performs any periodic tasks required by
-     * the motor. (ex. update PID loop)
+     * Performs any periodic tasks required by the motor. (ex. update PID loop)
      */
-    public default void periodic() {
-    }
+    public default void periodic() {}
 
     /**
      * Requests the motor rotate at the desired speed.
@@ -31,8 +26,7 @@ public interface SpeedMotor {
      * Returns the current speed of the motor.
      * 
      * @return The speed the motor is running at in rad/s.
-     * @apiNote This is not necessarily the last 
-     * desired speed.
+     * @apiNote This is not necessarily the last desired speed.
      */
     public double getCurrentSpeed();
 }

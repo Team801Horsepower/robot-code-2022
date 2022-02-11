@@ -15,35 +15,30 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 // NOTE: Complain to Luke Newcomb for problems with this subsystem
 
-public class Magazine extends SubsystemBase
-{
+public class Magazine extends SubsystemBase {
     private CANSparkMax sparkMotor;
     private SparkMaxPIDController sparkPID;
 
     /**
      * Creates a new Magazine
      */
-    public Magazine()
-    {
+    public Magazine() {
         // Initialize the Magazine motor (NEO)
         sparkMotor = new CANSparkMax(Constants.MAGAZINE_MOTOR_ID, MotorType.kBrushless);
         sparkMotor.setInverted(Constants.MAGAZINE_INVERTED);
         sparkPID = sparkMotor.getPIDController();
-        
+
     }
 
-    public void forward()
-    {
+    public void forward() {
         sparkPID.setReference(Constants.MAGAZINE_SPEED, CANSparkMax.ControlType.kDutyCycle);
     }
 
-    public void stop()
-    {
+    public void stop() {
         sparkPID.setReference(0, CANSparkMax.ControlType.kDutyCycle);
     }
 
-    public void reverse()
-    {
+    public void reverse() {
         sparkPID.setReference(-Constants.MAGAZINE_SPEED, CANSparkMax.ControlType.kDutyCycle);
     }
 }

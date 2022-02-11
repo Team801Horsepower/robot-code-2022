@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
   public Vision() {
-    
+
   }
 
   @Override
@@ -20,18 +20,15 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
     PhotonCamera camera = new PhotonCamera("mmal_service_16.1");
     var result = camera.getLatestResult();
-    
+
     double cameraHeightMeters = Units.inchesToMeters(30);
     double targetHeightMeters = Units.inchesToMeters(67.5);
     double cameraPitchRadians = Units.degreesToRadians(16.7);
 
     if (result.hasTargets()) {
-      double range1 = 
-                PhotonUtils.calculateDistanceToTargetMeters(
-                  cameraHeightMeters,
-                  targetHeightMeters, 
-                  cameraPitchRadians, 
-                  Units.degreesToRadians(result.getBestTarget().getPitch()));
+      double range1 =
+          PhotonUtils.calculateDistanceToTargetMeters(cameraHeightMeters, targetHeightMeters,
+              cameraPitchRadians, Units.degreesToRadians(result.getBestTarget().getPitch()));
       double avgArea = 0;
       for (var target : result.getTargets()) {
         avgArea += target.getArea();

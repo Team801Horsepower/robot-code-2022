@@ -1,6 +1,5 @@
 package frc.robot.components;
 
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;

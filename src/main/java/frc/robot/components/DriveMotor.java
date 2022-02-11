@@ -1,11 +1,10 @@
 package frc.robot.components;
 
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import frc.robot.Constants;
 import frc.robot.architecture.SpeedMotor;
 
@@ -46,7 +45,8 @@ public class DriveMotor implements SpeedMotor {
     public void setDesiredSpeed(double speed) {
         desiredSpeed = speed / (2 * Math.PI) * 60.0;
         if (desiredSpeed > MAX_RPM) {
-            System.err.println("Tried to exceed max speed: " + desiredSpeed + " rad/s (max is " + MAX_RPM + " rad/s)");
+            System.err.println("Tried to exceed max speed: " + desiredSpeed + " rad/s (max is "
+                    + MAX_RPM + " rad/s)");
             desiredSpeed = MAX_RPM;
         }
         sparkPID.setReference(desiredSpeed, ControlType.kVelocity);

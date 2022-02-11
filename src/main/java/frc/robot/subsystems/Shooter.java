@@ -7,18 +7,15 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
-
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
-public class Shooter extends SubsystemBase
-{
+public class Shooter extends SubsystemBase {
   private SparkMaxPIDController shooterPID;
   private SparkMaxPIDController breachPID;
   private CANSparkMax shooterMotor;
@@ -29,11 +26,11 @@ public class Shooter extends SubsystemBase
   /**
    * Creates a new Shooter.
    */
-  public Shooter() 
-  {
+  public Shooter() {
     shooterMotor = new CANSparkMax(Constants.shooterMotorID, MotorType.kBrushless);
     shooterPID = shooterMotor.getPIDController();
     shooterEncoder = shooterMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
+
     shooterPID.setP(Constants.SHOOTER_P);
     shooterPID.setI(Constants.SHOOTER_I);
     shooterPID.setD(Constants.SHOOTER_D);
@@ -42,7 +39,8 @@ public class Shooter extends SubsystemBase
     shooterMotor.setInverted(Constants.SHOOTER_INVERTED);
     shooterPID.setOutputRange(Constants.SHOOTER_OUTPUT_MIN, Constants.SHOOTER_OUTPUT_MAX);
 
-    shooterMotor.setSmartCurrentLimit(Constants.SHOOTER_MAX_CURRENT_STALL, Constants.SHOOTER_MAX_CURRENT_RUN);
+    shooterMotor.setSmartCurrentLimit(Constants.SHOOTER_MAX_CURRENT_STALL,
+        Constants.SHOOTER_MAX_CURRENT_RUN);
 
     shooterEncoder.setVelocityConversionFactor(1);
 
@@ -51,36 +49,32 @@ public class Shooter extends SubsystemBase
     breachMotor.setInverted(Constants.BREACH_INVERTED);
   }
 
-  //TODO: find correct speed
-  public void enableShooter()
-  {
+  // TODO: find correct speed
+  public void enableShooter() {
     shooterPID.setReference(Constants.SHOOTER_RPM, CANSparkMax.ControlType.kVelocity);
     holdDown();
   }
 
 
-  public void popUp()
-  {
+  public void popUp() {
     breachPID.setReference(Constants.BREACH_UPSPEED, CANSparkMax.ControlType.kDutyCycle);
   }
 
 
-  public void holdDown()
-  {
+  public void holdDown() {
     breachPID.setReference(Constants.BREACH_DOWNSPEED, CANSparkMax.ControlType.kDutyCycle);
   }
 
 
-  public void stop()
-  {
+  public void stop() {
     shooterPID.setReference(0, CANSparkMax.ControlType.kDutyCycle);
     breachPID.setReference(0, CANSparkMax.ControlType.kDutyCycle);
   }
 
 
-  public boolean isReady()
-  {
-    // System.out.printf("RPM:  %f\n", shooterEncoder.getVelocity());
-    return Math.abs(shooterEncoder.getVelocity() - Constants.SHOOTER_RPM) < Constants.SHOOTER_RPM_WINDOW;
+  public boolean isReady() {
+    // System.out.printf("RPM: %f\n", shooterEncoder.getVelocity());
+    return Math
+        .abs(shooterEncoder.getVelocity() - Constants.SHOOTER_RPM) < Constants.SHOOTER_RPM_WINDOW;
   }
 }

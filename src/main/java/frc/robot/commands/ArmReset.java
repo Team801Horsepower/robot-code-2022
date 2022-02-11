@@ -8,24 +8,28 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
-public class ColorWheelUp extends CommandBase {
+public class ArmReset extends CommandBase {
   /**
-   * Creates a new ColorWheelUp.
+   * Command to lower the arm to the home position and reset the encoder.
    */
-  public ColorWheelUp() {
-    addRequirements(RobotContainer.colorWheel);
+  public ArmReset() {
+    addRequirements(RobotContainer.arm);
   }
 
   @Override
   public void initialize() {
-    RobotContainer.colorWheel.rotateColorWheel(Constants.COLORWHEEL_ROTATION_COUNT);
+    RobotContainer.arm.resetArm();
+  }
+
+  @Override
+  public void execute() {
+    RobotContainer.arm.armResetting();
   }
 
   @Override
   public boolean isFinished() {
-    return true;
+    return RobotContainer.arm.getArmZeroedFlag();
   }
 }

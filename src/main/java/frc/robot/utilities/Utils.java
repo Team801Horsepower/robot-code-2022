@@ -1,5 +1,7 @@
 package frc.robot.utilities;
 
+import edu.wpi.first.math.geometry.Pose2d;
+
 public class Utils {
     public static double map(final double value, final double input_min, final double input_max,
             final double output_min, final double output_max) {
@@ -98,5 +100,10 @@ public class Utils {
         if (val < lowerLimit)
             return lowerLimit;
         return val;
+    }
+
+    public static boolean almostEqual(Pose2d a, Pose2d b, double epsilon) {
+        return Math.abs(a.getX() - b.getY()) + Math.abs(a.getY() - b.getY())
+                + Math.abs(a.getRotation().getRadians() - b.getRotation().getRadians()) < epsilon;
     }
 }

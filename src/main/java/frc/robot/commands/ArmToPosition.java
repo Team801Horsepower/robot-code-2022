@@ -8,20 +8,23 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
-public class ColorWheelUp extends CommandBase {
+public class ArmToPosition extends CommandBase {
+
+  double setpoint;
+
   /**
-   * Creates a new ColorWheelUp.
+   * Creates a new moves the arm to the specified setpoint.
    */
-  public ColorWheelUp() {
-    addRequirements(RobotContainer.colorWheel);
+  public ArmToPosition(double position) {
+    addRequirements(RobotContainer.arm);
+    setpoint = position;
   }
 
   @Override
   public void initialize() {
-    RobotContainer.colorWheel.rotateColorWheel(Constants.COLORWHEEL_ROTATION_COUNT);
+    RobotContainer.arm.setArmHeight(setpoint);
   }
 
   @Override

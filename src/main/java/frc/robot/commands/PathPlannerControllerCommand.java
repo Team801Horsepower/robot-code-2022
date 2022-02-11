@@ -12,16 +12,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.RobotContainer;
 
 /**
  * A command that uses two PID controllers ({@link PIDController}) and a ProfiledPIDController
- * ({@link ProfiledPIDController}) to follow a trajectory {@link PathPlannerTrajectory} with a
- * swerve drive.
+ * ({@link ProfiledPIDController}) to follow a trajectory {@link PathPlannerTrajectory}
  *
  * <p>
- * This command outputs the ChassisSpeeds to follow the path. The desired wheel and module rotation
- * velocities should be taken from those and used in velocity PIDs.
+ * This command outputs the ChassisSpeeds to follow the path.
  *
  * <p>
  * The robot angle controller does not follow the angle given by the trajectory but rather goes to
@@ -39,13 +36,13 @@ public class PathPlannerControllerCommand extends CommandBase {
     private final Consumer<ChassisSpeeds> m_outputSpeeds;
 
     /**
-     * Constructs a new PPSwerveControllerCommand that when executed will follow the provided
-     * trajectory. This command will not return output voltages but rather raw module states from
-     * the position controllers which need to be put into a velocity PID.
+     * Constructs a new ({@link PathPlannerControllerCommand}) that when executed will follow the
+     * provided trajectory. This command will not return output voltages but rather
+     * ({@link ChassisSpeeds}) from the position controllers.
      *
      * <p>
-     * Note: The controllers will *not* set the outputVolts to zero upon completion of the path-
-     * this is left to the user, since it is not appropriate for paths with nonstationary endstates.
+     * Note: The controllers will *not* set the speeds to zero upon completion of the path- this is
+     * left to the user, since it is not appropriate for paths with nonstationary endstates.
      *
      * @param trajectory The trajectory to follow.
      * @param pose A function that supplies the robot pose - use one of the odometry classes to
@@ -90,7 +87,6 @@ public class PathPlannerControllerCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         m_timer.stop();
-        RobotContainer.chassis.robotDrive(0, 0, 0);
     }
 
     @Override

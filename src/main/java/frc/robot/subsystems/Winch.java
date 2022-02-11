@@ -15,8 +15,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Winch extends SubsystemBase 
-{
+public class Winch extends SubsystemBase {
   private SparkMaxPIDController winchPID;
   private CANSparkMax winchMotor;
   private RelativeEncoder winchEncoder;
@@ -24,12 +23,12 @@ public class Winch extends SubsystemBase
   /**
    * Creates a new LifterWinch.
    */
-  public Winch() 
-  {
+  public Winch() {
     // Winch Settings
     winchMotor = new CANSparkMax(Constants.winchMotorID, MotorType.kBrushless);
     winchPID = winchMotor.getPIDController();
-    winchEncoder = winchMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.NEO_ENCODER_CNTS_PER_REV);
+    winchEncoder = winchMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor,
+        Constants.NEO_ENCODER_CNTS_PER_REV);
     winchEncoder.setPositionConversionFactor(1);
 
     winchPID.setP(Constants.WINCH_P);
@@ -38,27 +37,26 @@ public class Winch extends SubsystemBase
     winchPID.setIZone(Constants.WINCH_IZ);
     winchPID.setFF(Constants.WINCH_FF);
     winchPID.setOutputRange(Constants.WINCH_MIN_OUTPUT, Constants.WINCH_MAX_OUTPUT);
-    
-    winchMotor.setSmartCurrentLimit(Constants.WINCH_MAX_CURRENT_STALL, Constants.WINCH_MAX_CURRENT_RUN);
+
+    winchMotor.setSmartCurrentLimit(Constants.WINCH_MAX_CURRENT_STALL,
+        Constants.WINCH_MAX_CURRENT_RUN);
   }
 
 
   public void winchUp(double y) // in lead screw rotations...
   {
-    //Manual control of the winch.
+    // Manual control of the winch.
     winchPID.setReference(y, CANSparkMax.ControlType.kDutyCycle);
 
   }
 
 
-  public boolean safeToDrive()
-  {
-      return (winchEncoder.getPosition() < Constants.WINCH_SAFE_TO_DRIVE);
+  public boolean safeToDrive() {
+    return (winchEncoder.getPosition() < Constants.WINCH_SAFE_TO_DRIVE);
   }
 
   @Override
-  public void periodic() 
-  {
+  public void periodic() {
     // This method will be called once per scheduler run
 
   }

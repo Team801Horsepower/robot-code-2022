@@ -58,25 +58,18 @@ public class Chassis extends SubsystemBase {
         pose = new Pose2d();
         SmartDashboard.putData("Field", field);
 
-        drive = new SwerveDrive(
-                new SwerveModule[] {
-                        new SwerveModule(new DriveMotor(Constants.POD_1_DRIVE, 1),
-                                new TurnMotor(Constants.POD_1_TURN, 1),
-                                Constants.DRIVE_METERS_PER_RADIAN),
-                        new SwerveModule(new DriveMotor(Constants.POD_2_DRIVE, 1),
-                                new TurnMotor(Constants.POD_2_TURN, 1),
-                                Constants.DRIVE_METERS_PER_RADIAN),
-                        new SwerveModule(new DriveMotor(Constants.POD_3_DRIVE, 1),
-                                new TurnMotor(Constants.POD_3_TURN, 1),
-                                Constants.DRIVE_METERS_PER_RADIAN),
-                        new SwerveModule(new DriveMotor(Constants.POD_4_DRIVE, 1),
-                                new TurnMotor(Constants.POD_4_TURN, 1),
-                                Constants.DRIVE_METERS_PER_RADIAN),},
-                new Translation2d[] {
-                    new Translation2d(-1, 1),
-                    new Translation2d(-1, -1),
-                    new Translation2d(1, -1),
-                    new Translation2d(1, 1)},
+        drive = new SwerveDrive(new SwerveModule[] {
+                new SwerveModule(new DriveMotor(Constants.POD_1_DRIVE, 1),
+                        new TurnMotor(Constants.POD_1_TURN, 1), Constants.DRIVE_METERS_PER_RADIAN),
+                new SwerveModule(new DriveMotor(Constants.POD_2_DRIVE, 1),
+                        new TurnMotor(Constants.POD_2_TURN, 1), Constants.DRIVE_METERS_PER_RADIAN),
+                new SwerveModule(new DriveMotor(Constants.POD_3_DRIVE, 1),
+                        new TurnMotor(Constants.POD_3_TURN, 1), Constants.DRIVE_METERS_PER_RADIAN),
+                new SwerveModule(new DriveMotor(Constants.POD_4_DRIVE, 1),
+                        new TurnMotor(Constants.POD_4_TURN, 1),
+                        Constants.DRIVE_METERS_PER_RADIAN),},
+                new Translation2d[] {new Translation2d(-1, 1), new Translation2d(-1, -1),
+                        new Translation2d(1, -1), new Translation2d(1, 1)},
                 gyro);
 
         NetworkTableInstance networkTableInst = NetworkTableInstance.getDefault();
@@ -115,13 +108,15 @@ public class Chassis extends SubsystemBase {
     }
 
     public void robotDrive(double forward, double leftward, double omega) {
-        drive.setDesiredSpeeds(forward * Constants.MAX_ROBOT_SPEED, leftward * Constants.MAX_ROBOT_SPEED, omega);
+        drive.setDesiredSpeeds(forward * Constants.MAX_ROBOT_SPEED,
+                leftward * Constants.MAX_ROBOT_SPEED, omega);
     }
 
     public void fieldDrive(double fieldForward, double fieldLeftward, double omega) {
         double yawAngle = -gyro.getYaw() * Math.PI / 180;
         double magnitude = Math.sqrt(Math.pow(fieldForward, 2) + Math.pow(fieldLeftward, 2));
-        double robotAngle = (Math.PI / 2) - yawAngle + ((Math.atan2(fieldLeftward, fieldForward) + 2 * Math.PI) % (2 * Math.PI));
+        double robotAngle = (Math.PI / 2) - yawAngle
+                + ((Math.atan2(fieldLeftward, fieldForward) + 2 * Math.PI) % (2 * Math.PI));
         double robotForward = Math.sin(robotAngle) * magnitude;
         double robotLeftward = -Math.cos(robotAngle) * magnitude;
         robotDrive(robotForward, robotLeftward, omega);
@@ -131,7 +126,10 @@ public class Chassis extends SubsystemBase {
         return pose;
     }
 
-    public Command generatePathFollowCommand(PathPlannerTrajectory trajectory, PIDController xController, PIDController yController, ProfiledPIDController thetaController) {
-        return new PathPlannerControllerCommand(trajectory, this::getCurrentPose, xController, yController, thetaController, drive::setDesiredSpeeds, this);
+    public Command generatePathFollowCommand(PathPlannerTrajectory trajectory,
+            PIDController xController, PIDController yController,
+            ProfiledPIDController thetaController) {
+        return new PathPlannerControllerCommand(trajectory, this::getCurrentPose, xController,
+                yController, thetaController, drive::setDesiredSpeeds, this);
     }
 }

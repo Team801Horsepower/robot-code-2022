@@ -18,41 +18,29 @@ public class FieldDriveWithJoysticks extends CommandBase {
         addRequirements(RobotContainer.chassis);
     }
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-
-    }
-
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         double x = RobotContainer.io.getDriverExpoLeftX(2.5);
         double y = RobotContainer.io.getDriverExpoLeftY(2.5);
-        
-        double mag = x*x + y*y;
+
+        double mag = x * x + y * y;
         if (mag > 1) {
             x /= mag;
             y /= mag;
         }
 
         if (RobotContainer.winch.safeToDrive()) {
-            RobotContainer.chassis.fieldDrive(
-                -y,
-                -x,
-                RobotContainer.io.getDriverExpoRightX(2.5));
+            RobotContainer.chassis.fieldDrive(-y, -x, RobotContainer.io.getDriverExpoRightX(2.5));
         } else {
             RobotContainer.chassis.stop();
         }
     }
 
-    // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {
-
+    public void end(boolean iterrupted) {
+        RobotContainer.chassis.stop();
     }
 
-    // Returns true when the command should end.
     @Override
     public boolean isFinished() {
         return false;
