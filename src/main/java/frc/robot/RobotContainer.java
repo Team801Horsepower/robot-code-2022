@@ -7,22 +7,26 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DriveToPose;
-import frc.robot.commands.FieldDriveWithJoysticks;
 import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.WinchUp;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.ColorWheel;
 import frc.robot.subsystems.Gatherer;
 import frc.robot.subsystems.Magazine;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Winch;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.ColorWheel;
+import frc.robot.subsystems.Winch;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,8 +45,6 @@ public class RobotContainer {
     public static final Shooter shooter = new Shooter();
     public static final ColorWheel colorWheel = new ColorWheel();
     public static final Vision vision = new Vision();
-
-    private final Command m_autoCommand = new FieldDriveWithJoysticks();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -76,7 +78,14 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
-        return m_autoCommand;
+        PathPlannerTrajectory testPath = PathPlanner.loadPath("Test", Constants.PATH_MAX_VELOCITY,
+                Constants.PATH_MAX_ACCELERATION);
+
+        Command command = chassis.generatePathFollowCommand(testPath, new PIDController(1, 0, 0),
+                new PIDController(0.8, 0, 0),
+                new ProfiledPIDController(-1.0, 0, 0,
+                        new TrapezoidProfile.Constraints(Constants.PATH_MAX_ANGULAR_VELOCITY,
+                                Constants.PATH_MAX_ANGULAR_ACCELERATION)));
+        return command;
     }
 }

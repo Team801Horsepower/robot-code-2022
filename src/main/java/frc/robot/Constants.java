@@ -17,6 +17,10 @@ public final class Constants {
     public static double HEADING_OUTPUT_FILTER = 0;
     public static double HEADING_SETPOINT_RANGE = 360;
 
+    public static double PATH_MAX_VELOCITY = 1.0;
+    public static double PATH_MAX_ACCELERATION = 0.5;
+    public static double PATH_MAX_ANGULAR_VELOCITY = 0.1;
+    public static double PATH_MAX_ANGULAR_ACCELERATION = 3.1415;
 
     public static double DRIVE_P = 0.0005;
     public static double DRIVE_I = 0.0;

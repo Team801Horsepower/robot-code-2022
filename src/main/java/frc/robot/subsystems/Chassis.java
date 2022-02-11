@@ -1,25 +1,29 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.architecture.Drive;
-import frc.robot.components.SwerveModule;
-import frc.robot.components.DriveMotor;
-import frc.robot.components.SwerveDrive;
-import frc.robot.components.TurnMotor;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
-
 // import java.util.Map;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.architecture.Drive;
+import frc.robot.commands.PathPlannerControllerCommand;
+import frc.robot.components.DriveMotor;
+import frc.robot.components.SwerveDrive;
+import frc.robot.components.SwerveModule;
+import frc.robot.components.TurnMotor;
 
 /**
  * Subsystem to control the entire drive base
@@ -125,5 +129,9 @@ public class Chassis extends SubsystemBase {
 
     public Pose2d getCurrentPose() {
         return pose;
+    }
+
+    public Command generatePathFollowCommand(PathPlannerTrajectory trajectory, PIDController xController, PIDController yController, ProfiledPIDController thetaController) {
+        return new PathPlannerControllerCommand(trajectory, this::getCurrentPose, xController, yController, thetaController, drive::setDesiredSpeeds, this);
     }
 }
