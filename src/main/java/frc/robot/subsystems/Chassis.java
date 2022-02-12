@@ -44,6 +44,8 @@ public class Chassis extends SubsystemBase {
     NetworkTableEntry error_y;
 
     public Chassis() {
+        super();
+
         try {
             /* Communicate w/navX-MXP via the MXP SPI Bus. */
             /* Alternatively: I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB */
@@ -56,7 +58,7 @@ public class Chassis extends SubsystemBase {
         }
 
         pose = new Pose2d();
-        SmartDashboard.putData("Field", field);
+        addChild("Field", field);
 
         drive = new SwerveDrive(new SwerveModule[] {
                 new SwerveModule(new DriveMotor(Constants.POD_1_DRIVE, 1),

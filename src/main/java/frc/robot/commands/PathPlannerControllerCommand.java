@@ -14,14 +14,17 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
- * A command that uses two PID controllers ({@link PIDController}) and a ProfiledPIDController
- * ({@link ProfiledPIDController}) to follow a trajectory {@link PathPlannerTrajectory}
+ * A command that uses two PID controllers ({@link PIDController}) and a
+ * ProfiledPIDController
+ * ({@link ProfiledPIDController}) to follow a trajectory
+ * {@link PathPlannerTrajectory}
  *
  * <p>
  * This command outputs the ChassisSpeeds to follow the path.
  *
  * <p>
- * The robot angle controller does not follow the angle given by the trajectory but rather goes to
+ * The robot angle controller does not follow the angle given by the trajectory
+ * but rather goes to
  * the angle given in the final state of the trajectory.
  *
  * <p>
@@ -36,22 +39,30 @@ public class PathPlannerControllerCommand extends CommandBase {
     private final Consumer<ChassisSpeeds> m_outputSpeeds;
 
     /**
-     * Constructs a new ({@link PathPlannerControllerCommand}) that when executed will follow the
+     * Constructs a new ({@link PathPlannerControllerCommand}) that when executed
+     * will follow the
      * provided trajectory. This command will not return output voltages but rather
      * ({@link ChassisSpeeds}) from the position controllers.
      *
      * <p>
-     * Note: The controllers will *not* set the speeds to zero upon completion of the path- this is
-     * left to the user, since it is not appropriate for paths with nonstationary endstates.
+     * Note: The controllers will *not* set the speeds to zero upon completion of
+     * the path- this is
+     * left to the user, since it is not appropriate for paths with nonstationary
+     * endstates.
      *
-     * @param trajectory The trajectory to follow.
-     * @param pose A function that supplies the robot pose - use one of the odometry classes to
-     *        provide this.
-     * @param xController The Trajectory Tracker PID controller for the robot's x position.
-     * @param yController The Trajectory Tracker PID controller for the robot's y position.
-     * @param thetaController The Trajectory Tracker PID controller for angle for the robot.
-     * @param outputSpeeds The raw output module states from the position controllers.
-     * @param requirements The subsystems to require.
+     * @param trajectory      The trajectory to follow.
+     * @param pose            A function that supplies the robot pose - use one of
+     *                        the odometry classes to
+     *                        provide this.
+     * @param xController     The Trajectory Tracker PID controller for the robot's
+     *                        x position.
+     * @param yController     The Trajectory Tracker PID controller for the robot's
+     *                        y position.
+     * @param thetaController The Trajectory Tracker PID controller for angle for
+     *                        the robot.
+     * @param outputSpeeds    The raw output module states from the position
+     *                        controllers.
+     * @param requirements    The subsystems to require.
      */
     @SuppressWarnings("ParameterName")
     public PathPlannerControllerCommand(PathPlannerTrajectory trajectory, Supplier<Pose2d> pose,
@@ -79,14 +90,14 @@ public class PathPlannerControllerCommand extends CommandBase {
         double curTime = m_timer.get();
         var desiredState = (PathPlannerState) m_trajectory.sample(curTime);
 
-        var targetChassisSpeeds =
-                m_controller.calculate(m_pose.get(), desiredState, desiredState.holonomicRotation);
+        var targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState, desiredState.holonomicRotation);
         m_outputSpeeds.accept(targetChassisSpeeds);
     }
 
     @Override
     public void end(boolean interrupted) {
         m_timer.stop();
+        m_outputSpeeds.accept(new ChassisSpeeds());
     }
 
     @Override
@@ -94,4 +105,3 @@ public class PathPlannerControllerCommand extends CommandBase {
         return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
     }
 }
-
