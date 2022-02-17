@@ -49,7 +49,6 @@ public class Shoot extends CommandBase {
         } else {
             RobotContainer.magazine.stop();
             RobotContainer.gatherer.stop();
-            RobotContainer.shooter.stop();
         }
     }
 

@@ -98,7 +98,6 @@ public final class Constants {
         public static double WINCH_SAFE_TO_DRIVE = 200; // number of winch revs do disable the drive
                                                         // wheels.
 
-
         public static double COLORWHEEL_P = 0.3;
         public static double COLORWHEEL_I = 0.0;
         public static double COLORWHEEL_D = 0.0;
@@ -152,7 +151,7 @@ public final class Constants {
         public static int SHOOTER_MAX_CURRENT_STALL = 40;
         public static int SHOOTER_MAX_CURRENT_RUN = 30;
 
-        public static double SHOOTER_RPM = 5000;
+        public static double SHOOTER_RPM = 1000;
         public static double SHOOTER_RPM_WINDOW = 50;
 
         public static boolean BREACH_INVERTED = true;
