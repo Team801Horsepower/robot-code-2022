@@ -16,8 +16,16 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.ArmReset;
+import frc.robot.commands.ArmToPosition;
+import frc.robot.commands.ColorWheelDown;
+import frc.robot.commands.ColorWheelUp;
 import frc.robot.commands.DriveToPose;
+import frc.robot.commands.FieldDriveWithJoysticks;
+import frc.robot.commands.ForwardGather;
+import frc.robot.commands.ReverseGather;
 import frc.robot.commands.RobotDriveWithJoysticks;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.WinchUp;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Chassis;
@@ -50,6 +58,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        chassis.setDefaultCommand(new RobotDriveWithJoysticks());
         // Set the default commands for each subsystem
         winch.setDefaultCommand(new WinchUp());
         // Configure the button bindings
@@ -63,8 +72,19 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        IO.Button.DriverLeftBumper.value.whileHeld(new RobotDriveWithJoysticks());
-        IO.Button.DriverX.value.whileHeld(new DriveToPose(new Pose2d()));
+        IO.Button.DriverLeftBumper.value.whileHeld(new FieldDriveWithJoysticks());
+        IO.Button.DriverRightBumper.value.whileHeld(new DriveToPose(new Pose2d()));
+
+        IO.Button.DriverX.value.whenPressed(new ArmReset());
+        IO.Button.DriverA.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_LOW));
+        IO.Button.DriverB.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_MID));
+        IO.Button.DriverY.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_HIGH));
+
+        IO.Button.ManipulatorY.value.whenPressed(new ColorWheelUp());
+        IO.Button.ManipulatorX.value.whenPressed(new ColorWheelDown());
+        IO.Button.ManipulatorLeftBumper.value.whileHeld(new ForwardGather());
+        IO.Button.ManipulatorRightBumper.value.whileHeld(new ReverseGather());
+        IO.Button.ManipulatorB.value.whileHeld(new Shoot());
     }
 
     /** Reinitializes all the subsystems without a reboot */
