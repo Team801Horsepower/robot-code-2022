@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class Vision extends SubsystemBase {
+    int periodicCount = 0;
+
     /** Creates a new Vision. */
     public Vision() {
 
@@ -34,7 +36,7 @@ public class Vision extends SubsystemBase {
 
             for (int i = 0; i < result.targets.size(); i++) {
                 List<TargetCorner> targetCorners = result.targets.get(i).getCorners();
-                Collections.sort(targetCorners, Comparator.comparing((corner) -> corner.y));
+                Collections.sort(targetCorners, Comparator.comparing((corner) -> -corner.pitch));
                 upperCorners.add(targetCorners.get(0));
                 upperCorners.add(targetCorners.get(1));
                 lowerCorners.add(targetCorners.get(2));
@@ -44,23 +46,27 @@ public class Vision extends SubsystemBase {
             double upperHeight = Constants.TARGET_HEIGHT + Constants.TARGET_TAPE_WIDTH / 2.0;
             double lowerHeight = Constants.TARGET_HEIGHT - Constants.TARGET_TAPE_WIDTH / 2.0;
             List<Translation2d> projectedPoints = new ArrayList<Translation2d>(upperCorners.size() * 2);
-            System.out.println("--- BEGIN UPPER Y/P ---");
             for (var corner : upperCorners) {
-                double pitch = corner.x * Math.PI / 180.0;
-                double yaw = corner.y * Math.PI / 180.0;
-                System.out.println("(" + yaw + ", " + pitch + ")");
+                double pitch = corner.pitch * Math.PI / 180.0;
+                double yaw = corner.yaw * Math.PI / 180.0;
                 projectedPoints.add(targetOffset(pitch, yaw, upperHeight));
             }
-            System.out.println("---  END UPPER Y/P  ---");
-            System.out.println("--- BEGIN LOWER Y/P ---");
             for (var corner : lowerCorners) {
-                double pitch = corner.x * Math.PI / 180.0;
-                double yaw = corner.y * Math.PI / 180.0;
-                System.out.println("(" + yaw + ", " + pitch + ")");
+                double pitch = corner.pitch * Math.PI / 180.0;
+                double yaw = corner.yaw * Math.PI / 180.0;
                 projectedPoints.add(targetOffset(pitch, yaw, lowerHeight));
             }
-            System.out.println("---  END LOWER Y/P  ---");
-            
+
+            if (periodicCount == 0) {
+                String pointString = "[";
+                for (var point : projectedPoints) {
+                    pointString += "(" + point.getX() + ", " + point.getY() + "),";
+                }
+                pointString = pointString.substring(0, pointString.length() - 1) + "]";
+                System.out.println(pointString);
+            }
+            periodicCount = (periodicCount + 1) % 10;
+
             var circleCenter = circleFit(projectedPoints.toArray(new Translation2d[projectedPoints.size()]), Constants.TARGET_RADIUS, Units.inchesToMeters(2.0));
             System.out.println("Circle center: " + circleCenter);
         }
@@ -86,6 +92,7 @@ public class Vision extends SubsystemBase {
             for (var point : points) {
                 loss += Math.abs(point.minus(center).getDistance(zero) - radius);
             }
+            loss /= points.length;
             if (loss <= lossLimit) {
                 System.out.println("loss low enough: " + loss);
                 break;
@@ -100,12 +107,14 @@ public class Vision extends SubsystemBase {
                     lossDeriv[i] -= ((p[i] - c[i]) * Math.abs(d - r)) / (d * (d - r));
                 }
             }
+            lossDeriv[0] /= points.length;
+            lossDeriv[1] /= points.length;
 
             // System.out.println("lossDeriv: " + lossDeriv[0] + ", " + lossDeriv[1]);
-            center = center.minus((new Translation2d(lossDeriv[0], lossDeriv[1])).times(Math.exp(-loss)));
-            
+            center = center.minus((new Translation2d(lossDeriv[0], lossDeriv[1])).times(1.0 - Math.exp(-loss)));
+
             if (j == 49) {
-                System.out.println("iteration cap reached");
+                System.out.println("iteration cap reached; loss: " + loss);
             }
         }
         return center;
