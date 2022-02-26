@@ -16,11 +16,11 @@ import frc.robot.architecture.Drive;
 public class SwerveDrive extends Drive {
 
     private final SwerveDriveKinematics kinematics;
-    private SwerveModule[] modules;
+    private final Gyro gyro;
+    private final SwerveDriveOdometry odometry;
+    private final SwerveModule[] modules;
 
-    private Gyro gyro;
     private Pose2d currentPose;
-    private SwerveDriveOdometry odometry;
 
 
     /**
