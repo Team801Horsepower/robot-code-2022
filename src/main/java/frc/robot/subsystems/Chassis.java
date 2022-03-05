@@ -1,20 +1,19 @@
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.architecture.Drive;
 import frc.robot.commands.PathPlannerControllerCommand;
+import frc.robot.components.AHRSGyroEncoder;
 import frc.robot.components.SwerveDrive;
 import frc.robot.components.SwerveModule;
 import frc.robot.components.SwerveModule2020;
@@ -28,7 +27,7 @@ public class Chassis extends SubsystemBase {
     // 2 1
     // 3 4
 
-    private AHRS gyro;
+    private AHRSGyroEncoder gyro;
     private Drive drive;
 
     private Pose2d pose;
@@ -36,20 +35,12 @@ public class Chassis extends SubsystemBase {
 
     public Chassis() {
         super();
+        SmartDashboard.putData(field);
 
-        try {
-            /* Communicate w/navX-MXP via the MXP SPI Bus. */
-            /* Alternatively: I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB */
-            /*
-             * See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details.
-             */
-            gyro = new AHRS(SPI.Port.kMXP);
-        } catch (RuntimeException ex) {
-            DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
-        }
+        gyro = new AHRSGyroEncoder();
+        gyro.SENSOR.calibrate();
 
         pose = new Pose2d();
-        addChild("Field", field);
 
         drive = new SwerveDrive(
             new SwerveModule[] {
@@ -58,21 +49,23 @@ public class Chassis extends SubsystemBase {
                 new SwerveModule2020(Constants.POD_3_DRIVE, Constants.POD_3_TURN),
                 new SwerveModule2020(Constants.POD_4_DRIVE, Constants.POD_4_TURN)
             },
+            // x is forward 
+            // y is leftward
             new Translation2d[] {
-                new Translation2d(-1, 1),
-                new Translation2d(-1, -1),
                 new Translation2d(1, -1),
-                new Translation2d(1, 1)
+                new Translation2d(1, 1),
+                new Translation2d(-1, 1),
+                new Translation2d(-1, -1)
             },
             gyro
         );
     }
 
     /**
-     * This method must be called before the Chassis is used
+     * This method should be called upon the robotInit (regardless of mode)
      */
     public void init() {
-        gyro.calibrate();
+        gyro.setPosition(0.0);
         drive.init();
     }
 
@@ -83,31 +76,42 @@ public class Chassis extends SubsystemBase {
     }
 
     /**
-     * This method will be called once per scheduler run in Autonomous
+     * Drive at the specified speeds in relation to the robot cooridate system
+     * 
+     * @param forward the speed in m/s to drive in the robot's forward direction
+     * @param leftward the speed in m/s to drive in the robot's leftwards direction
+     * @param omega the speed in rad/s in the counter-clockwise direction
      */
+    public void robotDrive(double forward, double leftward, double omega) {
+        double speed = forward * forward + leftward * leftward;
+        if (speed > Constants.MAX_ROBOT_SPEED * Constants.MAX_ROBOT_SPEED)
+        {
+            speed = Math.sqrt(speed);
+            forward = forward / speed * Constants.MAX_ROBOT_SPEED;
+            leftward = leftward / speed * Constants.MAX_ROBOT_SPEED;
+        }
+        drive.setDesiredSpeeds(forward, leftward, omega);
+    }
 
-    public void directionDrive(double speed, double angle) {
-
-        drive.setDesiredSpeeds(0, 0, angle);
+    /**
+     * Drive at the specified speeds in relation to the field cooridate system.
+     * 
+     *
+     * @param fieldForward the speed in m/s to drive forward
+     * @param fieldLeftward the speed in m/s to drive leftward
+     * @param omega the speed in rad/s in the counter-clockwise direction
+     */
+    public void fieldDrive(double fieldForward, double fieldLeftward, double omega) {
+        double robotAngle = gyro.getCurrentAngle();
+        robotDrive(
+            fieldForward * Math.cos(robotAngle) + fieldLeftward * Math.sin(robotAngle),
+            - fieldForward * Math.sin(robotAngle) + fieldLeftward * Math.cos(robotAngle),
+            omega
+        );
     }
 
     public void stop() {
         drive.setDesiredSpeeds(new ChassisSpeeds());
-    }
-
-    public void robotDrive(double forward, double leftward, double omega) {
-        drive.setDesiredSpeeds(forward * Constants.MAX_ROBOT_SPEED,
-                leftward * Constants.MAX_ROBOT_SPEED, omega);
-    }
-
-    public void fieldDrive(double fieldForward, double fieldLeftward, double omega) {
-        double yawAngle = -gyro.getYaw() * Math.PI / 180;
-        double magnitude = Math.sqrt(Math.pow(fieldForward, 2) + Math.pow(fieldLeftward, 2));
-        double robotAngle = (Math.PI / 2) - yawAngle
-                + ((Math.atan2(fieldLeftward, fieldForward) + 2 * Math.PI) % (2 * Math.PI));
-        double robotForward = Math.sin(robotAngle) * magnitude;
-        double robotLeftward = -Math.cos(robotAngle) * magnitude;
-        robotDrive(robotForward, robotLeftward, omega);
     }
 
     public Pose2d getCurrentPose() {
@@ -119,5 +123,11 @@ public class Chassis extends SubsystemBase {
             ProfiledPIDController thetaController) {
         return new PathPlannerControllerCommand(trajectory, this::getCurrentPose, xController,
                 yController, thetaController, drive::setDesiredSpeeds, this);
+    }
+
+    public void reset() {
+        System.out.println("Resetting");
+        gyro.SENSOR.calibrate();
+        drive.reset();
     }
 }

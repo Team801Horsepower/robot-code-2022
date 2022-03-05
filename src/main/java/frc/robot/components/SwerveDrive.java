@@ -7,8 +7,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.architecture.Drive;
+import frc.robot.architecture.PositionEncoder;
 
 /**
  * Implements a standard Swerve Drive system.
@@ -16,7 +16,7 @@ import frc.robot.architecture.Drive;
 public class SwerveDrive extends Drive {
 
     private final SwerveDriveKinematics kinematics;
-    private final Gyro gyro;
+    private final PositionEncoder gyro;
     private final SwerveDriveOdometry odometry;
     private final SwerveModule[] modules;
 
@@ -31,7 +31,7 @@ public class SwerveDrive extends Drive {
      *        the robot.
      * @param gyro A reference to a {@code Gyro} to use during odometry.
      */
-    public SwerveDrive(SwerveModule[] modules, Translation2d[] offsets, Gyro gyro) {
+    public SwerveDrive(SwerveModule[] modules, Translation2d[] offsets, PositionEncoder gyro) {
         this(modules, offsets, gyro, new Pose2d());
     }
 
@@ -44,7 +44,7 @@ public class SwerveDrive extends Drive {
      * @param gyro A reference to a {@code Gyro} to use during odometry.
      * @param initalPose A {@code Pose2d} describing the starting configuration of the robot.
      */
-    public SwerveDrive(SwerveModule[] modules, Translation2d[] offsets, Gyro gyro,
+    public SwerveDrive(SwerveModule[] modules, Translation2d[] offsets, PositionEncoder gyro,
             Pose2d initialPose) {
         assert modules.length == offsets.length;
 
@@ -54,7 +54,7 @@ public class SwerveDrive extends Drive {
         this.gyro = gyro;
         this.currentPose = initialPose;
         this.odometry = new SwerveDriveOdometry(kinematics,
-                Rotation2d.fromDegrees(-gyro.getAngle()), initialPose);
+                new Rotation2d(gyro.getCurrentAngle()), initialPose);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class SwerveDrive extends Drive {
             module.periodic();
         }
         currentPose =
-                odometry.update(Rotation2d.fromDegrees(-gyro.getAngle()), getCurrentModuleStates());
+                odometry.update(new Rotation2d(gyro.getCurrentAngle()), getCurrentModuleStates());
     }
 
     @Override
@@ -102,6 +102,13 @@ public class SwerveDrive extends Drive {
 
     @Override
     public void resetPose(Pose2d newPose) {
-        odometry.resetPosition(newPose, Rotation2d.fromDegrees(-gyro.getAngle()));
+        odometry.resetPosition(newPose, new Rotation2d(gyro.getCurrentAngle()));
+    }
+
+    @Override
+    public void reset() {
+        for (SwerveModule module : modules) {
+            module.resetZero();
+        }
     }
 }

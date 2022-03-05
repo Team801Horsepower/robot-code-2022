@@ -21,7 +21,7 @@ public class Robot extends TimedRobot {
 
     private Command m_autonomousCommand;
 
-    private RobotContainer robotContainer;
+    private RobotContainer robotContainer = new RobotContainer();
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        robotContainer = new RobotContainer();
+        robotContainer.init();
     }
 
     /**
@@ -107,7 +107,7 @@ public class Robot extends TimedRobot {
     public void testInit() {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
-        robotContainer.reset();
+        RobotContainer.chassis.reset();
     }
 
     /**

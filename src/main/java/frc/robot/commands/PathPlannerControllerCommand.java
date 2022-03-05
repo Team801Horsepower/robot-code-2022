@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
  * <p>
  * This class is provided by the NewCommands VendorDep
  */
-@SuppressWarnings("MemberName")
 public class PathPlannerControllerCommand extends CommandBase {
     private final Timer m_timer = new Timer();
     private final PathPlannerTrajectory m_trajectory;
@@ -64,7 +63,6 @@ public class PathPlannerControllerCommand extends CommandBase {
      *                        controllers.
      * @param requirements    The subsystems to require.
      */
-    @SuppressWarnings("ParameterName")
     public PathPlannerControllerCommand(PathPlannerTrajectory trajectory, Supplier<Pose2d> pose,
             PIDController xController, PIDController yController,
             ProfiledPIDController thetaController, Consumer<ChassisSpeeds> outputSpeeds,
@@ -85,7 +83,6 @@ public class PathPlannerControllerCommand extends CommandBase {
     }
 
     @Override
-    @SuppressWarnings("LocalVariableName")
     public void execute() {
         double curTime = m_timer.get();
         var desiredState = (PathPlannerState) m_trajectory.sample(curTime);
