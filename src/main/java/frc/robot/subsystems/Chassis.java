@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.architecture.Drive;
 import frc.robot.commands.PathPlannerControllerCommand;
@@ -24,6 +25,7 @@ import frc.robot.components.DriveMotor;
 import frc.robot.components.SwerveDrive;
 import frc.robot.components.SwerveModule;
 import frc.robot.components.TurnMotor;
+import frc.robot.RobotContainer;
 
 /**
  * Subsystem to control the entire drive base
@@ -118,7 +120,7 @@ public class Chassis extends SubsystemBase {
         double yawAngle = -gyro.getYaw() * Math.PI / 180;
         double magnitude = Math.sqrt(Math.pow(fieldForward, 2) + Math.pow(fieldLeftward, 2));
         double robotAngle = (Math.PI / 2) - yawAngle
-                + ((Math.atan2(fieldLeftward, fieldForward) + 2 * Math.PI) % (2 * Math.PI));
+                + ((Math.atan2(-fieldLeftward, fieldForward) + 2 * Math.PI) % (2 * Math.PI));
         double robotForward = Math.sin(robotAngle) * magnitude;
         double robotLeftward = -Math.cos(robotAngle) * magnitude;
         robotDrive(robotForward, robotLeftward, omega);

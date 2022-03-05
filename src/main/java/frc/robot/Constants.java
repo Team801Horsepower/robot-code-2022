@@ -194,11 +194,19 @@ public final class Constants {
     public static int winchMotorID = 15; // NEO
 
     public static int colorWheelMotorID = 14; // 550 mini-NEO
-        
+
     // Vision
-    public static double CAMERA_HEIGHT = Units.inchesToMeters(30);
+    public static double CAMERA_HEIGHT = Units.inchesToMeters(23.8);
+    public static double CAMERA_PITCH = Units.degreesToRadians(22.4);
+    public static double CAMERA_HORIZONTAL_FOV = Units.degreesToRadians(55.02);
+    public static double CAMERA_VERTICAL_FOV = Units.degreesToRadians(30.15);
+    public static int CAMERA_PIXEL_WIDTH = 1280;
+    public static int CAMERA_PIXEL_HEIGHT = 720;
     public static double TARGET_HEIGHT = Units.inchesToMeters(67.5);
     public static double TARGET_TAPE_WIDTH = Units.inchesToMeters(2.0);
-    public static double CAMERA_PITCH = Units.degreesToRadians(16.7);
-    public static double TARGET_RADIUS = Units.inchesToMeters(26.0 + 11.0 / 16.0);
+    // Competition hub radius
+    // public static double TARGET_RADIUS = Units.inchesToMeters(26.0 + 11.0 / 16.0);
+    // Testing hub radius
+    public static double TARGET_RADIUS = Units.inchesToMeters(27.5);
+    public static double TARGET_OFFSET_ANGLE = Units.degreesToRadians(9.75);
 }

@@ -27,6 +27,7 @@ import frc.robot.commands.ReverseGather;
 import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.WinchUp;
+import frc.robot.commands.Aim;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ColorWheel;
@@ -58,7 +59,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        chassis.setDefaultCommand(new RobotDriveWithJoysticks());
+        chassis.setDefaultCommand(new FieldDriveWithJoysticks());
         // Set the default commands for each subsystem
         winch.setDefaultCommand(new WinchUp());
         // Configure the button bindings
@@ -75,10 +76,11 @@ public class RobotContainer {
         IO.Button.DriverLeftBumper.value.whileHeld(new FieldDriveWithJoysticks());
         IO.Button.DriverRightBumper.value.whileHeld(new DriveToPose(new Pose2d()));
 
-        IO.Button.DriverX.value.whenPressed(new ArmReset());
-        IO.Button.DriverA.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_LOW));
-        IO.Button.DriverB.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_MID));
-        IO.Button.DriverY.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_HIGH));
+        // IO.Button.DriverX.value.whenPressed(new ArmReset());
+        // IO.Button.DriverA.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_LOW));
+        // IO.Button.DriverB.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_MID));
+        // IO.Button.DriverY.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_HIGH));
+        IO.Button.DriverY.value.whileHeld(new Aim());
 
         IO.Button.ManipulatorY.value.whenPressed(new ColorWheelUp());
         IO.Button.ManipulatorX.value.whenPressed(new ColorWheelDown());

@@ -30,7 +30,7 @@ public class FieldDriveWithJoysticks extends CommandBase {
         }
 
         if (RobotContainer.winch.safeToDrive()) {
-            RobotContainer.chassis.fieldDrive(-y, -x, RobotContainer.io.getDriverExpoRightX(2.5));
+            RobotContainer.chassis.fieldDrive(-y, x, RobotContainer.io.getDriverExpoRightX(2.5));
         } else {
             RobotContainer.chassis.stop();
         }
