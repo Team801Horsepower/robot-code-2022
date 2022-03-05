@@ -1,9 +1,11 @@
 package frc.robot.architecture;
 
+import frc.robot.utilities.Utils;
+
 /**
  * Defines the methods for motors which can turn to a specific position.
  */
-public interface PositionMotor {
+public interface PositionMotor extends PositionEncoder {
 
     /**
      * Performs any required initialization. (ex. zero the encoder)
@@ -16,18 +18,30 @@ public interface PositionMotor {
     public default void periodic() {}
 
     /**
-     * Requests the motor turn to the desired position.
+     * Requests the output shaft turn to the desired position.
      * 
      * @param position The position to turn to in radians.
      */
     public void setDesiredPosition(double position);
 
     /**
-     * Returns the current position of the motor.
+     * Requests the output shaft face the desired angle.
      * 
-     * @return The current position of the motor in radians.
-     * @apiNote This is not necessarily the last desired position.
+     * @param angle The angle to face in radians [0, 2PI).
      */
-    public double getCurrentPosition();
+    public default void setDesiredAngle(double angle) {
+        double currentHeading = Utils.normalizeAngle(getCurrentPosition());
+        double desiredHeading = Utils.normalizeAngle(angle);
+        double desiredPosition = getCurrentPosition();
+        if (Math.abs(currentHeading - desiredHeading) < Math.PI) {
+            desiredPosition += desiredHeading - currentHeading;
+        } else if (currentHeading > Math.PI) {
+            desiredPosition += (2 * Math.PI) + desiredHeading - currentHeading;
+        } else {
+            desiredPosition += -(2 * Math.PI) + desiredHeading - currentHeading;
+        }
+        
+        setDesiredPosition(desiredPosition);  
+    };
 }
 

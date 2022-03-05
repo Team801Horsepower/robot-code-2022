@@ -8,7 +8,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.util.sendable.SendableRegistry;
 import frc.robot.architecture.PositionMotor;
 import frc.robot.architecture.SpeedMotor;
 
@@ -16,17 +15,19 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
 
     public static final String PART_NAME = "REV-21-1650";
 
-    public static final double MAX_SPEED = 5650.0 / 60.0 * 2 * Math.PI;
-    public static final double STALL_CURRENT = 105;
-    public static final double STALL_TORQUE = 2.5;
+    public static final double MAX_SPEED = 5650.0; // The max speed in native units (RPM)
+    public static final double STALL_CURRENT = 105; // The stall current (Amps)
+    public static final double STALL_TORQUE = 2.5; // The stall torque (Nm)
 
     public final int CAN_ID;
     public final CANSparkMax CONTROLLER;
-    public final RelativeEncoder ENCODER;
     public final SparkMaxPIDController PID;
 
+    /** Exposed for advanced controls, for most applications do not mess with this. */
+    private final RelativeEncoder ENCODER;
+    
+    private double gearRatio = 1.0;
     private int speedPid = 0, positionPid = 1;
-    private int currentPid = 0;
 
     /**
      * Creates an instance of Neo which refers to a Neo or a Neo550 attached to a SparkMax.
@@ -42,38 +43,35 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
         PID = CONTROLLER.getPIDController();
 
         CONTROLLER.setSmartCurrentLimit(40);
-
-        SendableRegistry.addLW(this, "Neo", canId);
     }
 
     @Override
-    public void init() {
-        // Zero the encoder on init instead of startup.
-        ENCODER.setPosition(0.0);
-    }
+    public void init() {}
 
     @Override
     public void periodic() {}
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("Neo");
+        builder.setSmartDashboardType("SparkMax");
         builder.addBooleanProperty("inverted", () -> { return CONTROLLER.getInverted(); }, (value) -> { CONTROLLER.setInverted(value); });
         builder.addBooleanProperty("brake", () -> { return CONTROLLER.getIdleMode() == IdleMode.kBrake; }, (value) -> { CONTROLLER.setIdleMode(value ? IdleMode.kBrake : IdleMode.kCoast); });
 
-        builder.addDoubleProperty("slot", () -> { return currentPid; }, (value) -> { currentPid = (int) value; });
-        builder.addDoubleProperty("p", () -> { return PID.getP(currentPid); }, (value) -> { PID.setP(value, currentPid); });
-        builder.addDoubleProperty("i", () -> { return PID.getI(currentPid); }, (value) -> { PID.setI(value, currentPid); });
-        builder.addDoubleProperty("d", () -> { return PID.getD(currentPid); }, (value) -> { PID.setD(value, currentPid); });
-        builder.addDoubleProperty("ff", () -> { return PID.getFF(currentPid); }, (value) -> { PID.setFF(value, currentPid); });
-        builder.addDoubleProperty("iz", () -> { return PID.getIZone(currentPid); }, (value) -> { PID.setIZone(value, currentPid); });
+        for (int i = 0; i < 4; i++) {
+            final int t = i;
+            builder.addDoubleProperty("p_" + t, () -> { return PID.getP(t); }, (value) -> { PID.setP(value, t); });
+            builder.addDoubleProperty("i_" + t, () -> { return PID.getI(t); }, (value) -> { PID.setI(value, t); });
+            builder.addDoubleProperty("d_" + t, () -> { return PID.getD(t); }, (value) -> { PID.setD(value, t); });
+            builder.addDoubleProperty("ff_" + t, () -> { return PID.getFF(t); }, (value) -> { PID.setFF(value, t); });
+            builder.addDoubleProperty("iz_" + t, () -> { return PID.getIZone(t); }, (value) -> { PID.setIZone(value, t); });
+        }
     }
 
     protected void setDesiredSpeed(double speed, double maxSpeed) {
-        if (speed > maxSpeed) {
-            System.err.println("Tried to exceed max speed: " + speed + "r/s (max is "
-                    + maxSpeed + "r/s)");
-            speed = maxSpeed;
+        if (speed / ENCODER.getVelocityConversionFactor() > maxSpeed) {
+            System.err.println("Tried to exceed max speed: " + speed / ENCODER.getVelocityConversionFactor() + "RPM (max is "
+                    + maxSpeed + "RPM)");
+            speed = maxSpeed * ENCODER.getVelocityConversionFactor();
         }
         PID.setReference(speed, ControlType.kVelocity, speedPid);
     }
@@ -112,6 +110,24 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
 
     public int getSpeedPid() {
         return speedPid;
+    }
+
+    public double getGearRatio() {
+        return gearRatio;
+    }
+
+    /**
+     * Sets the ratio from the motor shaft to the output shaft.
+     * @param gearRatio the ratio output_shaft_rotations / motor_shaft_rotations
+     */
+    public void setGearRatio(double gearRatio) {
+        ENCODER.setPositionConversionFactor(ENCODER.getPositionConversionFactor() / this.gearRatio * gearRatio);
+        ENCODER.setVelocityConversionFactor(ENCODER.getVelocityConversionFactor() / this.gearRatio * gearRatio);
+        this.gearRatio = gearRatio;
+    }
+
+    public void setPosition(double newPosition) {
+        ENCODER.setPosition(newPosition);
     }
     
 }

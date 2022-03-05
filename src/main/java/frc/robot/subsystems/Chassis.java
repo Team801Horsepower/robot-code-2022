@@ -7,23 +7,17 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-// import java.util.Map;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.architecture.Drive;
 import frc.robot.commands.PathPlannerControllerCommand;
-import frc.robot.components.DriveMotor;
 import frc.robot.components.SwerveDrive;
 import frc.robot.components.SwerveModule;
-import frc.robot.components.TurnMotor;
+import frc.robot.components.SwerveModule2020;
 
 /**
  * Subsystem to control the entire drive base
@@ -39,9 +33,6 @@ public class Chassis extends SubsystemBase {
 
     private Pose2d pose;
     private Field2d field = new Field2d();
-
-    NetworkTableEntry error_x;
-    NetworkTableEntry error_y;
 
     public Chassis() {
         super();
@@ -60,26 +51,21 @@ public class Chassis extends SubsystemBase {
         pose = new Pose2d();
         addChild("Field", field);
 
-        drive = new SwerveDrive(new SwerveModule[] {
-                new SwerveModule(new DriveMotor(Constants.POD_1_DRIVE, 1),
-                        new TurnMotor(Constants.POD_1_TURN, 1), Constants.DRIVE_METERS_PER_RADIAN),
-                new SwerveModule(new DriveMotor(Constants.POD_2_DRIVE, 1),
-                        new TurnMotor(Constants.POD_2_TURN, 1), Constants.DRIVE_METERS_PER_RADIAN),
-                new SwerveModule(new DriveMotor(Constants.POD_3_DRIVE, 1),
-                        new TurnMotor(Constants.POD_3_TURN, 1), Constants.DRIVE_METERS_PER_RADIAN),
-                new SwerveModule(new DriveMotor(Constants.POD_4_DRIVE, 1),
-                        new TurnMotor(Constants.POD_4_TURN, 1),
-                        Constants.DRIVE_METERS_PER_RADIAN),},
-                new Translation2d[] {new Translation2d(-1, 1), new Translation2d(-1, -1),
-                        new Translation2d(1, -1), new Translation2d(1, 1)},
-                gyro);
-
-        NetworkTableInstance networkTableInst = NetworkTableInstance.getDefault();
-
-        // Get the table within instance that contains the data. There can
-        NetworkTable networkTable = networkTableInst.getTable("datatable");
-        error_x = networkTable.getEntry("error_x");
-        error_y = networkTable.getEntry("error_y");
+        drive = new SwerveDrive(
+            new SwerveModule[] {
+                new SwerveModule2020(Constants.POD_1_DRIVE, Constants.POD_1_TURN),
+                new SwerveModule2020(Constants.POD_2_DRIVE, Constants.POD_2_TURN),
+                new SwerveModule2020(Constants.POD_3_DRIVE, Constants.POD_3_TURN),
+                new SwerveModule2020(Constants.POD_4_DRIVE, Constants.POD_4_TURN)
+            },
+            new Translation2d[] {
+                new Translation2d(-1, 1),
+                new Translation2d(-1, -1),
+                new Translation2d(1, -1),
+                new Translation2d(1, 1)
+            },
+            gyro
+        );
     }
 
     /**
