@@ -59,4 +59,6 @@ public abstract class Drive {
      * @return The current pose estimate from odometry.
      */
     public abstract Pose2d getCurrentPose();
+
+    public abstract void reset();
 }

@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.utilities.Utils;
@@ -22,11 +23,9 @@ public class DriveToPose extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Pose2d error = RobotContainer.chassis.getCurrentPose();
+    Transform2d error = targetPose.minus(RobotContainer.chassis.getCurrentPose());
 
-    RobotContainer.chassis.fieldDrive(targetPose.getX() - error.getX(),
-        targetPose.getY() - error.getY(),
-        error.getRotation().getRadians() - targetPose.getRotation().getRadians());
+    RobotContainer.chassis.fieldDrive(error.getX(), error.getY(), error.getRotation().getRadians());
   }
 
   @Override

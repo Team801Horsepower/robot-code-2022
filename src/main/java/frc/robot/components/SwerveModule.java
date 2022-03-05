@@ -2,19 +2,19 @@ package frc.robot.components;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.architecture.AngleMotor;
+import frc.robot.architecture.PositionMotor;
 import frc.robot.architecture.SpeedMotor;
 
 /** A class which implements the boilerplate code for running a typical swerve module. */
-public class SwerveModule {
+public abstract class SwerveModule {
 
-    private SpeedMotor driveMotor;
-    private AngleMotor turnMotor;
+    protected final double METERS_PER_RAD;
+
+    protected final SpeedMotor DRIVE_MOTOR;
+    protected final PositionMotor TURN_MOTOR;
 
     private double lastAngle;
     private boolean flipFlag = false;
-
-    protected double metersPerRad;
 
     private SwerveModuleState state;
 
@@ -24,25 +24,25 @@ public class SwerveModule {
      * @param driveMotor A motor which implements the `SpeedMotor` interface.
      * @param turnMotor A motor which implements the `TurnMotor` interface.
      * @param metersPerRad A conversion constant with the units meters/rad which converts from
-     *        radians to meters. (Depends on gear ratios, wheel size, etc.)
+     *        radians to meters. (Depends wheel size)
      */
-    public SwerveModule(SpeedMotor driveMotor, AngleMotor turnMotor, double metersPerRad) {
-        this.driveMotor = driveMotor;
-        this.turnMotor = turnMotor;
-        this.metersPerRad = metersPerRad;
+    public SwerveModule(SpeedMotor driveMotor, PositionMotor turnMotor, double metersPerRad) {
+        this.DRIVE_MOTOR = driveMotor;
+        this.TURN_MOTOR = turnMotor;
+        this.METERS_PER_RAD = metersPerRad;
         this.state = new SwerveModuleState();
     }
 
     /** Initializes both motors. */
     public void init() {
-        driveMotor.init();
-        turnMotor.init();
+        DRIVE_MOTOR.init();
+        TURN_MOTOR.init();
     }
 
     /** Calls `.periodic()` on both motors. */
     public void periodic() {
-        driveMotor.periodic();
-        turnMotor.periodic();
+        DRIVE_MOTOR.periodic();
+        TURN_MOTOR.periodic();
     }
 
     /**
@@ -64,7 +64,7 @@ public class SwerveModule {
         if (flipFlag) {
             speed = -speed;
         }
-        driveMotor.setDesiredSpeed(speed / metersPerRad);
+        DRIVE_MOTOR.setDesiredSpeed(speed / METERS_PER_RAD);
     }
 
     /**
@@ -86,15 +86,17 @@ public class SwerveModule {
             angle = (angle + Math.PI) % (2 * Math.PI);
         }
 
-        turnMotor.setDesiredAngle(angle);
+        TURN_MOTOR.setDesiredAngle(angle);
     }
 
     /**
      * Returns the current Speed and Angle in a `SwerveModuleState`.
      */
     public SwerveModuleState getCurrentState() {
-        state.angle = new Rotation2d(turnMotor.getCurrentAngle());
-        state.speedMetersPerSecond = driveMotor.getCurrentSpeed() * metersPerRad;
+        state.angle = new Rotation2d(TURN_MOTOR.getCurrentAngle());
+        state.speedMetersPerSecond = DRIVE_MOTOR.getCurrentSpeed() * METERS_PER_RAD;
         return state;
     }
+
+    public abstract void resetZero();
 }

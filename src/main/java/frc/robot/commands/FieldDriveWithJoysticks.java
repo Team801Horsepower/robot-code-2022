@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 public class FieldDriveWithJoysticks extends CommandBase {
@@ -23,14 +24,11 @@ public class FieldDriveWithJoysticks extends CommandBase {
         double x = RobotContainer.io.getDriverExpoLeftX(2.5);
         double y = RobotContainer.io.getDriverExpoLeftY(2.5);
 
-        double mag = x * x + y * y;
-        if (mag > 1) {
-            x /= mag;
-            y /= mag;
-        }
+        x *= Constants.MAX_ROBOT_SPEED;
+        y *= Constants.MAX_ROBOT_SPEED;
 
         if (RobotContainer.winch.safeToDrive()) {
-            RobotContainer.chassis.fieldDrive(-y, -x, RobotContainer.io.getDriverExpoRightX(2.5));
+            RobotContainer.chassis.fieldDrive(-y, -x, -RobotContainer.io.getDriverExpoRightX(2.5));
         } else {
             RobotContainer.chassis.stop();
         }

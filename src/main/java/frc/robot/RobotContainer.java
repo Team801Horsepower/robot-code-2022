@@ -58,11 +58,15 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        chassis.setDefaultCommand(new RobotDriveWithJoysticks());
         // Set the default commands for each subsystem
+        chassis.setDefaultCommand(new RobotDriveWithJoysticks());
         winch.setDefaultCommand(new WinchUp());
         // Configure the button bindings
         configureButtonBindings();
+    }
+
+    public void init() {
+        chassis.init();
     }
 
     /**
@@ -85,11 +89,6 @@ public class RobotContainer {
         IO.Button.ManipulatorLeftBumper.value.whileHeld(new ForwardGather());
         IO.Button.ManipulatorRightBumper.value.whileHeld(new ReverseGather());
         IO.Button.ManipulatorB.value.whileHeld(new Shoot());
-    }
-
-    /** Reinitializes all the subsystems without a reboot */
-    public void reset() {
-        chassis.init();
     }
 
     /**
