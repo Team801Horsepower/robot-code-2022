@@ -102,7 +102,7 @@ public class RobotContainer {
 
         Command command = chassis.generatePathFollowCommand(testPath, new PIDController(1, 0, 0),
                 new PIDController(0.8, 0, 0),
-                new ProfiledPIDController(-1.0, 0, 0,
+                new ProfiledPIDController(1.0, 0, 0,
                         new TrapezoidProfile.Constraints(Constants.PATH_MAX_ANGULAR_VELOCITY,
                                 Constants.PATH_MAX_ANGULAR_ACCELERATION)));
         return command;
