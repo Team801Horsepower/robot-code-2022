@@ -127,6 +127,7 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
     }
 
     public void setPosition(double newPosition) {
+        PID.setReference(newPosition, ControlType.kPosition, positionPid);
         ENCODER.setPosition(newPosition);
     }
     

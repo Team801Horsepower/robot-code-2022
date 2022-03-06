@@ -6,6 +6,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,6 +23,8 @@ import frc.robot.components.SwerveModule2020;
  * Subsystem to control the entire drive base
  */
 public class Chassis extends SubsystemBase {
+
+    PowerDistribution.ModuleType
 
     // Front
     // 2 1
@@ -128,6 +131,10 @@ public class Chassis extends SubsystemBase {
     public void reset() {
         System.out.println("Resetting");
         gyro.SENSOR.calibrate();
+        gyro.setPosition(0.0);
         drive.reset();
+        pose = new Pose2d();
+        drive.resetPose(pose);
+        field.setRobotPose(pose);
     }
 }

@@ -27,7 +27,7 @@ public class AHRSGyroEncoder implements PositionEncoder, SpeedEncoder {
 
     @Override
     public void setPosition(double newPosition) {
-        SENSOR.setAngleAdjustment(toNative(newPosition - getCurrentPosition()));
+        SENSOR.setAngleAdjustment(toNative(newPosition) + SENSOR.getAngleAdjustment() - SENSOR.getAngle());
     }
 
     @Override
