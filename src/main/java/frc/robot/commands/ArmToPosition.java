@@ -18,13 +18,13 @@ public class ArmToPosition extends CommandBase {
    * Creates a new moves the arm to the specified setpoint.
    */
   public ArmToPosition(double position) {
-    addRequirements(RobotContainer.arm);
+    addRequirements(RobotContainer.ARM);
     setpoint = position;
   }
 
   @Override
   public void initialize() {
-    RobotContainer.arm.setArmHeight(setpoint);
+    RobotContainer.ARM.setArmHeight(setpoint);
   }
 
   @Override

@@ -6,7 +6,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,8 +22,6 @@ import frc.robot.components.SwerveModule2020;
  * Subsystem to control the entire drive base
  */
 public class Chassis extends SubsystemBase {
-
-    PowerDistribution.ModuleType
 
     // Front
     // 2 1
@@ -83,17 +80,17 @@ public class Chassis extends SubsystemBase {
      * 
      * @param forward the speed in m/s to drive in the robot's forward direction
      * @param leftward the speed in m/s to drive in the robot's leftwards direction
-     * @param omega the speed in rad/s in the counter-clockwise direction
+     * @param angular the speed in rad/s in the counter-clockwise direction
      */
-    public void robotDrive(double forward, double leftward, double omega) {
+    public void robotDrive(double forward, double leftward, double angular) {
         double speed = forward * forward + leftward * leftward;
-        if (speed > Constants.MAX_ROBOT_SPEED * Constants.MAX_ROBOT_SPEED)
+        if (speed > Constants.MAX_ROBOT_DRIVE_SPEED * Constants.MAX_ROBOT_DRIVE_SPEED)
         {
             speed = Math.sqrt(speed);
-            forward = forward / speed * Constants.MAX_ROBOT_SPEED;
-            leftward = leftward / speed * Constants.MAX_ROBOT_SPEED;
+            forward = forward / speed * Constants.MAX_ROBOT_DRIVE_SPEED;
+            leftward = leftward / speed * Constants.MAX_ROBOT_DRIVE_SPEED;
         }
-        drive.setDesiredSpeeds(forward, leftward, omega);
+        drive.setDesiredSpeeds(forward, leftward, angular);
     }
 
     /**
@@ -102,14 +99,14 @@ public class Chassis extends SubsystemBase {
      *
      * @param fieldForward the speed in m/s to drive forward
      * @param fieldLeftward the speed in m/s to drive leftward
-     * @param omega the speed in rad/s in the counter-clockwise direction
+     * @param angular the speed in rad/s in the counter-clockwise direction
      */
-    public void fieldDrive(double fieldForward, double fieldLeftward, double omega) {
+    public void fieldDrive(double fieldForward, double fieldLeftward, double angular) {
         double robotAngle = gyro.getCurrentAngle();
         robotDrive(
             fieldForward * Math.cos(robotAngle) + fieldLeftward * Math.sin(robotAngle),
             - fieldForward * Math.sin(robotAngle) + fieldLeftward * Math.cos(robotAngle),
-            omega
+            angular
         );
     }
 

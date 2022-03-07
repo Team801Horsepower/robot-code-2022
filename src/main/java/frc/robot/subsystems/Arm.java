@@ -15,7 +15,6 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxRelativeEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
@@ -33,14 +32,13 @@ public class Arm extends SubsystemBase {
    */
   public Arm() {
     // Arm Settings
-    armMotor = new CANSparkMax(Constants.armMotorID, MotorType.kBrushless);
+    armMotor = new CANSparkMax(Constants.ARM_MOTOR_ID, MotorType.kBrushless);
     armMotor.setInverted(Constants.ARM_INVERT);
     armMotor.setIdleMode(Constants.ARM_IDLEMODE);
     armMotor.setSmartCurrentLimit(Constants.ARM_MAX_CURRENT_STALL, Constants.ARM_MAX_CURRENT_RUN);
 
     armPID = armMotor.getPIDController();
-    armEncoder = armMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor,
-        Constants.NEO_ENCODER_CNTS_PER_REV);
+    armEncoder = armMotor.getEncoder();
     armPID.setP(Constants.ARM_P);
     armPID.setI(Constants.ARM_I);
     armPID.setD(Constants.ARM_D);

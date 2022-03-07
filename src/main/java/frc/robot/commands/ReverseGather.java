@@ -15,15 +15,15 @@ public class ReverseGather extends CommandBase {
      * Creates a new DriveWithJoysticks.
      */
     public ReverseGather() {
-        addRequirements(RobotContainer.gatherer);
-        addRequirements(RobotContainer.magazine);
+        addRequirements(RobotContainer.GATHERER);
+        addRequirements(RobotContainer.MAGAZINE);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        RobotContainer.gatherer.reverse();
-        RobotContainer.magazine.reverse();
+        RobotContainer.GATHERER.reverse();
+        RobotContainer.MAGAZINE.reverse();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -35,8 +35,8 @@ public class ReverseGather extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        RobotContainer.gatherer.stop();
-        RobotContainer.magazine.stop();
+        RobotContainer.GATHERER.stop();
+        RobotContainer.MAGAZINE.stop();
     }
 
     // Returns true when the command should end.

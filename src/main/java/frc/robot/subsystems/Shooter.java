@@ -27,7 +27,7 @@ public class Shooter extends SubsystemBase {
    * Creates a new Shooter.
    */
   public Shooter() {
-    shooterMotor = new CANSparkMax(Constants.shooterMotorID, MotorType.kBrushless);
+    shooterMotor = new CANSparkMax(Constants.SHOOTER_MOTOR_ID, MotorType.kBrushless);
     shooterPID = shooterMotor.getPIDController();
     shooterEncoder = shooterMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
 
@@ -44,7 +44,7 @@ public class Shooter extends SubsystemBase {
 
     shooterEncoder.setVelocityConversionFactor(1);
 
-    breachMotor = new CANSparkMax(Constants.breachMotorID, MotorType.kBrushless);
+    breachMotor = new CANSparkMax(Constants.BREACH_MOTOR_ID, MotorType.kBrushless);
     breachPID = breachMotor.getPIDController();
     breachMotor.setInverted(Constants.BREACH_INVERTED);
   }

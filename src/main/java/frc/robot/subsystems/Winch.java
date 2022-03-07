@@ -10,7 +10,6 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,10 +24,9 @@ public class Winch extends SubsystemBase {
    */
   public Winch() {
     // Winch Settings
-    winchMotor = new CANSparkMax(Constants.winchMotorID, MotorType.kBrushless);
+    winchMotor = new CANSparkMax(Constants.WINCH_MOTOR_ID, MotorType.kBrushless);
     winchPID = winchMotor.getPIDController();
-    winchEncoder = winchMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor,
-        Constants.NEO_ENCODER_CNTS_PER_REV);
+    winchEncoder = winchMotor.getEncoder();
     winchEncoder.setPositionConversionFactor(1);
 
     winchPID.setP(Constants.WINCH_P);

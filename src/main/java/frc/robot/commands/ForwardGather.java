@@ -15,20 +15,20 @@ public class ForwardGather extends CommandBase {
      * Creates a new DriveWithJoysticks.
      */
     public ForwardGather() {
-        addRequirements(RobotContainer.gatherer);
-        addRequirements(RobotContainer.magazine);
+        addRequirements(RobotContainer.GATHERER);
+        addRequirements(RobotContainer.MAGAZINE);
     }
 
     @Override
     public void initialize() {
-        RobotContainer.gatherer.forward();
-        RobotContainer.magazine.forward();
+        RobotContainer.GATHERER.forward();
+        RobotContainer.MAGAZINE.forward();
     }
 
     @Override
     public void end(boolean interrupted) {
-        RobotContainer.gatherer.stop();
-        RobotContainer.magazine.stop();
+        RobotContainer.GATHERER.stop();
+        RobotContainer.MAGAZINE.stop();
     }
 
     @Override

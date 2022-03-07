@@ -19,9 +19,9 @@ public class Shoot extends CommandBase {
      * Creates a new Shoot.
      */
     public Shoot() {
-        addRequirements(RobotContainer.shooter);
-        addRequirements(RobotContainer.magazine);
-        addRequirements(RobotContainer.gatherer);
+        addRequirements(RobotContainer.SHOOTER);
+        addRequirements(RobotContainer.MAGAZINE);
+        addRequirements(RobotContainer.GATHERER);
 
         timer = new Timer();
 
@@ -31,33 +31,33 @@ public class Shoot extends CommandBase {
     @Override
     public void initialize() {
         timer.start();
-        RobotContainer.shooter.enableShooter();
-        RobotContainer.gatherer.reverse();
-        RobotContainer.magazine.reverse();
+        RobotContainer.SHOOTER.enableShooter();
+        RobotContainer.GATHERER.reverse();
+        RobotContainer.MAGAZINE.reverse();
         Timer.delay(0.06);
-        RobotContainer.magazine.stop();
-        RobotContainer.gatherer.stop();
+        RobotContainer.MAGAZINE.stop();
+        RobotContainer.GATHERER.stop();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (RobotContainer.shooter.isReady()) {
-            RobotContainer.magazine.forward();
-            RobotContainer.gatherer.forward();
-            RobotContainer.shooter.popUp();
+        if (RobotContainer.SHOOTER.isReady()) {
+            RobotContainer.MAGAZINE.forward();
+            RobotContainer.GATHERER.forward();
+            RobotContainer.SHOOTER.popUp();
         } else {
-            RobotContainer.magazine.stop();
-            RobotContainer.gatherer.stop();
+            RobotContainer.MAGAZINE.stop();
+            RobotContainer.GATHERER.stop();
         }
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        RobotContainer.shooter.stop();
-        RobotContainer.magazine.stop();
-        RobotContainer.gatherer.stop();
+        RobotContainer.SHOOTER.stop();
+        RobotContainer.MAGAZINE.stop();
+        RobotContainer.GATHERER.stop();
     }
 
     // Returns true when the command should end.

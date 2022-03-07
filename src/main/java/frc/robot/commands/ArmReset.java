@@ -15,21 +15,21 @@ public class ArmReset extends CommandBase {
    * Command to lower the arm to the home position and reset the encoder.
    */
   public ArmReset() {
-    addRequirements(RobotContainer.arm);
+    addRequirements(RobotContainer.ARM);
   }
 
   @Override
   public void initialize() {
-    RobotContainer.arm.resetArm();
+    RobotContainer.ARM.resetArm();
   }
 
   @Override
   public void execute() {
-    RobotContainer.arm.armResetting();
+    RobotContainer.ARM.armResetting();
   }
 
   @Override
   public boolean isFinished() {
-    return RobotContainer.arm.getArmZeroedFlag();
+    return RobotContainer.ARM.getArmZeroedFlag();
   }
 }

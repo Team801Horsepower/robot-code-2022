@@ -30,7 +30,7 @@ public class ColorWheel extends SubsystemBase {
    * Creates a new color wheel spinner gizmo subsystem.
    */
   public ColorWheel() {
-    spinnerMotor = new CANSparkMax(Constants.colorWheelMotorID, MotorType.kBrushless);
+    spinnerMotor = new CANSparkMax(Constants.COLOR_WHEEL_MOTOR_ID, MotorType.kBrushless);
     spinnerPID = spinnerMotor.getPIDController();
     spinnerEncoder = spinnerMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
     spinnerPID.setP(Constants.COLORWHEEL_P);

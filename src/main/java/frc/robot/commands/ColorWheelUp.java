@@ -16,12 +16,12 @@ public class ColorWheelUp extends CommandBase {
    * Creates a new ColorWheelUp.
    */
   public ColorWheelUp() {
-    addRequirements(RobotContainer.colorWheel);
+    addRequirements(RobotContainer.COLOR_WHEEL);
   }
 
   @Override
   public void initialize() {
-    RobotContainer.colorWheel.rotateColorWheel(Constants.COLORWHEEL_ROTATION_COUNT);
+    RobotContainer.COLOR_WHEEL.rotateColorWheel(Constants.COLORWHEEL_ROTATION_COUNT);
   }
 
   @Override

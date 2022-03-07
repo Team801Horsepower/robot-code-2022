@@ -20,7 +20,7 @@ public class SwerveDrive extends Drive {
     private final SwerveDriveOdometry odometry;
     private final SwerveModule[] modules;
 
-    private Pose2d currentPose;
+    private Pose2d odometricPose;
 
 
     /**
@@ -52,7 +52,7 @@ public class SwerveDrive extends Drive {
         this.modules = modules;
 
         this.gyro = gyro;
-        this.currentPose = initialPose;
+        this.odometricPose = initialPose;
         this.odometry = new SwerveDriveOdometry(kinematics,
                 new Rotation2d(gyro.getCurrentAngle()), initialPose);
     }
@@ -69,7 +69,7 @@ public class SwerveDrive extends Drive {
         for (SwerveModule module : modules) {
             module.periodic();
         }
-        currentPose =
+        odometricPose =
                 odometry.update(new Rotation2d(gyro.getCurrentAngle()), getCurrentModuleStates());
     }
 
@@ -97,7 +97,7 @@ public class SwerveDrive extends Drive {
 
     @Override
     public Pose2d getCurrentPose() {
-        return currentPose;
+        return odometricPose;
     }
 
     @Override

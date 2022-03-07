@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.IO;
 import frc.robot.RobotContainer;
 
 public class WinchUp extends CommandBase {
@@ -16,7 +17,7 @@ public class WinchUp extends CommandBase {
      */
     public WinchUp() {
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(RobotContainer.winch);
+        addRequirements(RobotContainer.WINCH);
     }
 
 
@@ -31,7 +32,7 @@ public class WinchUp extends CommandBase {
     @Override
     public void execute() {
         // ONLY move in the positive direction regardless of the stick direction.
-        RobotContainer.winch.winchUp(Math.abs(RobotContainer.io.getManipulatorLeftY()));
+        RobotContainer.WINCH.winchUp(IO.Joystick.ManipulatorDPad.getMagnitude());
     }
 
 
@@ -39,7 +40,7 @@ public class WinchUp extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         // stop the motor if the command is interrupted.
-        RobotContainer.winch.winchUp(0);
+        RobotContainer.WINCH.winchUp(0);
     }
 
 

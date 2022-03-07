@@ -8,166 +8,223 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.Function;
+
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
- * This class is the glue that binds the controls on the physical operator interface to the commands
+ * This class is the glue that binds the controls on the physical operator
+ * interface to the commands
  * and command groups that allow control of the robot.
  */
-public class IO {
-    public enum Button {
-        DriverA(driver, XboxController.Button.kA.value), DriverB(driver,
-                XboxController.Button.kB.value), DriverX(driver,
-                        XboxController.Button.kX.value), DriverY(driver,
-                                XboxController.Button.kY.value), DriverLeftBumper(driver,
-                                        XboxController.Button.kLeftBumper.value), DriverRightBumper(
-                                                driver,
-                                                XboxController.Button.kRightBumper.value), ManipulatorA(
-                                                        manipulator,
-                                                        XboxController.Button.kA.value), ManipulatorB(
-                                                                manipulator,
-                                                                XboxController.Button.kB.value), ManipulatorX(
-                                                                        manipulator,
-                                                                        XboxController.Button.kX.value), ManipulatorY(
-                                                                                manipulator,
-                                                                                XboxController.Button.kY.value), ManipulatorLeftBumper(
-                                                                                        manipulator,
-                                                                                        XboxController.Button.kLeftBumper.value), ManipulatorRightBumper(
-                                                                                                manipulator,
-                                                                                                XboxController.Button.kRightBumper.value);
+public final class IO {
 
-        JoystickButton value;
+    private static final double AXIS_CLICK_THRESHOLD = 0.99;
+
+    public enum Button {
+        DriverA(DRIVER, XboxController.Button.kA.value),
+        DriverB(DRIVER, XboxController.Button.kB.value),
+        DriverX(DRIVER, XboxController.Button.kX.value),
+        DriverY(DRIVER, XboxController.Button.kY.value),
+        DriverLeftBumper(DRIVER, XboxController.Button.kLeftBumper.value),
+        DriverRightBumper(DRIVER, XboxController.Button.kRightBumper.value),
+        DriverLeftStick(DRIVER, XboxController.Button.kLeftStick.value),
+        DriverRightStick(DRIVER, XboxController.Button.kRightStick.value),
+        DriverStart(DRIVER, XboxController.Button.kStart.value),
+        DriverBack(DRIVER, XboxController.Button.kBack.value),
+        DriverLeftTrigger(IO.Axis.DriverLeftTrigger::get),
+        DriverRightTrigger(IO.Axis.DriverRightTrigger::get),
+        ManipulatorA(MANIPULATOR, XboxController.Button.kA.value),
+        ManipulatorB(MANIPULATOR, XboxController.Button.kB.value),
+        ManipulatorX(MANIPULATOR, XboxController.Button.kX.value),
+        ManipulatorY(MANIPULATOR, XboxController.Button.kY.value),
+        ManipulatorLeftBumper(MANIPULATOR, XboxController.Button.kLeftBumper.value),
+        ManipulatorRightBumper(MANIPULATOR, XboxController.Button.kRightBumper.value),
+        ManipulatorLeftStick(MANIPULATOR, XboxController.Button.kLeftStick.value),
+        ManipulatorRightStick(MANIPULATOR, XboxController.Button.kRightStick.value),
+        ManipulatorStart(MANIPULATOR, XboxController.Button.kStart.value),
+        ManipulatorBack(MANIPULATOR, XboxController.Button.kBack.value),
+        ManipulatorLeftTrigger(IO.Axis.ManipulatorLeftTrigger::get),
+        ManipulatorRightTrigger(IO.Axis.ManipulatorRightTrigger::get);
+
+        public final edu.wpi.first.wpilibj2.command.button.Button value;
 
         Button(GenericHID hid, int buttonId) {
             value = new JoystickButton(hid, buttonId);
         }
+
+        Button(DoubleSupplier axis) {
+            this(() -> axis.getAsDouble() > AXIS_CLICK_THRESHOLD);
+        }
+
+        Button(BooleanSupplier isPressed) {
+            value = new edu.wpi.first.wpilibj2.command.button.Button(isPressed);
+        }
     }
 
-    public static XboxController driver = new XboxController(0);
-    // public static Joystick driver = new Joystick(0);
-    // public static Joystick manipulator = new Joystick(1);
-    public static XboxController manipulator = new XboxController(1);
+    public enum Axis {
+        /** Increasing to the right */
+        DriverLeftX(DRIVER::getLeftX),
+        /** Increasing to the bottom */
+        DriverLeftY(DRIVER::getLeftY),
+        /** Increasing to the right */
+        DriverRightX(DRIVER::getRightX),
+        /** Increasing to the bottom */
+        DriverRightY(DRIVER::getRightY),
+        /** Positive only */
+        DriverLeftTrigger(DRIVER::getLeftTriggerAxis),
+        /** Positive only */
+        DriverRightTrigger(DRIVER::getRightTriggerAxis),
+        /** Increasing to the right */
+        ManipulatorLeftX(MANIPULATOR::getLeftX),
+        /** Increasing to the bottom */
+        ManipulatorLeftY(MANIPULATOR::getLeftY),
+        /** Increasing to the right */
+        ManipulatorRightX(MANIPULATOR::getRightX),
+        /** Increasing to the bottom */
+        ManipulatorRightY(MANIPULATOR::getRightY),
+        /** Positive only */
+        ManipulatorLeftTrigger(MANIPULATOR::getLeftTriggerAxis),
+        /** Positive only */
+        ManipulatorRightTrigger(MANIPULATOR::getRightTriggerAxis);
 
-    /**
-     * @return the horizontal axis value from the left driver controller
-     */
-    public double getDriverLeftX() {
-        return deadbandFilter(driver.getLeftX(), 0.1);
+        private DoubleSupplier valueSupplier;
+
+        Axis(DoubleSupplier value) {
+            this.valueSupplier = value;
+        }
+
+        private void addTransform(Function<Double, Double> transform) {
+            this.valueSupplier = () -> transform.apply(this.valueSupplier.getAsDouble());
+        }
+
+        public double get() {
+            return valueSupplier.getAsDouble();
+        }
     }
 
-    /**
-     * @return the vertical axis value from the left joystick on the driver controller
-     */
-    public double getDriverLeftY() {
-        return deadbandFilter(driver.getLeftY(), 0.1);
-    }
-
-    /**
-     * @return the horizontal axis value from the right joystick on the driver controller
-     */
-    public double getDriverRightX() {
-        return deadbandFilter(driver.getRightX(), 0.1);
-    }
-
-    /**
-     * @return the vertical axis value from the right joystick on the driver controller
-     */
-    public double getDriverRightY() {
-        return deadbandFilter(driver.getRightY(), 0.1);
-    }
-
-
-    /**
-     * Reads the driver controller first joystick's horizontal value and applies an exponential
-     * function based on the exponent provided
+    /** 
+     * An enum holding references to joysticks which obey the robot coordinate system 
      * 
-     * @param exponent determines how steep the exponential function is
+     * x is forward
+     * y is leftward
+     * angles are in radians increasing counter-clockwise
      */
-    public double getDriverExpoLeftX(double exponent) {
-        return getExponential(getDriverLeftX(), exponent);
+    public enum Joystick {
+        DriverLeft(() -> -IO.Axis.DriverLeftY.get(), () -> -IO.Axis.DriverLeftX.get(), true),
+        DriverRight(() -> -IO.Axis.DriverRightY.get(), () -> -IO.Axis.DriverRightX.get(), true),
+        DriverDPad(() -> -DRIVER.getPOV() != -1 ? Math.cos(Units.degreesToRadians(-DRIVER.getPOV())) : 0, () -> -DRIVER.getPOV() != -1 ? Math.sin(Units.degreesToRadians(-DRIVER.getPOV())) : 0, false),
+        ManipulatorLeft(() -> -IO.Axis.ManipulatorLeftY.get(), () -> -IO.Axis.ManipulatorLeftX.get(), true),
+        ManipulatorRight(() -> -IO.Axis.ManipulatorRightY.get(), () -> -IO.Axis.ManipulatorRightX.get(), true),
+        ManipulatorDPad(() -> -MANIPULATOR.getPOV() != -1 ? Math.cos(Units.degreesToRadians(-MANIPULATOR.getPOV())) : 0, () -> -MANIPULATOR.getPOV() != -1 ? Math.sin(Units.degreesToRadians(-MANIPULATOR.getPOV())) : 0, false);
+
+        private DoubleSupplier xSupplier, ySupplier;
+
+        private double x, y;
+
+        /**
+         * Constructs a joystick with built-in normalization and a standard cooridnate system.
+         * 
+         * @param x forward [-1, 1]
+         * @param y leftward [-1, 1]
+         * @param remap whether to remap cooridates to a circle
+         */
+        Joystick(DoubleSupplier x, DoubleSupplier y, boolean remap) {
+            if (remap) {
+                xSupplier = () -> remap(x.getAsDouble(), y.getAsDouble());
+                ySupplier = () -> remap(y.getAsDouble(), x.getAsDouble());
+            } else {
+                xSupplier = x;
+                ySupplier = y;
+            }
+        }
+
+        private void update() {
+            x = xSupplier.getAsDouble();
+            y = ySupplier.getAsDouble();
+        }
+
+        /**
+         * @return the circular remapping of `a` with reference to `b`
+         */
+        private double remap(double a, double b) {
+            return a * Math.sqrt(1 - b * b / 2);
+        }
+
+        /**
+         * @return the displacement forward
+         */
+        public double getForward() {
+            update();
+            return x;
+        }
+
+        /**
+         * @return the displacement leftward
+         */
+        public double getLeftward() {
+            update();
+            return y;
+        }
+
+        /**
+         * @return the angle counter-clockwise from the x-axis [0, 2pi]
+         */
+        public double getAngle() {
+            update();
+            return Math.atan2(y, x) + y > 0 ? 0 : 2 * Math.PI;
+        }
+
+        public double getMagnitude() {
+            update();
+            return Math.sqrt(x*x + y*y);
+        }
     }
 
-    /**
-     * Reads the driver controller first joystick's vertical value and applies an exponential
-     * function based on the exponent provided
+    private static boolean initialized = false;
+
+    public static final XboxController DRIVER = new XboxController(0);
+    public static final XboxController MANIPULATOR = new XboxController(1);
+
+    public IO() {
+        if (!initialized) {
+            Axis.DriverLeftX.addTransform(deadbandTransform(0.005));
+            Axis.DriverLeftX.addTransform(exponentialTransform(3));
+            Axis.DriverLeftY.addTransform(deadbandTransform(0.005));
+            Axis.DriverLeftY.addTransform(exponentialTransform(3));
+            Axis.DriverRightX.addTransform(deadbandTransform(0.005));
+            Axis.DriverRightX.addTransform(exponentialTransform(3));
+            Axis.DriverRightY.addTransform(deadbandTransform(0.005));
+            Axis.DriverRightY.addTransform(exponentialTransform(3));
+
+            initialized = true;
+        } else {
+            System.err.println("IO has been instantiated more than once.");
+        }
+    }
+
+    /** Create a transform which includes deadband.
      * 
-     * @param exponent determines how steep the exponential function is
-     */
-    public double getDriverExpoLeftY(double exponent) {
-        return getExponential(getDriverLeftY(), exponent);
-    }
-
-    /**
-     * Reads the driver controller second joystick's horizontal value and applies an exponential
-     * function based on the exponent provided
+     * f(x) = { x if |x| >= a else 0 }
      * 
-     * @param exponent determines how steep the exponential function is
+     * @param deadband a
      */
-    public double getDriverExpoRightX(double exponent) {
-        return getExponential(getDriverRightX(), exponent);
+    private Function<Double, Double> deadbandTransform(double deadband) {
+        return (value) -> Math.abs(value) > deadband ? value : 0;
     }
 
-    /**
-     * Reads the driver controller second joystick's vertical value and applies an exponential
-     * function based on the exponent provided
+    /** Create a transform which makes the magnitude exponential which retaining a range [-1, 1]
      * 
-     * @param exponent determines how steep the exponential function is
+     * f(x) = x/|x| * (a^|x| - 1) / (a - 1)
+     * 
+     * @param exponent a
      */
-    public double getDriverExpoRightY(double exponent) {
-        return getExponential(getDriverRightY(), exponent);
+    private Function<Double, Double> exponentialTransform(double exponent) {
+        return (value) -> Math.signum(value) * ((Math.pow(exponent, Math.abs(value)) - 1) / (exponent - 1));
     }
-
-
-    /**
-     * @return the horizontal axis value from the left driver controller
-     */
-    public double getManipulatorLeftX() {
-        return deadbandFilter(manipulator.getLeftX(), 0.1);
-    }
-
-    /**
-     * @return the vertical axis value from the left joystick on the driver controller
-     */
-    public double getManipulatorLeftY() {
-        return deadbandFilter(manipulator.getLeftY(), 0.1);
-    }
-
-    /**
-     * @return the horizontal axis value from the right joystick on the driver controller
-     */
-    public double getManipulatorRightX() {
-        return deadbandFilter(manipulator.getRightX(), 0.1);
-    }
-
-    /**
-     * @return the vertical axis value from the right joystick on the driver controller
-     */
-    public double getManipulatorRightY() {
-        return deadbandFilter(manipulator.getRightY(), 0.1);
-    }
-
-    private double deadbandFilter(double value, double deadband) {
-        return Math.abs(value) > deadband ? value : 0;
-    }
-
-
-    /**
-     * This function takes a joystick input and applies an exponential scaling
-     */
-    private double getExponential(double stickInput, double exponent) {
-        double stickOutput;
-
-        // stickOutput = e^(exponent*|stickInput|) - 1
-        stickOutput = Math.exp(Math.abs(stickInput) * exponent) - 1; // Creates an exponential
-                                                                     // function starting at 0 and
-                                                                     // with a steepness based on
-                                                                     // the exponent
-        stickOutput /= Math.exp(exponent) - 1; // Scales it back so that at input of 1.0, the output
-                                               // is 1.0
-        stickOutput *= Math.signum(stickInput); // Reapplies polarity of the input
-
-        return stickOutput;
-    }
-
 }

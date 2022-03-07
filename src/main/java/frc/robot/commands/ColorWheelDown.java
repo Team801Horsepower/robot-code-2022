@@ -15,21 +15,21 @@ public class ColorWheelDown extends CommandBase {
    * Creates a new ColorWheelDown.
    */
   public ColorWheelDown() {
-    addRequirements(RobotContainer.colorWheel);
+    addRequirements(RobotContainer.COLOR_WHEEL);
   }
 
   @Override
   public void initialize() {
-    RobotContainer.colorWheel.resetSpinner();
+    RobotContainer.COLOR_WHEEL.resetSpinner();
   }
 
   @Override
   public void execute() {
-    RobotContainer.colorWheel.spinnerResetting();
+    RobotContainer.COLOR_WHEEL.spinnerResetting();
   }
 
   @Override
   public boolean isFinished() {
-    return RobotContainer.colorWheel.getSpinnerZeroedFlag();
+    return RobotContainer.COLOR_WHEEL.getSpinnerZeroedFlag();
   }
 }
