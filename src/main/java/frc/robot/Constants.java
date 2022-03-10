@@ -2,7 +2,8 @@ package frc.robot;
 
 public final class Constants {
 
-        public static final double ARM_LOWERED_ANGLE = 0.0;
+        public static final double ARM_LOWERED_POSITION = -1.0;
+        public static final double ARM_RAISED_POSITION = 0.1;
 
         public static final double MAX_ROBOT_DRIVE_SPEED = 1.0;
         public static final double MAX_ROBOT_TURN_SPEED = 1.0;
@@ -36,8 +37,6 @@ public final class Constants {
         public static final double CLAW_D = 0.0;
 
         // Gather Wheels PID
-
-        // Gather Arm PID
 
         // Shooter PID
 

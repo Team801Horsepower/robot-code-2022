@@ -21,8 +21,11 @@ import frc.robot.commands.DriveToPose;
 import frc.robot.commands.FieldDriveWithJoysticks;
 // import frc.robot.commands.GatherBall;
 import frc.robot.commands.RobotDriveWithJoysticks;
+import frc.robot.commands.GatherBall;
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Gather;
+import frc.robot.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -36,7 +39,9 @@ public class RobotContainer {
     private static final IO _IO = new IO();
 
     public static final Chassis CHASSIS = new Chassis();
-    // public static final Gather GATHER = new Gather();
+    public static final Gather GATHER = new Gather();
+    public static final Shooter SHOOTER = new Shooter();
+    public static final Climber CLIMBER = new Climber();
     // public static final Vision VISION = new Vision();
 
     public static final PowerDistribution POWER_DISTRIBUTION = new PowerDistribution();
@@ -62,8 +67,10 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        IO.Button.DriverLeftBumper.value.whileHeld(new FieldDriveWithJoysticks());
-        IO.Button.DriverRightBumper.value.whileHeld(new DriveToPose(new Pose2d()));
+        IO.Button.ManipulatorLeftBumper.value.whileHeld(new TestClaws(1.0));
+        IO.Button.ManipulatorRightBumper.value.whileHeld(new TestClaws(-1.0));
+        IO.Button.ManipulatorStart.value.whileHeld(new TestArms(1.0));
+        IO.Button.ManipulatorBack.value.whileHeld(new TestArms(-1.0));
         // IO.Button.DriverA.value.whileHeld(new GatherBall());
 
     }

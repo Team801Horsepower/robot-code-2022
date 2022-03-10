@@ -106,4 +106,8 @@ public class Utils {
         return Math.abs(a.getX() - b.getY()) + Math.abs(a.getY() - b.getY())
                 + Math.abs(a.getRotation().getRadians() - b.getRotation().getRadians()) < epsilon;
     }
+
+    public static boolean almostEqual(double a, double b, double epsilon) {
+        return Math.abs(a - b) < epsilon;
+    }
 }

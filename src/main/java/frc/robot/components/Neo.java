@@ -11,6 +11,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.architecture.PositionMotor;
 import frc.robot.architecture.SpeedMotor;
+import frc.robot.utilities.Utils;
 
 public class Neo implements SpeedMotor, PositionMotor, Sendable {
 
@@ -29,6 +30,9 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
     
     private double gearRatio = 1.0;
     private int speedPid = 0, positionPid = 1;
+
+    private double desiredSpeed = 0.0;
+    private double desiredPosition = 0.0;
 
     /**
      * Creates an instance of Neo which refers to a Neo or a Neo550 attached to a SparkMax.
@@ -67,7 +71,19 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
             builder.addDoubleProperty("ff_" + t, () -> { return PID.getFF(t); }, (value) -> { PID.setFF(value, t); });
             builder.addDoubleProperty("iz_" + t, () -> { return PID.getIZone(t); }, (value) -> { PID.setIZone(value, t); });
         }
+        
+        builder.addDoubleProperty("position", this::getCurrentPosition, (value) -> {});
+
     }
+    
+    /**
+     * Duty Cycle control 
+     * 
+     * @param power approximate speed [-1.0, 1.0]
+     */
+    public void setPower(double power) {
+        PID.setReference(power, ControlType.kDutyCycle);
+    } 
 
     public void setDesiredSpeed(double speed) {
         double maxSpeed = getMaxSpeed();
@@ -76,6 +92,7 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
                     + maxSpeed + "rad/s)");
             speed = maxSpeed;
         }
+        desiredSpeed = speed;
         PID.setReference(speed, ControlType.kVelocity, speedPid);
     }
 
@@ -86,6 +103,7 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
 
     @Override
     public void setDesiredPosition(double position) {
+        desiredPosition = position;
         PID.setReference(position, ControlType.kPosition, positionPid);
     }
 
@@ -135,5 +153,13 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
 
     public double getMaxSpeed() {
         return getMaxSpeed(MAX_SPEED);
+    }
+
+    public boolean positionReached(double tolerance) {
+        return Utils.almostEqual(desiredPosition, getCurrentPosition(), tolerance);
+    }
+
+    public boolean velocityReached(double tolerance) {
+        return Utils.almostEqual(desiredSpeed, getCurrentSpeed(), tolerance);
     }
 }
