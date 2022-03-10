@@ -1,5 +1,7 @@
 package frc.robot.components;
 
+import java.util.Set;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -9,6 +11,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.architecture.PositionMotor;
 import frc.robot.architecture.SpeedMotor;
 import frc.robot.utilities.Utils;
@@ -161,5 +166,39 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
 
     public boolean velocityReached(double tolerance) {
         return Utils.almostEqual(desiredSpeed, getCurrentSpeed(), tolerance);
+    }
+
+    public Command generatePositionCommand(double position, double tolerance, Subsystem... requirements) {
+        CommandBase command = new CommandBase() {
+
+            @Override
+            public void initialize() {
+                setDesiredPosition(position);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return positionReached(tolerance);
+            }
+        };
+        command.addRequirements(requirements);
+        return command;
+    }
+
+    public Command generateVelocityCommand(double velocity, double tolerance, Subsystem... requirements) {
+        CommandBase command = new CommandBase() {
+
+            @Override
+            public void initialize() {
+                setDesiredPosition(velocity);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return velocityReached(tolerance);
+            }
+        };
+        command.addRequirements(requirements);
+        return command;
     }
 }
