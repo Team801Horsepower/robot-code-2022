@@ -1,13 +1,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants;
 import frc.robot.components.Neo;
 
 public class Shooter extends SubsystemBase {
 
-    private final Neo FLYWHEEL;
-    
+    public final Neo FLYWHEEL;
+
     public Shooter() {
         FLYWHEEL = new Neo(Constants.SHOOTER);
         FLYWHEEL.setGearRatio(Constants.SHOOTER_GEAR_RATIO);
@@ -21,7 +22,7 @@ public class Shooter extends SubsystemBase {
 
     /**
      * Set the target speed of the flywheel.
-     * 
+     *
      * @param speed speed is rad/s
      */
     public void setSpeed(double speed) {

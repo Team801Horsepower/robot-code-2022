@@ -6,8 +6,8 @@ import frc.robot.components.Neo550;
 
 public class Gather extends SubsystemBase {
 
-    private final Neo550 WHEELS;
-    private final Neo550 ARM;
+    public final Neo550 WHEELS;
+    public final Neo550 ARM;
 
     private boolean lowering = false;
 
@@ -52,13 +52,13 @@ public class Gather extends SubsystemBase {
     public void stop() {
         WHEELS.setPower(0.0);
     }
-    
+
     public void tampBall() {
         WHEELS.setDesiredAngle(WHEELS.getCurrentAngle() - Math.PI / 4);
     }
-    
+
     public void popBall() {
-        
+        WHEELS.setDesiredAngle(WHEELS.getCurrentAngle() + Math.PI / 4);
     }
 
     public boolean isRaised() {

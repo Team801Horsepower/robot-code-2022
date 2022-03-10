@@ -24,9 +24,11 @@ import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.RunArms;
 import frc.robot.commands.RunClaws;
 import frc.robot.commands.GatherBall;
+import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Gather;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Shooter;
 
@@ -73,6 +75,7 @@ public class RobotContainer {
         Command gatherCommand = new GatherBall();
         IO.Button.DriverRightTrigger.value.whileHeld(gatherCommand);
         IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
+        IO.Button.DriverA.value.whileHeld(new Shoot(1000.0));
 
         IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(1.0));
         IO.Button.ManipulatorRightBumper.value.whileHeld(new RunClaws(-1.0));
