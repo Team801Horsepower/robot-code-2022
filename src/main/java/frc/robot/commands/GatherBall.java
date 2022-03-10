@@ -25,7 +25,7 @@ public class GatherBall extends CommandBase {
         return false;
     }
 
-    public void end(boolean isInterrupted) {
+    public void end(boolean interrupted) {
         RobotContainer.GATHER.stop();
     }
     

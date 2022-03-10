@@ -12,7 +12,7 @@ public class RunClaws extends CommandBase {
     }
 
     @Override
-    public void initialize() {
+    public void execute() {
         RobotContainer.CLIMBER.driveClaws(speed);
     }
 

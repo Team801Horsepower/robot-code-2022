@@ -21,6 +21,7 @@ import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.RunClaws;
 import frc.robot.commands.Climb;
 import frc.robot.commands.FieldDriveWithJoysticks;
+import frc.robot.commands.GatherAuto;
 import frc.robot.commands.GatherBall;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
@@ -89,8 +90,8 @@ public class RobotContainer {
 
         IO.Button.DriverLeftBumper.value.whileHeld(new RobotDriveWithJoysticks());
 
-        IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(1.0));
-        IO.Button.ManipulatorRightBumper.value.whileHeld(new RunClaws(-1.0));
+        IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(0.03));
+        IO.Button.ManipulatorRightBumper.value.whileHeld(new RunClaws(-0.03));
 
         Command climbCommand = new Climb();
         IO.Button.ManipulatorRightTrigger.value.whileHeld(climbCommand);
@@ -111,7 +112,8 @@ public class RobotContainer {
                 new PIDController(0.8, 0, 0),
                 new ProfiledPIDController(1.0, 0, 0,
                         new TrapezoidProfile.Constraints(Constants.PATH_MAX_ANGULAR_VELOCITY,
-                                Constants.PATH_MAX_ANGULAR_ACCELERATION))).alongWith(new GatherBall());
+                                Constants.PATH_MAX_ANGULAR_ACCELERATION)))
+                                .alongWith(new GatherAuto());
         return command;
     }
 }

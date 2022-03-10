@@ -46,7 +46,7 @@ public class Climber extends SubsystemBase {
         CLAW_RIGHT.setGearRatio(Constants.CLIMB_CLAW_GEAR_RATIO);
         CLAW_RIGHT.setPosition(0.0);
 
-        positionPid = CLAW_RIGHT.getSpeedPid();
+        positionPid = CLAW_RIGHT.getPositionPid();
         CLAW_RIGHT.PID.setP(1.0, positionPid);
         CLAW_RIGHT.PID.setI(0.0, positionPid);
         CLAW_RIGHT.PID.setD(0.0, positionPid);
@@ -83,6 +83,7 @@ public class Climber extends SubsystemBase {
 
     @Override
     public void periodic() {
+        System.out.println(climbSetpoint);
         CLAW_LEFT.setDesiredPosition(climbSetpoint);
         CLAW_RIGHT.setDesiredPosition(climbSetpoint);
     }
