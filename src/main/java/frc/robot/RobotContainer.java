@@ -11,7 +11,6 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -21,8 +20,9 @@ import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveToPosePID;
 import frc.robot.commands.DriveToPosePID1;
 import frc.robot.commands.FieldDriveWithJoysticks;
-// import frc.robot.commands.GatherBall;
 import frc.robot.commands.RobotDriveWithJoysticks;
+import frc.robot.commands.RunArms;
+import frc.robot.commands.RunClaws;
 import frc.robot.commands.GatherBall;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
@@ -70,11 +70,14 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        IO.Button.ManipulatorLeftBumper.value.whileHeld(new TestClaws(1.0));
-        IO.Button.ManipulatorRightBumper.value.whileHeld(new TestClaws(-1.0));
-        IO.Button.ManipulatorStart.value.whileHeld(new TestArms(1.0));
-        IO.Button.ManipulatorBack.value.whileHeld(new TestArms(-1.0));
-        // IO.Button.DriverA.value.whileHeld(new GatherBall());
+        Command gatherCommand = new GatherBall();
+        IO.Button.DriverRightTrigger.value.whileHeld(gatherCommand);
+        IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
+
+        IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(1.0));
+        IO.Button.ManipulatorRightBumper.value.whileHeld(new RunClaws(-1.0));
+        IO.Button.ManipulatorStart.value.whileHeld(new RunArms(1.0));
+        IO.Button.ManipulatorBack.value.whileHeld(new RunArms(-1.0));
     }
 
     /**
