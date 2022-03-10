@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public final class IO {
 
-    private static final double AXIS_CLICK_THRESHOLD = 0.99;
+    private static final double AXIS_CLICK_THRESHOLD = 0.1;
 
     public enum Button {
         DriverA(DRIVER, XboxController.Button.kA.value),

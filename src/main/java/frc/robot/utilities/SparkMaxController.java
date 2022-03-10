@@ -1,8 +1,5 @@
 package frc.robot.utilities;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
