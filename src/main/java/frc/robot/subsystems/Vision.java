@@ -24,12 +24,10 @@ public class Vision extends SubsystemBase {
 
     /** Creates a new Vision. */
     public Vision() {
-
     }
 
     @Override
     public void periodic() {
-        var circleCenter = locateGoal(locateTargets());
     }
 
     public double calcYaw(double x) {
@@ -97,7 +95,7 @@ public class Vision extends SubsystemBase {
     }
 
     void plotPoints(Translation2d[] points, Translation2d center) {
-        var pose = frc.robot.RobotContainer.chassis.getCurrentPose();
+        var pose = frc.robot.RobotContainer.CHASSIS.getCurrentPose();
         List<Double> fieldPoints = new ArrayList<Double>();
         double yaw = -pose.getRotation().getRadians();
         for (int i = 0; i <= points.length; i++) {

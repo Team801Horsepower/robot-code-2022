@@ -14,30 +14,18 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.ArmReset;
-import frc.robot.commands.ArmToPosition;
-import frc.robot.commands.ColorWheelDown;
-import frc.robot.commands.ColorWheelUp;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveToPosePID;
 import frc.robot.commands.DriveToPosePID1;
 import frc.robot.commands.FieldDriveWithJoysticks;
-import frc.robot.commands.ForwardGather;
-import frc.robot.commands.ReverseGather;
+// import frc.robot.commands.GatherBall;
 import frc.robot.commands.RobotDriveWithJoysticks;
-import frc.robot.commands.Shoot;
-import frc.robot.commands.WinchUp;
-import frc.robot.commands.AimShooter;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.ColorWheel;
-import frc.robot.subsystems.Gatherer;
-import frc.robot.subsystems.Magazine;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Gather;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Winch;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -46,26 +34,28 @@ import frc.robot.subsystems.Winch;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-    public static final IO io = new IO();
 
-    public static final Chassis chassis = new Chassis();
-    public static final Gatherer gatherer = new Gatherer();
-    public static final Magazine magazine = new Magazine();
-    public static final Arm arm = new Arm();
-    public static final Winch winch = new Winch();
-    public static final Shooter shooter = new Shooter();
-    public static final ColorWheel colorWheel = new ColorWheel();
-    public static final Vision vision = new Vision();
+    @SuppressWarnings("unused")
+    private static final IO _IO = new IO();
+
+    public static final Chassis CHASSIS = new Chassis();
+    // public static final Gather GATHER = new Gather();
+    public static final Vision VISION = new Vision();
+
+    public static final PowerDistribution POWER_DISTRIBUTION = new PowerDistribution();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        chassis.setDefaultCommand(new FieldDriveWithJoysticks());
         // Set the default commands for each subsystem
-        winch.setDefaultCommand(new WinchUp());
+        CHASSIS.setDefaultCommand(new RobotDriveWithJoysticks());
         // Configure the button bindings
         configureButtonBindings();
+    }
+
+    public void init() {
+        CHASSIS.init();
     }
 
     /**
@@ -75,25 +65,9 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        IO.Button.DriverLeftBumper.value.whileHeld(new RobotDriveWithJoysticks());
-        IO.Button.DriverRightBumper.value.whileHeld(new DriveToPosePID1(new Pose2d()));
-
-        // IO.Button.DriverX.value.whenPressed(new ArmReset());
-        // IO.Button.DriverA.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_LOW));
-        // IO.Button.DriverB.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_MID));
-        // IO.Button.DriverY.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_HIGH));
-        IO.Button.DriverY.value.whileHeld(new AimShooter());
-
-        IO.Button.ManipulatorY.value.whenPressed(new ColorWheelUp());
-        IO.Button.ManipulatorX.value.whenPressed(new ColorWheelDown());
-        IO.Button.ManipulatorLeftBumper.value.whileHeld(new ForwardGather());
-        IO.Button.ManipulatorRightBumper.value.whileHeld(new ReverseGather());
-        IO.Button.ManipulatorB.value.whileHeld(new Shoot());
-    }
-
-    /** Reinitializes all the subsystems without a reboot */
-    public void reset() {
-        chassis.init();
+        IO.Button.DriverLeftBumper.value.whileHeld(new FieldDriveWithJoysticks());
+        IO.Button.DriverRightBumper.value.whileHeld(new DriveToPose(new Pose2d()));
+        // IO.Button.DriverA.value.whileHeld(new GatherBall());
     }
 
     /**
@@ -105,9 +79,9 @@ public class RobotContainer {
         PathPlannerTrajectory testPath = PathPlanner.loadPath("Test", Constants.PATH_MAX_VELOCITY,
                 Constants.PATH_MAX_ACCELERATION);
 
-        Command command = chassis.generatePathFollowCommand(testPath, new PIDController(1, 0, 0),
+        Command command = CHASSIS.generatePathFollowCommand(testPath, new PIDController(1, 0, 0),
                 new PIDController(0.8, 0, 0),
-                new ProfiledPIDController(-1.0, 0, 0,
+                new ProfiledPIDController(1.0, 0, 0,
                         new TrapezoidProfile.Constraints(Constants.PATH_MAX_ANGULAR_VELOCITY,
                                 Constants.PATH_MAX_ANGULAR_ACCELERATION)));
         return command;

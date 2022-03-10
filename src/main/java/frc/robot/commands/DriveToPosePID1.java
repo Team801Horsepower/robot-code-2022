@@ -16,7 +16,7 @@ public class DriveToPosePID1 extends CommandBase {
     public DriveToPosePID1(Pose2d targetPose) {
         this.targetPose = targetPose;
 
-        addRequirements(RobotContainer.chassis);
+        addRequirements(RobotContainer.CHASSIS);
 
         distanceController = new PIDController(1.0, 0.0, 0.0);
         distanceController.setTolerance(Units.inchesToMeters(1.0));
@@ -26,7 +26,7 @@ public class DriveToPosePID1 extends CommandBase {
     }
 
     public void execute() {
-        var error = targetPose.minus(RobotContainer.chassis.getCurrentPose());
+        var error = targetPose.minus(RobotContainer.CHASSIS.getCurrentPose());
         var errorDistance = error.getTranslation().getDistance(Constants.ORIGIN);
         var errorOmega = error.getRotation().getRadians();
 
@@ -36,7 +36,7 @@ public class DriveToPosePID1 extends CommandBase {
         double x = distanceCalculation * error.getTranslation().getX() / errorDistance;
         double y = distanceCalculation * error.getTranslation().getY() / errorDistance;
 
-        RobotContainer.chassis.fieldDrive(x, y, omegaCalculation);
+        RobotContainer.CHASSIS.fieldDrive(x, y, omegaCalculation);
     }
 
     public boolean isFinished() {

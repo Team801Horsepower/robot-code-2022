@@ -8,6 +8,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.IO;
 import frc.robot.RobotContainer;
 
 public class FieldDriveWithJoysticks extends CommandBase {
@@ -15,30 +17,25 @@ public class FieldDriveWithJoysticks extends CommandBase {
      * Creates a new FieldDriveWithJoysticks.
      */
     public FieldDriveWithJoysticks() {
-        addRequirements(RobotContainer.chassis);
+        addRequirements(RobotContainer.CHASSIS);
     }
 
     @Override
     public void execute() {
-        double x = RobotContainer.io.getDriverExpoLeftX(2.5);
-        double y = RobotContainer.io.getDriverExpoLeftY(2.5);
+        double forward = -IO.DRIVER.getLeftY();
+        double leftward = -IO.DRIVER.getLeftX();
+        double angular = -IO.DRIVER.getRightX();
+        
+        forward *= Constants.MAX_ROBOT_DRIVE_SPEED;
+        leftward *= Constants.MAX_ROBOT_DRIVE_SPEED;
+        angular *= Constants.MAX_ROBOT_TURN_SPEED;
 
-        double mag = x * x + y * y;
-        if (mag > 1) {
-            x /= mag;
-            y /= mag;
-        }
-
-        if (RobotContainer.winch.safeToDrive()) {
-            RobotContainer.chassis.fieldDrive(-y, x, RobotContainer.io.getDriverExpoRightX(2.5));
-        } else {
-            RobotContainer.chassis.stop();
-        }
+        RobotContainer.CHASSIS.fieldDrive(forward, leftward, angular);
     }
 
     @Override
     public void end(boolean iterrupted) {
-        RobotContainer.chassis.stop();
+        RobotContainer.CHASSIS.stop();
     }
 
     @Override

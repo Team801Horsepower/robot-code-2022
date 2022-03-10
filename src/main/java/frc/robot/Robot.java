@@ -7,10 +7,13 @@
 
 package frc.robot;
 
+import javax.swing.plaf.basic.BasicBorders.MarginBorder;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.FieldDriveWithJoysticks;
+import frc.robot.utilities.SparkMaxController;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,15 +25,29 @@ public class Robot extends TimedRobot {
 
     private Command m_autonomousCommand;
 
-    private RobotContainer robotContainer;
-
+    private RobotContainer robotContainer = new RobotContainer();
+    private SparkMaxController gather = new SparkMaxController(Constants.GATHER_WHEELS);
+    private SparkMaxController gatherArm = new SparkMaxController(Constants.GATHER_ARM);
+    private SparkMaxController shooter = new SparkMaxController(Constants.SHOOTER);
+    private SparkMaxController clawL = new SparkMaxController(Constants.CLIMB_LEFT_CLAW);
+    private SparkMaxController clawR = new SparkMaxController(Constants.CLIMB_RIGHT_CLAW);
+    private SparkMaxController climbL = new SparkMaxController(Constants.CLIMB_LEFT);
+    private SparkMaxController climbR = new SparkMaxController(Constants.CLIMB_RIGHT);
+    
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
      */
     @Override
     public void robotInit() {
-        robotContainer = new RobotContainer();
+        robotContainer.init();
+        // SmartDashboard.putData("gather", gather);
+        SmartDashboard.putData("gatherArm", gatherArm);
+        // SmartDashboard.putData("shooter", shooter);
+        // SmartDashboard.putData("claw_l", clawL);
+        // SmartDashboard.putData("claw_r", clawR);
+        // SmartDashboard.putData("climb_l", climbL);
+        // SmartDashboard.putData("climb_r", climbR);
     }
 
     /**
@@ -91,6 +108,7 @@ public class Robot extends TimedRobot {
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
+        
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
@@ -108,7 +126,7 @@ public class Robot extends TimedRobot {
     public void testInit() {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
-        robotContainer.reset();
+        RobotContainer.CHASSIS.reset();
     }
 
     /**

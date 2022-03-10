@@ -9,20 +9,20 @@ public class AimShooter extends DriveToPose {
     boolean goalLocated = false;
 
     public AimShooter() {
-        super(RobotContainer.chassis.getCurrentPose());
-        addRequirements(RobotContainer.vision, RobotContainer.chassis);
+        super(RobotContainer.CHASSIS.getCurrentPose());
+        addRequirements(RobotContainer.VISION, RobotContainer.CHASSIS);
     }
 
     @Override
     public void initialize() {
-        var targets = RobotContainer.vision.locateTargets();
-        var goalLocation = RobotContainer.vision.locateGoal(targets);
+        var targets = RobotContainer.VISION.locateTargets();
+        var goalLocation = RobotContainer.VISION.locateGoal(targets);
         if (goalLocation == null) {
             return;
         }
         var rotation = new Rotation2d(-Math.atan2(goalLocation.getX(), goalLocation.getY()));
         var transform = new Transform2d(new Translation2d(), rotation);
-        var newPose = RobotContainer.chassis.getCurrentPose().transformBy(transform);
+        var newPose = RobotContainer.CHASSIS.getCurrentPose().transformBy(transform);
         targetPose = newPose;
         goalLocated = true;
 

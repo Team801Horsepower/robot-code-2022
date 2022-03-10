@@ -16,27 +16,25 @@ public class DriveToPose extends CommandBase {
 
   /** Creates a new DriveToPoint. */
   public DriveToPose(Pose2d targetPose) {
-    addRequirements(RobotContainer.chassis);
+    addRequirements(RobotContainer.CHASSIS);
     this.targetPose = targetPose;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Transform2d error = targetPose.minus(RobotContainer.chassis.getCurrentPose());
+    Transform2d error = targetPose.minus(RobotContainer.CHASSIS.getCurrentPose());
 
-    RobotContainer.chassis.fieldDrive(error.getX(),
-        error.getY(),
-        -error.getRotation().getRadians());
+    RobotContainer.CHASSIS.fieldDrive(error.getX(), error.getY(), error.getRotation().getRadians());
   }
 
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.chassis.stop();
+    RobotContainer.CHASSIS.stop();
   }
 
   @Override
   public boolean isFinished() {
-    return Utils.almostEqual(RobotContainer.chassis.getCurrentPose(), targetPose, 0.1);
+    return Utils.almostEqual(RobotContainer.CHASSIS.getCurrentPose(), targetPose, 0.1);
   }
 }
