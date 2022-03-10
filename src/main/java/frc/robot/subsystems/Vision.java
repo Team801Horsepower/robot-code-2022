@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision extends SubsystemBase {
-    private static final PhotonCamera camera = new PhotonCamera("mmal_service_16.1");
+    private static final PhotonCamera goalCamera = new PhotonCamera("mmal_service_16.1");
 
     /** Creates a new Vision. */
     public Vision() {
@@ -30,9 +30,6 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
         var circleCenter = locateGoal(locateTargets());
-        if (circleCenter != null) {
-            System.out.println("goal: (" + circleCenter.getX() + ", " + circleCenter.getY() + ")");
-        }
     }
 
     public double calcYaw(double x) {
@@ -114,7 +111,7 @@ public class Vision extends SubsystemBase {
     }
 
     public Translation2d[][] locateTargets() {
-        var result = camera.getLatestResult();
+        var result = goalCamera.getLatestResult();
 
         if (result.hasTargets()) {
             List<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();

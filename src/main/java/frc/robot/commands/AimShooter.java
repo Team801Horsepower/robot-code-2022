@@ -5,10 +5,10 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public class Aim extends DriveToPose {
+public class AimShooter extends DriveToPose {
     boolean goalLocated = false;
 
-    public Aim() {
+    public AimShooter() {
         super(RobotContainer.chassis.getCurrentPose());
         addRequirements(RobotContainer.vision, RobotContainer.chassis);
     }
@@ -25,7 +25,7 @@ public class Aim extends DriveToPose {
         var newPose = RobotContainer.chassis.getCurrentPose().transformBy(transform);
         targetPose = newPose;
         goalLocated = true;
-        
+
         super.initialize();
     }
 
@@ -33,7 +33,7 @@ public class Aim extends DriveToPose {
     public boolean isFinished() {
         return goalLocated && super.isFinished();
     }
-    
+
     @Override
     public void execute() {
         if (goalLocated) {

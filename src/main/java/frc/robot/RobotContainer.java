@@ -21,13 +21,15 @@ import frc.robot.commands.ArmToPosition;
 import frc.robot.commands.ColorWheelDown;
 import frc.robot.commands.ColorWheelUp;
 import frc.robot.commands.DriveToPose;
+import frc.robot.commands.DriveToPosePID;
+import frc.robot.commands.DriveToPosePID1;
 import frc.robot.commands.FieldDriveWithJoysticks;
 import frc.robot.commands.ForwardGather;
 import frc.robot.commands.ReverseGather;
 import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.WinchUp;
-import frc.robot.commands.Aim;
+import frc.robot.commands.AimShooter;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ColorWheel;
@@ -73,14 +75,14 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        IO.Button.DriverLeftBumper.value.whileHeld(new FieldDriveWithJoysticks());
-        IO.Button.DriverRightBumper.value.whileHeld(new DriveToPose(new Pose2d()));
+        IO.Button.DriverLeftBumper.value.whileHeld(new RobotDriveWithJoysticks());
+        IO.Button.DriverRightBumper.value.whileHeld(new DriveToPosePID1(new Pose2d()));
 
         // IO.Button.DriverX.value.whenPressed(new ArmReset());
         // IO.Button.DriverA.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_LOW));
         // IO.Button.DriverB.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_MID));
         // IO.Button.DriverY.value.whenPressed(new ArmToPosition(Constants.ARM_POSITION_HIGH));
-        IO.Button.DriverY.value.whileHeld(new Aim());
+        IO.Button.DriverY.value.whileHeld(new AimShooter());
 
         IO.Button.ManipulatorY.value.whenPressed(new ColorWheelUp());
         IO.Button.ManipulatorX.value.whenPressed(new ColorWheelDown());

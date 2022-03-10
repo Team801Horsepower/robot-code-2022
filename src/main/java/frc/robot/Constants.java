@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
@@ -209,4 +210,6 @@ public final class Constants {
     // Testing hub radius
     public static double TARGET_RADIUS = Units.inchesToMeters(27.5);
     public static double TARGET_OFFSET_ANGLE = Units.degreesToRadians(9.75);
+
+    public static Translation2d ORIGIN = new Translation2d();
 }

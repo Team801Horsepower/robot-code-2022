@@ -96,6 +96,7 @@ public class Chassis extends SubsystemBase {
         drive.periodic();
         pose = drive.getCurrentPose();
         field.setRobotPose(pose);
+        // System.out.println("pose: " + pose);
     }
 
     /**
