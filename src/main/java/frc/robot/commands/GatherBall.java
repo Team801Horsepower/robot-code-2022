@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.IO;
 import frc.robot.RobotContainer;
 
 public class GatherBall extends CommandBase {
@@ -11,15 +12,17 @@ public class GatherBall extends CommandBase {
 
     @Override
     public void initialize() {
-        System.out.println("Gathering");
         RobotContainer.GATHER.lower();
-        RobotContainer.GATHER.run(1.0);
+    }
+
+    @Override
+    public void execute() {
+        RobotContainer.GATHER.run(IO.Axis.DriverRightTrigger.get() - IO.Axis.DriverLeftTrigger.get());
     }
 
     public void end(boolean isInterrupted) {
-        System.out.println("Gather Ball End");
-        RobotContainer.GATHER.raise();
         RobotContainer.GATHER.stop();
+        RobotContainer.GATHER.raise();
     }
     
 }
