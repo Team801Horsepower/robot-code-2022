@@ -57,9 +57,9 @@ public class Gather extends SubsystemBase {
     public Command tampBall() {
         return WHEELS.generateRotationCommand(-Math.PI, 0.01, this);
     }
-    
+
     public void popBall() {
-        
+        WHEELS.setDesiredAngle(WHEELS.getCurrentAngle() + Math.PI / 4);
     }
 
     public boolean isRaised() {

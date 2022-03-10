@@ -12,7 +12,7 @@ import frc.robot.utilities.Utils;
 
 public class DriveToPose extends CommandBase {
 
-  Pose2d targetPose;
+  protected Pose2d targetPose;
 
   /** Creates a new DriveToPoint. */
   public DriveToPose(Pose2d targetPose) {

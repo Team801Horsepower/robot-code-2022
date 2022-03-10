@@ -1,6 +1,8 @@
 # This gitignore has been specially created by the WPILib team.
 # If you remove items from this file, intellisense might break.
 
+build/**/*.jar
+
 ### C++ ###
 # Prerequisites
 *.d
@@ -49,7 +51,7 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
+# *.jar
 *.war
 *.nar
 *.ear

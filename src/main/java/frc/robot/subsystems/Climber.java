@@ -83,7 +83,6 @@ public class Climber extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println(climbSetpoint);
         CLAW_LEFT.setDesiredPosition(climbSetpoint);
         CLAW_RIGHT.setDesiredPosition(climbSetpoint);
     }

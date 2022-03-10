@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.RobotDriveWithJoysticks;
+import frc.robot.commands.RunArms;
 import frc.robot.commands.RunClaws;
 import frc.robot.commands.Climb;
 import frc.robot.commands.FieldDriveWithJoysticks;
@@ -27,6 +28,7 @@ import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Gather;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -40,10 +42,10 @@ public class RobotContainer {
     private static final IO _IO = new IO();
 
     public static final Chassis CHASSIS = new Chassis();
+    public static final Vision VISION = new Vision();
     public static final Gather GATHER = new Gather();
     public static final Shooter SHOOTER = new Shooter();
     public static final Climber CLIMBER = new Climber();
-    // public static final Vision VISION = new Vision();
 
     public static final PowerDistribution POWER_DISTRIBUTION = new PowerDistribution();
 
@@ -97,6 +99,10 @@ public class RobotContainer {
         IO.Button.ManipulatorRightTrigger.value.whileHeld(climbCommand);
         IO.Button.ManipulatorLeftTrigger.value.whileHeld(climbCommand);
 
+        IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(1.0));
+        IO.Button.ManipulatorRightBumper.value.whileHeld(new RunClaws(-1.0));
+        IO.Button.ManipulatorStart.value.whileHeld(new RunArms(1.0));
+        IO.Button.ManipulatorBack.value.whileHeld(new RunArms(-1.0));
     }
 
     /**

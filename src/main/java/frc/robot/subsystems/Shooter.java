@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants;
 import frc.robot.components.Neo;
 
@@ -34,7 +35,7 @@ public class Shooter extends SubsystemBase {
 
     /**
      * Set the target speed of the flywheel.
-     * 
+     *
      * @param speed speed is rad/s
      */
     public void setSpeed(double speed) {
