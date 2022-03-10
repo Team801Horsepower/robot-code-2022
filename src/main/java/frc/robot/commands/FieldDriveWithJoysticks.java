@@ -14,17 +14,25 @@ import frc.robot.RobotContainer;
 
 public class FieldDriveWithJoysticks extends CommandBase {
     /**
-     * Creates a new FieldDriveWithJoysticks.
+     * Creates a new RobotDriveWithJoysticks.
      */
     public FieldDriveWithJoysticks() {
         addRequirements(RobotContainer.CHASSIS);
     }
 
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+
+    }
+
+    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double forward = -IO.DRIVER.getLeftY();
-        double leftward = -IO.DRIVER.getLeftX();
-        double angular = -IO.DRIVER.getRightX();
+        
+        double forward = IO.Joystick.DriverLeft.getForward();
+        double leftward = IO.Joystick.DriverLeft.getLeftward();
+        double angular = IO.Joystick.DriverRight.getLeftward();
         
         forward *= Constants.MAX_ROBOT_DRIVE_SPEED;
         leftward *= Constants.MAX_ROBOT_DRIVE_SPEED;
@@ -33,11 +41,13 @@ public class FieldDriveWithJoysticks extends CommandBase {
         RobotContainer.CHASSIS.fieldDrive(forward, leftward, angular);
     }
 
+    // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean iterrupted) {
-        RobotContainer.CHASSIS.stop();
+    public void end(boolean interrupted) {
+
     }
 
+    // Returns true when the command should end.
     @Override
     public boolean isFinished() {
         return false;

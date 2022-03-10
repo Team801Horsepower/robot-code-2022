@@ -12,13 +12,15 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.RobotDriveWithJoysticks;
-import frc.robot.commands.RunArms;
 import frc.robot.commands.RunClaws;
+import frc.robot.commands.Climb;
+import frc.robot.commands.FieldDriveWithJoysticks;
 import frc.robot.commands.GatherBall;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
@@ -44,18 +46,20 @@ public class RobotContainer {
 
     public static final PowerDistribution POWER_DISTRIBUTION = new PowerDistribution();
 
+    private static final PathPlannerTrajectory AUTO_PATH = PathPlanner.loadPath("Test", Constants.PATH_MAX_VELOCITY, Constants.PATH_MAX_ACCELERATION);
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
         // Set the default commands for each subsystem
-        CHASSIS.setDefaultCommand(new RobotDriveWithJoysticks());
+        CHASSIS.setDefaultCommand(new FieldDriveWithJoysticks());
         // Configure the button bindings
         configureButtonBindings();
     }
 
     public void init() {
-        CHASSIS.init();
+        CHASSIS.init(AUTO_PATH.getInitialPose());
     }
 
     /**
@@ -69,10 +73,28 @@ public class RobotContainer {
         IO.Button.DriverRightTrigger.value.whileHeld(gatherCommand);
         IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
 
+        IO.Button.DriverA.value.whenPressed(
+            GATHER.tampBall()
+        );
+        IO.Button.DriverB.value.whenPressed(
+            GATHER.tampBall().andThen(
+                SHOOTER.freeBall().andThen(
+                    GATHER.tampBall()).andThen(
+                        () -> SHOOTER.setSpeed(
+                            Units.rotationsPerMinuteToRadiansPerSecond(3000.0)), SHOOTER)));
+        IO.Button.DriverB.value.whenReleased(SHOOTER::stop, SHOOTER);
+
+        IO.Button.DriverX.value.whenPressed(() -> SHOOTER.setSpeed(Units.rotationsPerMinuteToRadiansPerSecond(3000)), SHOOTER);
+        IO.Button.DriverX.value.whenReleased(SHOOTER::stop, SHOOTER);
+
+        IO.Button.DriverLeftBumper.value.whileHeld(new RobotDriveWithJoysticks());
+
         IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(1.0));
         IO.Button.ManipulatorRightBumper.value.whileHeld(new RunClaws(-1.0));
-        IO.Button.ManipulatorStart.value.whileHeld(new RunArms(1.0));
-        IO.Button.ManipulatorBack.value.whileHeld(new RunArms(-1.0));
+
+        Command climbCommand = new Climb();
+        IO.Button.ManipulatorRightTrigger.value.whileHeld(climbCommand);
+        IO.Button.ManipulatorLeftTrigger.value.whileHeld(climbCommand);
 
     }
 
@@ -82,14 +104,14 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        PathPlannerTrajectory testPath = PathPlanner.loadPath("Test", Constants.PATH_MAX_VELOCITY,
-                Constants.PATH_MAX_ACCELERATION);
 
-        Command command = CHASSIS.generatePathFollowCommand(testPath, new PIDController(1, 0, 0),
+        Command command = CHASSIS.generatePathFollowCommand(
+            AUTO_PATH,
+                new PIDController(1, 0, 0),
                 new PIDController(0.8, 0, 0),
                 new ProfiledPIDController(1.0, 0, 0,
                         new TrapezoidProfile.Constraints(Constants.PATH_MAX_ANGULAR_VELOCITY,
-                                Constants.PATH_MAX_ANGULAR_ACCELERATION)));
+                                Constants.PATH_MAX_ANGULAR_ACCELERATION))).alongWith(new GatherBall());
         return command;
     }
 }

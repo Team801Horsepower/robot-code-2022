@@ -7,7 +7,7 @@ public class SwerveModule2020 extends SwerveModule {
     private final Neo DRIVE_MOTOR;
     private final Neo550 TURN_MOTOR;
 
-    public SwerveModule2020(int driveCanId, int turnCanId) {
+    public SwerveModule2020(int driveCanId, int turnCanId, boolean inverted) {
         super(
             new Neo(driveCanId),
             new Neo550(turnCanId),
@@ -26,7 +26,7 @@ public class SwerveModule2020 extends SwerveModule {
 
         DRIVE_MOTOR.setGearRatio(0.1875);
 
-        DRIVE_MOTOR.CONTROLLER.setInverted(true);
+        DRIVE_MOTOR.CONTROLLER.setInverted(!inverted);
         DRIVE_MOTOR.CONTROLLER.setIdleMode(IdleMode.kCoast); // TODO: Switch back to kCoast
         DRIVE_MOTOR.CONTROLLER.setSmartCurrentLimit(40, 30);
 

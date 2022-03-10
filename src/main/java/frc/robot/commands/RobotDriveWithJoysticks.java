@@ -32,7 +32,7 @@ public class RobotDriveWithJoysticks extends CommandBase {
         
         double forward = IO.Joystick.DriverLeft.getForward();
         double leftward = IO.Joystick.DriverLeft.getLeftward();
-        double angular = -IO.Joystick.DriverRight.getLeftward();
+        double angular = IO.Joystick.DriverRight.getLeftward();
         
         forward *= Constants.MAX_ROBOT_DRIVE_SPEED;
         leftward *= Constants.MAX_ROBOT_DRIVE_SPEED;

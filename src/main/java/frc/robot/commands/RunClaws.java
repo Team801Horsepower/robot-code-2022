@@ -9,7 +9,6 @@ public class RunClaws extends CommandBase {
 
     public RunClaws(double speed) {
         this.speed = speed;
-        addRequirements(RobotContainer.CLIMBER);
     }
 
     @Override

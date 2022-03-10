@@ -2,16 +2,18 @@ package frc.robot;
 
 public final class Constants {
 
+        public static final double CLIMB_PRIME_POSITION = -1.039;
+
         public static final double ARM_LOWERED_POSITION = -1.0;
-        public static final double ARM_RAISED_POSITION = 0.1;
+        public static final double ARM_RAISED_POSITION = 0.0;
 
-        public static final double MAX_ROBOT_DRIVE_SPEED = 1.0;
-        public static final double MAX_ROBOT_TURN_SPEED = 1.0;
+        public static final double MAX_ROBOT_DRIVE_SPEED = 5.0;
+        public static final double MAX_ROBOT_TURN_SPEED = Math.PI;
 
-        public static final double PATH_MAX_VELOCITY = 1.0;
-        public static final double PATH_MAX_ACCELERATION = 0.5;
-        public static final double PATH_MAX_ANGULAR_VELOCITY = 0.1;
-        public static final double PATH_MAX_ANGULAR_ACCELERATION = 3.1415;
+        public static final double PATH_MAX_VELOCITY = 5.0;
+        public static final double PATH_MAX_ACCELERATION = 5.0;
+        public static final double PATH_MAX_ANGULAR_VELOCITY = 2 * Math.PI;
+        public static final double PATH_MAX_ANGULAR_ACCELERATION = Math.PI;
 
         // PIDs
 

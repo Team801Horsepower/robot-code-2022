@@ -1,13 +1,14 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.components.Neo550;
 
 public class Gather extends SubsystemBase {
 
-    private final Neo550 WHEELS;
-    private final Neo550 ARM;
+    public final Neo550 WHEELS;
+    public final Neo550 ARM;
 
     private boolean lowering = false;
 
@@ -53,8 +54,8 @@ public class Gather extends SubsystemBase {
         WHEELS.setPower(0.0);
     }
     
-    public void tampBall() {
-        WHEELS.setDesiredAngle(WHEELS.getCurrentAngle() - Math.PI / 4);
+    public Command tampBall() {
+        return WHEELS.generateRotationCommand(-Math.PI, 0.01, this);
     }
     
     public void popBall() {

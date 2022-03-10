@@ -1,7 +1,5 @@
 package frc.robot.components;
 
-import java.util.Set;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -78,6 +76,8 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
         }
         
         builder.addDoubleProperty("position", this::getCurrentPosition, (value) -> {});
+        builder.addDoubleProperty("speed", this::getCurrentSpeed, (value) -> {});
+
 
     }
     
@@ -177,8 +177,47 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
             }
 
             @Override
+            public void execute() {
+                System.out.println("Setting Position " + position);
+            }
+
+            @Override
             public boolean isFinished() {
                 return positionReached(tolerance);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                if (!interrupted)
+                    System.out.println("Position Reached");
+            }
+        };
+        command.addRequirements(requirements);
+        return command;
+    }
+
+    public Command generateRotationCommand(double rotation, double tolerance, Subsystem... requirements) {
+        CommandBase command = new CommandBase() {
+
+            @Override
+            public void initialize() {
+                setDesiredPosition(getCurrentPosition() + rotation);
+            }
+
+            @Override
+            public void execute() {
+                System.out.println("Setting Rotation" + rotation);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return positionReached(tolerance);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                if (!interrupted)
+                    System.out.println("Rotation Reached");
             }
         };
         command.addRequirements(requirements);
@@ -190,12 +229,23 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
 
             @Override
             public void initialize() {
-                setDesiredPosition(velocity);
+                setDesiredSpeed(velocity);
+            }
+
+            @Override
+            public void execute() {
+                System.out.println("Setting Velocity: " + velocity);
             }
 
             @Override
             public boolean isFinished() {
                 return velocityReached(tolerance);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                if (!interrupted)
+                    System.out.println("Velocity Reached");
             }
         };
         command.addRequirements(requirements);

@@ -60,7 +60,6 @@ public class SwerveModule2022 extends SwerveModule {
     @Override
     public void init() {
         super.init();
-        System.out.println(THROUGHBORE_ENCODER.getCurrentPosition());
         TURN_MOTOR.setPosition(THROUGHBORE_ENCODER.getCurrentPosition());
         resetZero();
     }

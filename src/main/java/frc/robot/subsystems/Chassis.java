@@ -16,7 +16,7 @@ import frc.robot.commands.PathPlannerControllerCommand;
 import frc.robot.components.AHRSGyroEncoder;
 import frc.robot.components.SwerveDrive;
 import frc.robot.components.SwerveModule;
-import frc.robot.components.SwerveModule2022;
+import frc.robot.components.SwerveModule2020;
 
 /**
  * Subsystem to control the entire drive base
@@ -44,10 +44,10 @@ public class Chassis extends SubsystemBase {
 
         drive = new SwerveDrive(
             new SwerveModule[] {
-                new SwerveModule2022(Constants.POD_1_DRIVE, Constants.POD_1_TURN, Constants.POD_1_THROUGHBORE, false),
-                new SwerveModule2022(Constants.POD_2_DRIVE, Constants.POD_2_TURN, Constants.POD_2_THROUGHBORE, false),
-                new SwerveModule2022(Constants.POD_3_DRIVE, Constants.POD_3_TURN, Constants.POD_3_THROUGHBORE, true),
-                new SwerveModule2022(Constants.POD_4_DRIVE, Constants.POD_4_TURN, Constants.POD_4_THROUGHBORE, true)
+                new SwerveModule2020(Constants.POD_1_DRIVE, Constants.POD_1_TURN, false),
+                new SwerveModule2020(Constants.POD_2_DRIVE, Constants.POD_2_TURN, false),
+                new SwerveModule2020(Constants.POD_3_DRIVE, Constants.POD_3_TURN, true),
+                new SwerveModule2020(Constants.POD_4_DRIVE, Constants.POD_4_TURN, true)
             },
             // x is forward 
             // y is leftward
@@ -64,9 +64,10 @@ public class Chassis extends SubsystemBase {
     /**
      * This method should be called upon the robotInit (regardless of mode)
      */
-    public void init() {
-        gyro.setPosition(0.0);
+    public void init(Pose2d initialPose) {
+        gyro.setPosition(initialPose.getRotation().getRadians());
         drive.init();
+        drive.resetPose(initialPose);
     }
 
     public void periodic() {
