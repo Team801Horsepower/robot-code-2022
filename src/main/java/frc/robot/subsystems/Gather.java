@@ -26,12 +26,12 @@ public class Gather extends SubsystemBase {
         ARM.setDesiredPosition(0.0);
     }
 
-    public void forward() {
-        WHEELS.setDesiredSpeed(1.0);
+    public void forward(double speed) {
+        WHEELS.setDesiredSpeed(speed);
     }
 
-    public void reverse() {
-        WHEELS.setDesiredSpeed(WHEELS.getMaxSpeed());
+    public void reverse(double speed) {
+        WHEELS.setDesiredSpeed(-speed);
     }
 
     public void stop() {
@@ -39,7 +39,11 @@ public class Gather extends SubsystemBase {
     }
     
     public void tampBall() {
-        WHEELS.setDesiredPosition(Math.PI / 4);
+        WHEELS.setDesiredAngle(WHEELS.getCurrentAngle() - Math.PI / 4);
+    }
+    
+    public void popBall() {
+        
     }
 
     public boolean isRaised() {

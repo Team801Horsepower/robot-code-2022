@@ -77,5 +77,5 @@ public final class Constants {
 
         // Shooter CAN IDs
         public static final int SHOOTER = 7;
-        public static final double SHOOTER_GEAR_RATIO = 1.0 / 3.0;
+        public static final double SHOOTER_GEAR_RATIO = 1.0;
 }
