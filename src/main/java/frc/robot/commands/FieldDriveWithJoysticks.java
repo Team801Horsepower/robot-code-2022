@@ -22,19 +22,15 @@ public class FieldDriveWithJoysticks extends CommandBase {
 
     @Override
     public void execute() {
-        double forward = IO.Joystick.DriverLeft.getForward();
-        double leftward = IO.Joystick.DriverLeft.getLeftward();
-        double angular = IO.Joystick.DriverRight.getLeftward();
+        double forward = -IO.DRIVER.getLeftY();
+        double leftward = -IO.DRIVER.getLeftX();
+        double angular = -IO.DRIVER.getRightX();
         
         forward *= Constants.MAX_ROBOT_DRIVE_SPEED;
         leftward *= Constants.MAX_ROBOT_DRIVE_SPEED;
         angular *= Constants.MAX_ROBOT_TURN_SPEED;
 
-        if (RobotContainer.WINCH.safeToDrive()) {
-            RobotContainer.CHASSIS.fieldDrive(forward, leftward, angular);
-        } else {
-            RobotContainer.CHASSIS.stop();
-        }
+        RobotContainer.CHASSIS.fieldDrive(forward, leftward, angular);
     }
 
     @Override

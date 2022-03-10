@@ -8,7 +8,7 @@ public class SwerveModule2022 extends SwerveModule {
     private final Neo550 TURN_MOTOR;
     private final ThroughboreEncoder THROUGHBORE_ENCODER;
 
-    public SwerveModule2022(int driveCanId, int turnCanId, int throughborePin) {
+    public SwerveModule2022(int driveCanId, int turnCanId, int throughborePin, boolean inverted) {
         super(
             new Neo(driveCanId),
             new Neo550(turnCanId),
@@ -30,7 +30,7 @@ public class SwerveModule2022 extends SwerveModule {
 
         DRIVE_MOTOR.setGearRatio(0.1875);
 
-        DRIVE_MOTOR.CONTROLLER.setInverted(false);
+        DRIVE_MOTOR.CONTROLLER.setInverted(!inverted);
         DRIVE_MOTOR.CONTROLLER.setIdleMode(IdleMode.kCoast); // TODO: Switch back to kCoast
         DRIVE_MOTOR.CONTROLLER.setSmartCurrentLimit(40, 30);
 
@@ -40,7 +40,7 @@ public class SwerveModule2022 extends SwerveModule {
         // Set up the Turn Motor
         TURN_MOTOR = (Neo550) super.TURN_MOTOR;
         int positionPid = TURN_MOTOR.getPositionPid();
-        TURN_MOTOR.PID.setP(0.08333, positionPid);
+        TURN_MOTOR.PID.setP(0.4, positionPid);
         TURN_MOTOR.PID.setI(0.000667, positionPid);
         TURN_MOTOR.PID.setD(0.1, positionPid);
         TURN_MOTOR.PID.setFF(0.0, positionPid);
@@ -60,7 +60,9 @@ public class SwerveModule2022 extends SwerveModule {
     @Override
     public void init() {
         super.init();
+        System.out.println(THROUGHBORE_ENCODER.getCurrentPosition());
         TURN_MOTOR.setPosition(THROUGHBORE_ENCODER.getCurrentPosition());
+        resetZero();
     }
 
     @Override

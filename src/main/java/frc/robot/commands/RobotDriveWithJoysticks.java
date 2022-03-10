@@ -29,19 +29,16 @@ public class RobotDriveWithJoysticks extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        
         double forward = IO.Joystick.DriverLeft.getForward();
         double leftward = IO.Joystick.DriverLeft.getLeftward();
-        double angular = IO.Joystick.DriverRight.getLeftward();
+        double angular = -IO.Joystick.DriverRight.getLeftward();
         
         forward *= Constants.MAX_ROBOT_DRIVE_SPEED;
         leftward *= Constants.MAX_ROBOT_DRIVE_SPEED;
         angular *= Constants.MAX_ROBOT_TURN_SPEED;
 
-        if (RobotContainer.WINCH.safeToDrive()) {
-            RobotContainer.CHASSIS.robotDrive(forward, leftward, angular);
-        } else {
-            RobotContainer.CHASSIS.stop();
-        }
+        RobotContainer.CHASSIS.robotDrive(forward, leftward, angular);
     }
 
     // Called once the command ends or is interrupted.

@@ -18,7 +18,7 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    PhotonCamera camera = new PhotonCamera("mmal_service_16.1");
+    PhotonCamera camera = new PhotonCamera("goalCamera");
     var result = camera.getLatestResult();
 
     double cameraHeightMeters = Units.inchesToMeters(30);
@@ -34,7 +34,6 @@ public class Vision extends SubsystemBase {
         avgArea += target.getArea();
       }
       avgArea /= result.getTargets().size();
-      System.out.println("Range:" + range1 + " Avg Area: " + avgArea);
     }
 
 

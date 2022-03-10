@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.architecture.PositionMotor;
 import frc.robot.architecture.SpeedMotor;
 
@@ -43,6 +44,7 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
         PID = CONTROLLER.getPIDController();
 
         CONTROLLER.setSmartCurrentLimit(40);
+        SmartDashboard.putData(this);
     }
 
     @Override
@@ -67,18 +69,14 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
         }
     }
 
-    protected void setDesiredSpeed(double speed, double maxSpeed) {
-        if (speed / ENCODER.getVelocityConversionFactor() > maxSpeed) {
-            System.err.println("Tried to exceed max speed: " + speed / ENCODER.getVelocityConversionFactor() + "RPM (max is "
-                    + maxSpeed + "RPM)");
-            speed = maxSpeed * ENCODER.getVelocityConversionFactor();
+    public void setDesiredSpeed(double speed) {
+        double maxSpeed = getMaxSpeed();
+        if (speed > maxSpeed) {
+            System.err.println("Tried to exceed max speed: " + speed + "rad/s (max is "
+                    + maxSpeed + "rad/s)");
+            speed = maxSpeed;
         }
         PID.setReference(speed, ControlType.kVelocity, speedPid);
-    }
-    
-    @Override
-    public void setDesiredSpeed(double speed) {
-        setDesiredSpeed(speed, MAX_SPEED);
     }
 
     @Override
@@ -131,4 +129,11 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
         ENCODER.setPosition(newPosition);
     }
     
+    protected double getMaxSpeed(double nativeMaxSpeed) {
+        return nativeMaxSpeed * ENCODER.getVelocityConversionFactor();
+    }
+
+    public double getMaxSpeed() {
+        return getMaxSpeed(MAX_SPEED);
+    }
 }

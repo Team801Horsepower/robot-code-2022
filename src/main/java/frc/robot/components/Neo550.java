@@ -15,10 +15,10 @@ public class Neo550 extends Neo {
      */
     public Neo550(int canId) {
         super(canId);
-    } 
+    }
 
     @Override
-    public void setDesiredSpeed(double speed) {
-        setDesiredSpeed(speed, MAX_SPEED);
+    public double getMaxSpeed() {
+        return getMaxSpeed(MAX_SPEED);
     }
 }

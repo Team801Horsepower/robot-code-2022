@@ -9,6 +9,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
@@ -94,17 +96,19 @@ public final class IO {
         ManipulatorRightTrigger(MANIPULATOR::getRightTriggerAxis);
 
         private DoubleSupplier valueSupplier;
+        private DoubleSupplier outputSupplier;
 
         Axis(DoubleSupplier value) {
             this.valueSupplier = value;
+            this.outputSupplier = valueSupplier;
         }
 
         private void addTransform(Function<Double, Double> transform) {
-            this.valueSupplier = () -> transform.apply(this.valueSupplier.getAsDouble());
+            this.outputSupplier = () -> transform.apply(this.valueSupplier.getAsDouble());
         }
 
         public double get() {
-            return valueSupplier.getAsDouble();
+            return outputSupplier.getAsDouble();
         }
     }
 
@@ -193,14 +197,10 @@ public final class IO {
 
     public IO() {
         if (!initialized) {
-            Axis.DriverLeftX.addTransform(deadbandTransform(0.005));
-            Axis.DriverLeftX.addTransform(exponentialTransform(3));
-            Axis.DriverLeftY.addTransform(deadbandTransform(0.005));
-            Axis.DriverLeftY.addTransform(exponentialTransform(3));
-            Axis.DriverRightX.addTransform(deadbandTransform(0.005));
-            Axis.DriverRightX.addTransform(exponentialTransform(3));
-            Axis.DriverRightY.addTransform(deadbandTransform(0.005));
-            Axis.DriverRightY.addTransform(exponentialTransform(3));
+            Axis.DriverLeftX.addTransform(deadbandTransform(0.05).andThen(exponentialTransform(3)));
+            Axis.DriverLeftY.addTransform(deadbandTransform(0.05).andThen(exponentialTransform(3)));
+            Axis.DriverRightX.addTransform(deadbandTransform(0.05).andThen(exponentialTransform(3)));
+            Axis.DriverRightY.addTransform(deadbandTransform(0.05).andThen(exponentialTransform(3)));
 
             initialized = true;
         } else {

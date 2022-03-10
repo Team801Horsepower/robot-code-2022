@@ -21,16 +21,17 @@ public class ThroughboreEncoder implements PositionEncoder {
         DUTY_CYCLE = new DutyCycle(new DigitalInput(dioPin));
 
         offset = Preferences.getDouble(PART_NAME + "[" + DIO_PIN + "]/offset", 0.0);
+        System.out.println(PART_NAME + "[" + DIO_PIN + "]:  " + offset);
     }
 
     @Override
     public double getCurrentPosition() {
-        return Utils.normalizeAngle(DUTY_CYCLE.getOutput() * 2 * Math.PI - offset);
+        return Utils.normalizeAngle(DUTY_CYCLE.getOutput() * 2 * Math.PI + offset);
     }
 
     @Override
     public void setPosition(double newPosition) {
-        offset = newPosition;
-        Preferences.setDouble(PART_NAME + "[" + DIO_PIN + "]/offset", DUTY_CYCLE.getOutput() * 2 * Math.PI - newPosition);
+        offset = newPosition - DUTY_CYCLE.getOutput() * 2 * Math.PI;
+        Preferences.setDouble(PART_NAME + "[" + DIO_PIN + "]/offset", offset);
     }
 }

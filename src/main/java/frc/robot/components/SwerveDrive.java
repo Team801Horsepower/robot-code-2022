@@ -75,11 +75,13 @@ public class SwerveDrive extends Drive {
 
     @Override
     public void setDesiredSpeeds(ChassisSpeeds speeds) {
+        System.out.print("Chassis Speeds: " + speeds);
         SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
-
         for (int i = 0; i < modules.length; i++) {
+            System.out.print("State[" + i + "]: " + moduleStates[i] + ", ");
             modules[i].setDesiredState(moduleStates[i]);
         }
+        System.out.println();
     }
 
     @Override
