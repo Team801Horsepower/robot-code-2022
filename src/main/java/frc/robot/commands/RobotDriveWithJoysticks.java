@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.IO;
@@ -23,7 +24,7 @@ public class RobotDriveWithJoysticks extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-
+        IO.DRIVER.setRumble(RumbleType.kLeftRumble, 0.2);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -44,7 +45,7 @@ public class RobotDriveWithJoysticks extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-
+        IO.DRIVER.setRumble(RumbleType.kLeftRumble, 0.0);
     }
 
     // Returns true when the command should end.

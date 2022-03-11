@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public class AimShooter extends DriveToPose {
+public class AimShooter extends DriveToPosePID1 {
     boolean goalLocated = false;
 
     public AimShooter() {

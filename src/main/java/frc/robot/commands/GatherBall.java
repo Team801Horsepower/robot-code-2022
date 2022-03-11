@@ -17,7 +17,7 @@ public class GatherBall extends CommandBase {
 
     @Override
     public void execute() {
-        RobotContainer.GATHER.run((IO.Axis.DriverRightTrigger.get() - IO.Axis.DriverLeftTrigger.get()) / 2);
+        RobotContainer.GATHER.run((IO.Axis.DriverRightTrigger.get() - IO.Axis.DriverLeftTrigger.get()));
     }
 
     @Override
@@ -27,7 +27,5 @@ public class GatherBall extends CommandBase {
 
     public void end(boolean interrupted) {
         RobotContainer.GATHER.stop();
-        RobotContainer.GATHER.raise();
     }
-    
 }

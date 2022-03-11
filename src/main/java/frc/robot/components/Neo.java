@@ -1,7 +1,5 @@
 package frc.robot.components;
 
-import java.util.Set;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;

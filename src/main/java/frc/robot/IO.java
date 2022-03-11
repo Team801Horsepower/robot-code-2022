@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public final class IO {
 
-    private static final double AXIS_CLICK_THRESHOLD = 0.1;
+    private static final double AXIS_CLICK_THRESHOLD = 0.01;
 
     public enum Button {
         DriverA(DRIVER, XboxController.Button.kA.value),
@@ -199,6 +199,8 @@ public final class IO {
             Axis.DriverLeftY.addTransform(deadbandTransform(0.05).andThen(exponentialTransform(3)));
             Axis.DriverRightX.addTransform(deadbandTransform(0.05).andThen(exponentialTransform(3)));
             Axis.DriverRightY.addTransform(deadbandTransform(0.05).andThen(exponentialTransform(3)));
+            Axis.ManipulatorLeftTrigger.addTransform(exponentialTransform(10));
+            Axis.ManipulatorRightTrigger.addTransform(exponentialTransform(10));
 
             initialized = true;
         } else {

@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.TargetCorner;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.util.Units;
@@ -17,17 +16,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.stream.Stream;
+
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision extends SubsystemBase {
-    private static final PhotonCamera goalCamera = new PhotonCamera("mmal_service_16.1");
+    private static final PhotonCamera goalCamera = new PhotonCamera("goalCamera");
 
     /** Creates a new Vision. */
     public Vision() {
+        goalCamera.setDriverMode(Preferences.getBoolean("DRIVER_MODE", false));
     }
 
     @Override
     public void periodic() {
+        Constants.CAMERA_PITCH = Preferences.getDouble("CAMERA_PITCH", Constants.CAMERA_PITCH);
+        Constants.CAMERA_HORIZONTAL_FOV = Preferences.getDouble("HORIZONTAL_FOV", Constants.CAMERA_HORIZONTAL_FOV);
+        Constants.CAMERA_VERTICAL_FOV = Preferences.getDouble("VERTICAL_FOV", Constants.CAMERA_VERTICAL_FOV);
+
+        boolean driverMode = Preferences.getBoolean("DRIVER_MODE", false);
+        if (goalCamera.getDriverMode() != driverMode) {
+            goalCamera.setDriverMode(driverMode);
+        }
+
+        Translation2d[][] targets = locateTargets();
+        plotPoints(targets[0], locateGoal(targets));
     }
 
     public double calcYaw(double x) {
