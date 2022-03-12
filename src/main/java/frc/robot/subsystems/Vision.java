@@ -11,6 +11,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
+import frc.robot.utilities.Utils;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +25,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Vision extends SubsystemBase {
     private static final PhotonCamera goalCamera = new PhotonCamera("goalCamera");
 
+    private Translation2d lastGoalLocation;
+
     /** Creates a new Vision. */
     public Vision() {
         goalCamera.setDriverMode(Preferences.getBoolean("DRIVER_MODE", false));
@@ -30,17 +34,15 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Constants.CAMERA_PITCH = Preferences.getDouble("CAMERA_PITCH", Constants.CAMERA_PITCH);
-        Constants.CAMERA_HORIZONTAL_FOV = Preferences.getDouble("HORIZONTAL_FOV", Constants.CAMERA_HORIZONTAL_FOV);
-        Constants.CAMERA_VERTICAL_FOV = Preferences.getDouble("VERTICAL_FOV", Constants.CAMERA_VERTICAL_FOV);
-
-        boolean driverMode = Preferences.getBoolean("DRIVER_MODE", false);
-        if (goalCamera.getDriverMode() != driverMode) {
-            goalCamera.setDriverMode(driverMode);
+        lastGoalLocation = locateGoal(locateTargets());
+        if (lastGoalLocation != null) {
+            SmartDashboard.putBoolean("Targeted", Utils.almostEqual(lastGoalLocation.getX(), -0.1, 0.05) && Utils.almostEqual(lastGoalLocation.getY(), 4.0, 0.1));
+            SmartDashboard.putBoolean("Ranging", lastGoalLocation.getY() > 4.0);
         }
+    }
 
-        Translation2d[][] targets = locateTargets();
-        plotPoints(targets[0], locateGoal(targets));
+    public Translation2d getGoalLocation() {
+        return lastGoalLocation;
     }
 
     public double calcYaw(double x) {
@@ -239,5 +241,29 @@ public class Vision extends SubsystemBase {
         double confidence = 1.0 - Math.pow(1.4938, -(centers.length - 1));
         System.out.println("centers: " + centers.length + ", confidence: " + confidence);
         return gyroAngle * (1.0 - confidence) + closestPossibleAngle * confidence;
+    }
+
+    public double calcShooterSpeed(double distance) {
+        double lowerK = 0.0;
+        double lowerV = Double.NaN;
+        double upperK = Double.POSITIVE_INFINITY;
+        double upperV = Double.NaN;
+
+        for (var entry : Constants.shooterSpeedTable.entrySet()) {
+            if (entry.getKey() <= distance && entry.getKey() > lowerK) {
+                lowerK = entry.getKey();
+                lowerV = entry.getValue();
+            } else if (entry.getKey() >= distance && entry.getKey() < upperK) {
+                upperK = entry.getKey();
+                upperV = entry.getValue();
+            }
+        }
+
+        if (Double.isNaN(lowerV) || Double.isNaN(upperV)) {
+            return 0.0;
+        }
+
+        double interp = (distance - lowerK) / (upperK - lowerK);
+        return lowerV + interp * (upperV - lowerV);
     }
 }

@@ -55,7 +55,7 @@ public class Gather extends SubsystemBase {
     }
     
     public Command tampBall() {
-        return WHEELS.generateRotationCommand(-Math.PI, 0.01, this);
+        return WHEELS.generateRotationCommand(-2.5 * Math.PI, 0.01, this);
     }
 
     public void popBall() {

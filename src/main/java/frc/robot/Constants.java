@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Translation2d;
+import java.util.Map;
 
 public class Constants {
 
@@ -13,10 +14,11 @@ public class Constants {
     public static final double MAX_ROBOT_DRIVE_SPEED = 7.0;
     public static final double MAX_ROBOT_TURN_SPEED = Math.PI;
 
-    public static final double PATH_MAX_VELOCITY = 7.0;
-    public static final double PATH_MAX_ACCELERATION = 5.0;
+    // TODO: set values up
+    public static final double PATH_MAX_VELOCITY = 0.5;//7.0;
+    public static final double PATH_MAX_ACCELERATION = 1.0;//5.0;
     public static final double PATH_MAX_ANGULAR_VELOCITY = 2 * Math.PI;
-    public static final double PATH_MAX_ANGULAR_ACCELERATION = 2 * Math.PI;
+    public static final double PATH_MAX_ANGULAR_ACCELERATION = Math.PI;
 
     // PIDs
 
@@ -92,13 +94,21 @@ public class Constants {
     public static double CAMERA_VERTICAL_FOV = Units.degreesToRadians(30.15);
     public static int CAMERA_PIXEL_WIDTH = 1280;
     public static int CAMERA_PIXEL_HEIGHT = 720;
-    public static double TARGET_HEIGHT = Units.inchesToMeters(8.0 * 12.0 + 8.0);
+    public static double TARGET_HEIGHT = Units.inchesToMeters(8.0 * 12.0 + 7.0); //Units.inchesToMeters(53.5)
     public static double TARGET_TAPE_WIDTH = Units.inchesToMeters(2.0);
-    // Competition hub radius
     public static double TARGET_RADIUS = Units.inchesToMeters(26.0 + 11.0 / 16.0);
-    // Testing hub radius
-    // public static double TARGET_RADIUS = Units.inchesToMeters(27.5);
     public static double TARGET_OFFSET_ANGLE = Units.degreesToRadians(9.75);
 
     public static Translation2d ORIGIN = new Translation2d();
+
+    public static Map<Double, Double> shooterSpeedTable = Map.of(
+        1.0, 113.0,
+        2.0, 160.0,
+        3.0, 196.0,
+        4.0, 227.0,
+        5.0, 253.0,
+        6.0, 278.0,
+        7.0, 300.0,
+        8.0, 320.0
+    );
 }

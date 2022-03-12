@@ -12,7 +12,7 @@ public class Climb extends CommandBase {
 
     @Override
     public void execute() {
-        RobotContainer.CLIMBER.driveClimb(IO.Axis.ManipulatorRightTrigger.get() - IO.Axis.ManipulatorLeftTrigger.get());
+        RobotContainer.CLIMBER.driveClimb(0.1 * (IO.Axis.ManipulatorRightTrigger.get() - IO.Axis.ManipulatorLeftTrigger.get()));
     }
 
     public void end(boolean isInterrupted) {

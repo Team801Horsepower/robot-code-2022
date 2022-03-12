@@ -1,27 +1,34 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 
 public class RunShooter extends CommandBase {
     public RunShooter() {
-        // Use addRequirements() here to declare subsystem dependencies.
+        addRequirements(RobotContainer.SHOOTER);
     }
 
     // Called when the command is initially scheduled.
     @Override
-    public void initialize() {}
+    public void initialize() {
+        RobotContainer.SHOOTER.setSpeed(Units.rotationsPerMinuteToRadiansPerSecond(2100.0));
+    }
 
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
-    public void execute() {}
+    public void execute() {
+        SmartDashboard.putBoolean("RPM Reached", RobotContainer.SHOOTER.FLYWHEEL.velocityReached(2 * Math.PI));
+    }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {}
-
-    // Returns true when the command should end.
     @Override
     public boolean isFinished() {
         return false;
+    }
+
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
+        RobotContainer.SHOOTER.stop();
     }
 }

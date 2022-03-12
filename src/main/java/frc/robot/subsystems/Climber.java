@@ -13,9 +13,10 @@ public class Climber extends SubsystemBase {
     private final Neo550 CLAW_LEFT;
 
     double CLIMB_P = 1.0;
-    double CLIMB_I = 0.01;
+    double CLIMB_I = 0.001;
     double CLIMB_D = 0.0;
 
+    double clawSetpoint = 0.0;
     double climbSetpoint = 0.0;
 
     public boolean isLocked() {
@@ -28,7 +29,7 @@ public class Climber extends SubsystemBase {
         CLIMB_RIGHT.setGearRatio(Constants.CLIMB_GEAR_RATIO);
         CLIMB_RIGHT.setPosition(0.0);
 
-        int positionPid = CLIMB_RIGHT.getSpeedPid();
+        int positionPid = CLIMB_RIGHT.getPositionPid();
         CLIMB_RIGHT.PID.setP(CLIMB_P, positionPid);
         CLIMB_RIGHT.PID.setI(CLIMB_I, positionPid);
         CLIMB_RIGHT.PID.setD(CLIMB_D, positionPid);
@@ -37,7 +38,7 @@ public class Climber extends SubsystemBase {
         CLIMB_LEFT.setGearRatio(Constants.CLIMB_GEAR_RATIO);
         CLIMB_LEFT.setPosition(0.0);
 
-        positionPid = CLIMB_LEFT.getSpeedPid();
+        positionPid = CLIMB_LEFT.getPositionPid();
         CLIMB_LEFT.PID.setP(CLIMB_P, positionPid);
         CLIMB_LEFT.PID.setI(CLIMB_I, positionPid);
         CLIMB_LEFT.PID.setD(CLIMB_D, positionPid);
@@ -62,28 +63,31 @@ public class Climber extends SubsystemBase {
     }
 
     public void raiseArm() {
-        CLIMB_LEFT.setDesiredPosition(Constants.CLIMB_PRIME_POSITION);
+        climbSetpoint = Constants.CLIMB_PRIME_POSITION;        
     }
 
     public void driveClimb(double speed) {
-        CLIMB_LEFT.setPower(speed);
-        CLIMB_RIGHT.setPower(speed);
-    }
-
-    public void driveClaws(double speed) {
         climbSetpoint += speed;
     }
 
+    public void driveClaws(double speed) {
+        clawSetpoint += speed;
+    }
+
+    public void setClawPosition(double position) {
+        clawSetpoint = position;
+    }
+
     public void stop() {
-        CLIMB_LEFT.setPower(0.0);
-        CLIMB_RIGHT.setPower(0.0);
-        CLAW_LEFT.setPower(0.0);
-        CLAW_RIGHT.setPower(0.0);
+        clawSetpoint = CLAW_RIGHT.getCurrentPosition();
+        climbSetpoint = CLIMB_RIGHT.getCurrentPosition();
     }
 
     @Override
     public void periodic() {
-        CLAW_LEFT.setDesiredPosition(climbSetpoint);
-        CLAW_RIGHT.setDesiredPosition(climbSetpoint);
+        CLAW_LEFT.setDesiredPosition(clawSetpoint);
+        CLAW_RIGHT.setDesiredPosition(clawSetpoint);
+        CLIMB_LEFT.setDesiredPosition(climbSetpoint);
+        CLIMB_RIGHT.setDesiredPosition(climbSetpoint);
     }
 }

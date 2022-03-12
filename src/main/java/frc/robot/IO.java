@@ -195,10 +195,10 @@ public final class IO {
 
     public IO() {
         if (!initialized) {
-            Axis.DriverLeftX.addTransform(deadbandTransform(0.05).andThen(exponentialTransform(3)));
-            Axis.DriverLeftY.addTransform(deadbandTransform(0.05).andThen(exponentialTransform(3)));
-            Axis.DriverRightX.addTransform(deadbandTransform(0.05).andThen(exponentialTransform(3)));
-            Axis.DriverRightY.addTransform(deadbandTransform(0.05).andThen(exponentialTransform(3)));
+            Axis.DriverLeftX.addTransform(deadbandTransform(0.075).andThen(exponentialTransform(3)));
+            Axis.DriverLeftY.addTransform(deadbandTransform(0.075).andThen(exponentialTransform(3)));
+            Axis.DriverRightX.addTransform(deadbandTransform(0.075).andThen(exponentialTransform(3)));
+            Axis.DriverRightY.addTransform(deadbandTransform(0.075).andThen(exponentialTransform(3)));
             Axis.ManipulatorLeftTrigger.addTransform(exponentialTransform(10));
             Axis.ManipulatorRightTrigger.addTransform(exponentialTransform(10));
 

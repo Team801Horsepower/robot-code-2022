@@ -33,6 +33,11 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putData(FLYWHEEL);
     }
 
+    // @Override
+    // public void periodic() {
+    //     System.out.println(FLYWHEEL.getCurrentSpeed());
+    // }
+    
     /**
      * Set the target speed of the flywheel.
      *

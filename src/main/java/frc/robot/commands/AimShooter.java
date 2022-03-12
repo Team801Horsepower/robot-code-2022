@@ -1,29 +1,28 @@
 package frc.robot.commands;
 
 import frc.robot.RobotContainer;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public class AimShooter extends DriveToPosePID1 {
+public class AimShooter extends DriveToPose {
     boolean goalLocated = false;
 
     public AimShooter() {
-        super(RobotContainer.CHASSIS.getCurrentPose());
-        addRequirements(RobotContainer.VISION, RobotContainer.CHASSIS);
+        super(RobotContainer.CHASSIS.getCurrentPose(), Units.inchesToMeters(1.0), Units.degreesToRadians(1.0));
+        addRequirements(RobotContainer.VISION);
     }
 
     @Override
     public void initialize() {
-        var targets = RobotContainer.VISION.locateTargets();
-        var goalLocation = RobotContainer.VISION.locateGoal(targets);
+        var goalLocation = RobotContainer.VISION.getGoalLocation();
         if (goalLocation == null) {
+            goalLocated = false;
+            targetPose = RobotContainer.CHASSIS.getCurrentPose();
             return;
         }
         var rotation = new Rotation2d(-Math.atan2(goalLocation.getX(), goalLocation.getY()));
-        var transform = new Transform2d(new Translation2d(), rotation);
-        var newPose = RobotContainer.CHASSIS.getCurrentPose().transformBy(transform);
-        targetPose = newPose;
+        targetPose = new Pose2d(RobotContainer.CHASSIS.getCurrentPose().getTranslation(), rotation);
         goalLocated = true;
 
         super.initialize();
@@ -31,7 +30,7 @@ public class AimShooter extends DriveToPosePID1 {
 
     @Override
     public boolean isFinished() {
-        return goalLocated && super.isFinished();
+        return (goalLocated && super.isFinished()) || !goalLocated;
     }
 
     @Override

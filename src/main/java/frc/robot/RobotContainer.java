@@ -11,8 +11,8 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Preferences;
@@ -21,10 +21,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.RunClaws;
+import frc.robot.commands.RunShooter;
 import frc.robot.commands.AimShooter;
+// import frc.robot.commands.AimShooter;
 import frc.robot.commands.Climb;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.FieldDriveWithJoysticks;
-import frc.robot.commands.GatherAuto;
 import frc.robot.commands.GatherBall;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
@@ -68,7 +70,7 @@ public class RobotContainer {
     }
 
     public void init() {
-        CHASSIS.init(AUTO_PATH.getInitialPose());
+        CHASSIS.init(new Pose2d()); //AUTO_PATH.getInitialPose());
     }
 
     /**
@@ -84,24 +86,13 @@ public class RobotContainer {
         IO.Button.DriverRightTrigger.value.whileHeld(gatherCommand);
         IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
 
-        IO.Button.DriverA.value.whenPressed(
-                GATHER.tampBall());
-        IO.Button.DriverB.value.whenPressed(
-                new InstantCommand(() -> SHOOTER.setSpeed(0.0), SHOOTER).andThen(
-                        GATHER.tampBall().andThen(
-                                SHOOTER.freeBall().andThen(
-                                        GATHER.tampBall()).andThen(
-                                                () -> SHOOTER.setSpeed(
-                                                        Units.rotationsPerMinuteToRadiansPerSecond(3000.0)),
-                                                SHOOTER))));
-        IO.Button.DriverB.value.whenReleased(SHOOTER::stop, SHOOTER);
+        IO.Button.DriverLeftBumper.value.whenPressed(() -> GATHER.run(1.0), GATHER).whenReleased(GATHER::stop, GATHER);
 
-        IO.Button.DriverX.value.whenPressed(() -> SHOOTER.setSpeed(Units.rotationsPerMinuteToRadiansPerSecond(3000.0)),
-                SHOOTER);
-        IO.Button.DriverX.value.whenReleased(SHOOTER::stop, SHOOTER);
+        IO.Button.DriverA.value.whenPressed(GATHER.tampBall().alongWith(new InstantCommand(() -> SHOOTER.setSpeed(-10.0), SHOOTER))).whenReleased(SHOOTER::stop, SHOOTER);
+        IO.Button.DriverX.value.toggleWhenPressed(new RunShooter());
+        IO.Button.DriverY.value.whileHeld(new AimShooter());
 
         IO.Button.DriverLeftStick.value.toggleWhenPressed(new RobotDriveWithJoysticks());
-        IO.Button.DriverRightBumper.value.whileHeld(new AimShooter());
 
         IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(0.03));
         IO.Button.ManipulatorRightBumper.value.whileHeld(new RunClaws(-0.03));
@@ -109,6 +100,12 @@ public class RobotContainer {
         Command climbCommand = new Climb();
         IO.Button.ManipulatorRightTrigger.value.whileHeld(climbCommand);
         IO.Button.ManipulatorLeftTrigger.value.whileHeld(climbCommand);
+
+        IO.Button.ManipulatorX.value.whenPressed(() -> CLIMBER.setClawPosition(2.369), CLIMBER);
+        IO.Button.ManipulatorY.value.whenPressed(() -> CLIMBER.setClawPosition(-0.343), CLIMBER);
+        IO.Button.ManipulatorB.value.whenPressed(() -> CLIMBER.setClawPosition(-2.4), CLIMBER);
+        IO.Button.ManipulatorA.value.whenPressed(() -> CLIMBER.raiseArm(), CLIMBER);
+
     }
 
     /**
@@ -117,15 +114,15 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-
-        Command command = CHASSIS.generatePathFollowCommand(
+        Command command = GATHER.tampBall().andThen(new RunShooter())
+        .alongWith(CHASSIS.generatePathFollowCommand(
                 AUTO_PATH,
                 new PIDController(1, 0, 0),
                 new PIDController(1.0, 0, 0),
-                new ProfiledPIDController(1.0, 0, 0,
+                new ProfiledPIDController(0.5, 0, 0,
                         new TrapezoidProfile.Constraints(Constants.PATH_MAX_ANGULAR_VELOCITY,
                                 Constants.PATH_MAX_ANGULAR_ACCELERATION)))
-                .alongWith(new GatherAuto());
+        .andThen(new DriveToPose(AUTO_PATH.getEndState().poseMeters, 0.25, 10)).andThen(() -> GATHER.run(1.0)));
         return command;
     }
 }

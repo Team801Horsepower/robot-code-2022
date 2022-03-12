@@ -8,16 +8,18 @@ public class GatherBall extends CommandBase {
 
     public GatherBall() {
         addRequirements(RobotContainer.GATHER);
+        addRequirements(RobotContainer.SHOOTER);
     }
 
     @Override
     public void initialize() {
         RobotContainer.GATHER.lower();
+        RobotContainer.SHOOTER.setSpeed(-10.0);
     }
 
     @Override
     public void execute() {
-        RobotContainer.GATHER.run((IO.Axis.DriverRightTrigger.get() - IO.Axis.DriverLeftTrigger.get()));
+        RobotContainer.GATHER.run(0.5 * (IO.Axis.DriverRightTrigger.get() - IO.Axis.DriverLeftTrigger.get()));
     }
 
     @Override
@@ -26,6 +28,7 @@ public class GatherBall extends CommandBase {
     }
 
     public void end(boolean interrupted) {
+        RobotContainer.SHOOTER.stop();
         RobotContainer.GATHER.stop();
     }
 }

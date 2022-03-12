@@ -11,7 +11,8 @@ public class GatherAuto extends CommandBase {
     
     @Override
     public void initialize() {
-        RobotContainer.GATHER.run(1.0);
+        RobotContainer.GATHER.lower();
+        RobotContainer.GATHER.run(0.5);
     }
 
     @Override
