@@ -111,6 +111,10 @@ public class Chassis extends SubsystemBase {
         );
     }
 
+    public void fieldDrive(ChassisSpeeds speeds) {
+        fieldDrive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+    }
+
     public void stop() {
         drive.setDesiredSpeeds(new ChassisSpeeds());
     }
@@ -123,7 +127,7 @@ public class Chassis extends SubsystemBase {
             PIDController xController, PIDController yController,
             ProfiledPIDController thetaController) {
         return new PathPlannerControllerCommand(trajectory, this::getCurrentPose, xController,
-                yController, thetaController, drive::setDesiredSpeeds, this);
+                yController, thetaController, this::fieldDrive, this);
     }
 
     public void reset() {

@@ -47,7 +47,7 @@ public class DriveToPose extends CommandBase {
         double y = distanceCalculation * error.getTranslation().getY() / errorDistance;
 
         System.out.println("x: " + x + ", y: " + y + ", omega: " + omegaCalculation);
-        RobotContainer.CHASSIS.fieldDrive(x, y, omegaCalculation);
+        // RobotContainer.CHASSIS.fieldDrive(x, y, omegaCalculation);
     }
 
     public boolean isFinished() {

@@ -43,6 +43,7 @@ public class Shoot extends SequentialCommandGroup {
 
     @Override
     public void end(boolean interrupted) {
+        super.end(interrupted);
         RobotContainer.GATHER.stop();
         RobotContainer.SHOOTER.stop();
     }

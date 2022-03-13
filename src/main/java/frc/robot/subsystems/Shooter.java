@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax.IdleMode;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,7 +29,7 @@ public class Shooter extends SubsystemBase {
         FLYWHEEL.PID.setI(0.0, positionPid);
         FLYWHEEL.PID.setD(0.0, positionPid);
 
-        SmartDashboard.putData(FLYWHEEL);
+        // SmartDashboard.putData("FLYWHEEL", FLYWHEEL);
     }
 
     // @Override

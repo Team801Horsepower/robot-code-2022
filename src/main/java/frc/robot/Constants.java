@@ -6,7 +6,13 @@ import java.util.Map;
 
 public class Constants {
 
-    public static final double CLIMB_PRIME_POSITION = -1.039;
+    // SETPOINTS
+    public static final Translation2d TARGET_LOCK_POSITION = new Translation2d(-0.1, 4.0);
+
+    public static final double CLIMB_PRIME_POSITION = -1.00;
+    public static final double CLAW_HIGH_POSITION = 2.369;
+    public static final double CLAW_RELEASE_HIGH_POSITION = -0.343;
+    public static final double CLAW_TRAVERSAL_POSITION = -2.4;
 
     public static final double ARM_LOWERED_POSITION = -1.0;
     public static final double ARM_RAISED_POSITION = 0.0;
@@ -15,8 +21,8 @@ public class Constants {
     public static final double MAX_ROBOT_TURN_SPEED = Math.PI;
 
     // TODO: set values up
-    public static final double PATH_MAX_VELOCITY = 0.5;//7.0;
-    public static final double PATH_MAX_ACCELERATION = 1.0;//5.0;
+    public static final double PATH_MAX_VELOCITY = 7.0;
+    public static final double PATH_MAX_ACCELERATION = 5.0;
     public static final double PATH_MAX_ANGULAR_VELOCITY = 2 * Math.PI;
     public static final double PATH_MAX_ANGULAR_ACCELERATION = Math.PI;
 
@@ -94,7 +100,7 @@ public class Constants {
     public static double CAMERA_VERTICAL_FOV = Units.degreesToRadians(30.15);
     public static int CAMERA_PIXEL_WIDTH = 1280;
     public static int CAMERA_PIXEL_HEIGHT = 720;
-    public static double TARGET_HEIGHT = Units.inchesToMeters(8.0 * 12.0 + 7.0); //Units.inchesToMeters(53.5)
+    public static double TARGET_HEIGHT = Units.inchesToMeters(8.0 * 12.0 + 7.0);
     public static double TARGET_TAPE_WIDTH = Units.inchesToMeters(2.0);
     public static double TARGET_RADIUS = Units.inchesToMeters(26.0 + 11.0 / 16.0);
     public static double TARGET_OFFSET_ANGLE = Units.degreesToRadians(9.75);

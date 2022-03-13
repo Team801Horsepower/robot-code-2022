@@ -18,7 +18,7 @@ public class RunShooter extends CommandBase {
 
     @Override
     public void execute() {
-        SmartDashboard.putBoolean("RPM Reached", RobotContainer.SHOOTER.FLYWHEEL.velocityReached(2 * Math.PI));
+        SmartDashboard.putBoolean("RPM Reached", RobotContainer.SHOOTER.FLYWHEEL.velocityReached(Units.rotationsPerMinuteToRadiansPerSecond(50.0)));
     }
 
     @Override

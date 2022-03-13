@@ -22,10 +22,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.RunClaws;
 import frc.robot.commands.RunShooter;
-import frc.robot.commands.AimShooter;
-// import frc.robot.commands.AimShooter;
 import frc.robot.commands.Climb;
-import frc.robot.commands.DriveToPose;
 import frc.robot.commands.FieldDriveWithJoysticks;
 import frc.robot.commands.GatherBall;
 import frc.robot.subsystems.Chassis;
@@ -70,7 +67,7 @@ public class RobotContainer {
     }
 
     public void init() {
-        CHASSIS.init(new Pose2d()); //AUTO_PATH.getInitialPose());
+        CHASSIS.init(new Pose2d(AUTO_PATH.getInitialPose().getTranslation(), AUTO_PATH.getInitialState().holonomicRotation));
     }
 
     /**
@@ -90,7 +87,8 @@ public class RobotContainer {
 
         IO.Button.DriverA.value.whenPressed(GATHER.tampBall().alongWith(new InstantCommand(() -> SHOOTER.setSpeed(-10.0), SHOOTER))).whenReleased(SHOOTER::stop, SHOOTER);
         IO.Button.DriverX.value.toggleWhenPressed(new RunShooter());
-        IO.Button.DriverY.value.whileHeld(new AimShooter());
+        // IO.Button.DriverY.value.whileHeld(new AimShooter());
+        // IO.Button.DriverB.value.whileHeld(new DriveToPose(new Pose2d(), 0.1, 1.0));
 
         IO.Button.DriverLeftStick.value.toggleWhenPressed(new RobotDriveWithJoysticks());
 
@@ -114,15 +112,21 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        Command command = GATHER.tampBall().andThen(new RunShooter())
-        .alongWith(CHASSIS.generatePathFollowCommand(
+        Command command = 
+            GATHER.tampBall()
+            .andThen(() -> GATHER.lower())
+            .andThen(new RunShooter())
+        .alongWith(
+            CHASSIS.generatePathFollowCommand(
                 AUTO_PATH,
                 new PIDController(1, 0, 0),
                 new PIDController(1.0, 0, 0),
                 new ProfiledPIDController(0.5, 0, 0,
                         new TrapezoidProfile.Constraints(Constants.PATH_MAX_ANGULAR_VELOCITY,
                                 Constants.PATH_MAX_ANGULAR_ACCELERATION)))
-        .andThen(new DriveToPose(AUTO_PATH.getEndState().poseMeters, 0.25, 10)).andThen(() -> GATHER.run(1.0)));
+            // .andThen(new DriveToPose(AUTO_PATH.getEndState().poseMeters, 0.1, 10))
+            // .andThen(new AimShooter())
+            .andThen(() -> GATHER.run(1.0)));
         return command;
     }
 }

@@ -32,7 +32,7 @@ public class Gather extends SubsystemBase {
     }
 
     public void lower() {
-        ARM.setPower(-0.1);
+        ARM.setPower(-0.2);
         lowering = true;
     }
 

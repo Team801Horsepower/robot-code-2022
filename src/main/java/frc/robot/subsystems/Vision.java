@@ -29,7 +29,7 @@ public class Vision extends SubsystemBase {
 
     /** Creates a new Vision. */
     public Vision() {
-        goalCamera.setDriverMode(Preferences.getBoolean("DRIVER_MODE", false));
+        
     }
 
     @Override
@@ -102,7 +102,7 @@ public class Vision extends SubsystemBase {
             center = center.minus((new Translation2d(lossDeriv[0], lossDeriv[1])).times(1.0 - Math.exp(-loss)));
 
             if (j == 49) {
-                System.out.println("iteration cap reached; loss: " + loss);
+                // System.out.println("iteration cap reached; loss: " + loss);
                 center = null;
             }
         }
