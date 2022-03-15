@@ -74,6 +74,7 @@ public class Chassis extends SubsystemBase {
         drive.periodic();
         pose = drive.getCurrentPose();
         field.setRobotPose(pose);
+        System.out.println(pose);
     }
 
     /**
@@ -121,13 +122,6 @@ public class Chassis extends SubsystemBase {
 
     public Pose2d getCurrentPose() {
         return pose;
-    }
-
-    public Command generatePathFollowCommand(PathPlannerTrajectory trajectory,
-            PIDController xController, PIDController yController,
-            ProfiledPIDController thetaController) {
-        return new PathPlannerControllerCommand(trajectory, this::getCurrentPose, xController,
-                yController, thetaController, this::fieldDrive, this);
     }
 
     public void reset() {

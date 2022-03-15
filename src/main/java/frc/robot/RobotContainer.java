@@ -23,8 +23,10 @@ import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.RunClaws;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.Climb;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.FieldDriveWithJoysticks;
 import frc.robot.commands.GatherBall;
+import frc.robot.commands.PathPlannerControllerCommand;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Gather;
@@ -55,6 +57,7 @@ public class RobotContainer {
 
     private static final PathPlannerTrajectory AUTO_PATH = PathPlanner.loadPath(Preferences.getString("AUTO_PATH", "Drive Backwards"), Constants.PATH_MAX_VELOCITY,
             Constants.PATH_MAX_ACCELERATION);
+    private static final Pose2d INITIAL_POSE = new Pose2d(AUTO_PATH.getInitialPose().getTranslation(), AUTO_PATH.getInitialState().holonomicRotation);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -67,7 +70,7 @@ public class RobotContainer {
     }
 
     public void init() {
-        CHASSIS.init(new Pose2d(AUTO_PATH.getInitialPose().getTranslation(), AUTO_PATH.getInitialState().holonomicRotation));
+        CHASSIS.init(INITIAL_POSE);
     }
 
     /**
@@ -84,6 +87,7 @@ public class RobotContainer {
         IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
 
         IO.Button.DriverLeftBumper.value.whenPressed(() -> GATHER.run(1.0), GATHER).whenReleased(GATHER::stop, GATHER);
+        IO.Button.DriverRightBumper.value.whenPressed(new DriveToPose(INITIAL_POSE, 0.05, 0.005));
 
         IO.Button.DriverA.value.whenPressed(GATHER.tampBall().alongWith(new InstantCommand(() -> SHOOTER.setSpeed(-10.0), SHOOTER))).whenReleased(SHOOTER::stop, SHOOTER);
         IO.Button.DriverX.value.toggleWhenPressed(new RunShooter());
@@ -112,21 +116,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        Command command = 
-            GATHER.tampBall()
-            .andThen(() -> GATHER.lower())
-            .andThen(new RunShooter())
-        .alongWith(
-            CHASSIS.generatePathFollowCommand(
-                AUTO_PATH,
-                new PIDController(1, 0, 0),
-                new PIDController(1.0, 0, 0),
-                new ProfiledPIDController(0.5, 0, 0,
-                        new TrapezoidProfile.Constraints(Constants.PATH_MAX_ANGULAR_VELOCITY,
-                                Constants.PATH_MAX_ANGULAR_ACCELERATION)))
-            // .andThen(new DriveToPose(AUTO_PATH.getEndState().poseMeters, 0.1, 10))
-            // .andThen(new AimShooter())
-            .andThen(() -> GATHER.run(1.0)));
+        Command command =  new PathPlannerControllerCommand(AUTO_PATH, 0.05, 0.05);
         return command;
     }
 }

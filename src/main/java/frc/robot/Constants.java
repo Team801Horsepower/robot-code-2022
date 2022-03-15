@@ -17,11 +17,11 @@ public class Constants {
     public static final double ARM_LOWERED_POSITION = -1.0;
     public static final double ARM_RAISED_POSITION = 0.0;
 
-    public static final double MAX_ROBOT_DRIVE_SPEED = 7.0;
+    public static final double MAX_ROBOT_DRIVE_SPEED = 3.0;
     public static final double MAX_ROBOT_TURN_SPEED = Math.PI;
 
     // TODO: set values up
-    public static final double PATH_MAX_VELOCITY = 7.0;
+    public static final double PATH_MAX_VELOCITY = 3.0;
     public static final double PATH_MAX_ACCELERATION = 5.0;
     public static final double PATH_MAX_ANGULAR_VELOCITY = 2 * Math.PI;
     public static final double PATH_MAX_ANGULAR_ACCELERATION = Math.PI;

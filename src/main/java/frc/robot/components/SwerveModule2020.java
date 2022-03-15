@@ -17,10 +17,10 @@ public class SwerveModule2020 extends SwerveModule {
         // Set up the drive motor
         DRIVE_MOTOR = (Neo) super.DRIVE_MOTOR;
         int speedPid = DRIVE_MOTOR.getSpeedPid();
-        DRIVE_MOTOR.PID.setP(0.005, speedPid);
+        DRIVE_MOTOR.PID.setP(0.05, speedPid);
         DRIVE_MOTOR.PID.setI(0.0, speedPid);
         DRIVE_MOTOR.PID.setD(0.0, speedPid);
-        DRIVE_MOTOR.PID.setFF(0.0, speedPid);
+        DRIVE_MOTOR.PID.setFF(0.005, speedPid);
         DRIVE_MOTOR.PID.setIZone(0.0, speedPid);
         DRIVE_MOTOR.PID.setOutputRange(-1.0, 1.0);
 
