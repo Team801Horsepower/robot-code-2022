@@ -1,5 +1,6 @@
 package frc.robot.components;
 
+import java.util.function.DoubleSupplier;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -168,12 +169,13 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
         return Utils.almostEqual(desiredSpeed, getCurrentSpeed(), tolerance);
     }
 
-    public Command generatePositionCommand(double position, double tolerance, Subsystem... requirements) {
+    public Command generatePositionCommand(DoubleSupplier position, double tolerance, Subsystem... requirements) {
         CommandBase command = new CommandBase() {
 
             @Override
             public void initialize() {
-                setDesiredPosition(position);
+                setDesiredPosition(position.getAsDouble());
+                System.out.println(desiredPosition);
             }
 
             @Override
@@ -197,39 +199,15 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
     }
 
     public Command generateRotationCommand(double rotation, double tolerance, Subsystem... requirements) {
-        CommandBase command = new CommandBase() {
-
-            @Override
-            public void initialize() {
-                setDesiredPosition(getCurrentPosition() + rotation);
-            }
-
-            @Override
-            public void execute() {
-                System.out.println("Setting Rotation" + rotation);
-            }
-
-            @Override
-            public boolean isFinished() {
-                return positionReached(tolerance);
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                if (!interrupted)
-                    System.out.println("Rotation Reached");
-            }
-        };
-        command.addRequirements(requirements);
-        return command;
+        return generatePositionCommand(() -> getCurrentPosition() + rotation, tolerance, requirements);
     }
 
-    public Command generateVelocityCommand(double velocity, double tolerance, Subsystem... requirements) {
+    public Command generateVelocityCommand(DoubleSupplier velocity, double tolerance, Subsystem... requirements) {
         CommandBase command = new CommandBase() {
 
             @Override
             public void initialize() {
-                setDesiredSpeed(velocity);
+                setDesiredSpeed(velocity.getAsDouble());
             }
 
             @Override

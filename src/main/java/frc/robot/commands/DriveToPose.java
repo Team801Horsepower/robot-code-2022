@@ -23,7 +23,7 @@ public class DriveToPose extends CommandBase {
         distanceController = new PIDController(0.4, 0.0, 0.075);
         distanceController.setTolerance(toleranceDistance);
         distanceController.setSetpoint(0.0);
-        omegaController = new ProfiledPIDController(1.0, 0.0, 0.0, new TrapezoidProfile.Constraints(Constants.PATH_MAX_ANGULAR_VELOCITY, Constants.PATH_MAX_ANGULAR_ACCELERATION));
+        omegaController = new ProfiledPIDController(0.5, 0.0, 0.0, new TrapezoidProfile.Constraints(Constants.PATH_MAX_ANGULAR_VELOCITY, Constants.PATH_MAX_ANGULAR_ACCELERATION));
         omegaController.enableContinuousInput(-Math.PI, Math.PI);
         omegaController.setTolerance(toleranceAngle);
         omegaController.setGoal(0.0);
@@ -45,14 +45,12 @@ public class DriveToPose extends CommandBase {
         var errorOmega = error.getRotation().getRadians();
 
         double distanceErr = distanceController.calculate(errorDistance);
-        System.out.println(distanceErr);
         double distanceCalculation = distanceErr - 0.5;
         double omegaCalculation = omegaController.calculate(errorOmega);
 
         double x = distanceCalculation * error.getTranslation().getX() / errorDistance;
         double y = distanceCalculation * error.getTranslation().getY() / errorDistance;
 
-        System.out.println("x: " + x + ", y: " + y + ", omega: " + omegaCalculation);
         RobotContainer.CHASSIS.fieldDrive(x, y, omegaCalculation);
     }
 

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -15,7 +16,6 @@ public class Gather extends SubsystemBase {
     public Gather() {
         ARM = new Neo550(Constants.GATHER_ARM);
         ARM.setGearRatio(Constants.GATHER_ARM_GEAR_RATIO);
-        ARM.setPosition(0);
 
         int positionPid = ARM.getPositionPid();
         ARM.PID.setP(1.0, positionPid);
@@ -27,8 +27,11 @@ public class Gather extends SubsystemBase {
 
         positionPid = WHEELS.getPositionPid();
         WHEELS.PID.setP(1.0, positionPid);
-        WHEELS.PID.setI(0.0, positionPid);
+        WHEELS.PID.setI(0.001, positionPid);
         WHEELS.PID.setD(0.0, positionPid);
+        WHEELS.PID.setFF(0.01, positionPid);
+
+        SmartDashboard.putData(WHEELS);
     }
 
     public void lower() {
@@ -55,11 +58,11 @@ public class Gather extends SubsystemBase {
     }
     
     public Command tampBall() {
-        return WHEELS.generateRotationCommand(-2.5 * Math.PI, 0.01, this);
+        return WHEELS.generatePositionCommand(() -> WHEELS.getCurrentPosition() -1.9 * Math.PI, 0.01, this);
     }
 
-    public void popBall() {
-        WHEELS.setDesiredAngle(WHEELS.getCurrentAngle() + Math.PI / 4);
+    public Command fireBall() {
+        return WHEELS.generatePositionCommand(() -> WHEELS.getCurrentPosition() + 1.75 * Math.PI, 0.01, this);
     }
 
     public boolean isRaised() {

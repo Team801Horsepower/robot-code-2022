@@ -100,7 +100,7 @@ public class Constants {
     public static double CAMERA_VERTICAL_FOV = Units.degreesToRadians(30.15);
     public static int CAMERA_PIXEL_WIDTH = 1280;
     public static int CAMERA_PIXEL_HEIGHT = 720;
-    public static double TARGET_HEIGHT = Units.inchesToMeters(8.0 * 12.0 + 7.0);
+    public static double TARGET_HEIGHT = Units.inchesToMeters(97.0); //Units.inchesToMeters(8.0 * 12.0 + 7.0);
     public static double TARGET_TAPE_WIDTH = Units.inchesToMeters(2.0);
     public static double TARGET_RADIUS = Units.inchesToMeters(26.0 + 11.0 / 16.0);
     public static double TARGET_OFFSET_ANGLE = Units.degreesToRadians(9.75);

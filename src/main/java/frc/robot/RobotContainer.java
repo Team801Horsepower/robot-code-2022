@@ -86,13 +86,15 @@ public class RobotContainer {
         IO.Button.DriverRightTrigger.value.whileHeld(gatherCommand);
         IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
 
-        IO.Button.DriverLeftBumper.value.whenPressed(() -> GATHER.run(1.0), GATHER).whenReleased(GATHER::stop, GATHER);
-        IO.Button.DriverRightBumper.value.whenPressed(new DriveToPose(INITIAL_POSE, 0.05, 0.005));
+        IO.Button.DriverLeftBumper.value.whenPressed(
+                GATHER.tampBall().andThen(
+                SHOOTER.revFlywheel(196.0),
+                GATHER.fireBall())
+        );
+        IO.Button.DriverRightBumper.value.whenPressed(new DriveToPose(INITIAL_POSE, 0.05, 0.05));
 
         IO.Button.DriverA.value.whenPressed(GATHER.tampBall().alongWith(new InstantCommand(() -> SHOOTER.setSpeed(-10.0), SHOOTER))).whenReleased(SHOOTER::stop, SHOOTER);
         IO.Button.DriverX.value.toggleWhenPressed(new RunShooter());
-        // IO.Button.DriverY.value.whileHeld(new AimShooter());
-        // IO.Button.DriverB.value.whileHeld(new DriveToPose(new Pose2d(), 0.1, 1.0));
 
         IO.Button.DriverLeftStick.value.toggleWhenPressed(new RobotDriveWithJoysticks());
 

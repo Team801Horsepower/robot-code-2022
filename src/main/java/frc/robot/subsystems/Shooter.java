@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
@@ -17,19 +18,19 @@ public class Shooter extends SubsystemBase {
         FLYWHEEL.setGearRatio(Constants.SHOOTER_GEAR_RATIO);
 
         int speedPid = FLYWHEEL.getSpeedPid();
-        FLYWHEEL.PID.setP(0.005, speedPid);
+        FLYWHEEL.PID.setP(0.006, speedPid);
         FLYWHEEL.PID.setI(0.0, speedPid);
         FLYWHEEL.PID.setD(0.0, speedPid);
-        FLYWHEEL.PID.setFF(0.002, speedPid);
+        FLYWHEEL.PID.setFF(0.0019, speedPid);
 
         FLYWHEEL.CONTROLLER.setIdleMode(IdleMode.kBrake);
 
         int positionPid = FLYWHEEL.getPositionPid();
-        FLYWHEEL.PID.setP(1.0, positionPid);
+        FLYWHEEL.PID.setP(0.5, positionPid);
         FLYWHEEL.PID.setI(0.0, positionPid);
         FLYWHEEL.PID.setD(0.0, positionPid);
 
-        // SmartDashboard.putData("FLYWHEEL", FLYWHEEL);
+        SmartDashboard.putData("FLYWHEEL", FLYWHEEL);
     }
 
     // @Override
@@ -46,8 +47,12 @@ public class Shooter extends SubsystemBase {
         FLYWHEEL.setDesiredSpeed(speed);
     }
 
+    public Command prepare() {
+        return new InstantCommand(); 
+    }
+
     public Command revFlywheel(double speed) {
-        return FLYWHEEL.generateVelocityCommand(speed, 1.0, this);
+        return FLYWHEEL.generateVelocityCommand(() -> speed, 5.0, this);
     }
 
     public boolean ready() {
@@ -56,11 +61,5 @@ public class Shooter extends SubsystemBase {
 
     public void stop() {
         FLYWHEEL.setPower(0.0);
-    }
-
-    public Command freeBall() {
-        return FLYWHEEL.generateRotationCommand(-2 * Math.PI * 2, Math.PI, this);
-    }
-
-    
+    }    
 }
