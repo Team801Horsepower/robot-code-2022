@@ -1,13 +1,13 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import java.util.Map;
 
 public class Constants {
 
-    // SETPOINTS
-    public static final Translation2d TARGET_LOCK_POSITION = new Translation2d(-0.1, 4.0);
 
     public static final double CLIMB_PRIME_POSITION = -1.00;
     public static final double CLAW_HIGH_POSITION = 2.369;
@@ -57,64 +57,25 @@ public class Constants {
 
     // HARDWARE CONFIGURATIONS
 
-    // Swerve Pod Motor CAN IDs
-    public static final int POD_1_DRIVE = 9; // Right Front
-    public static final int POD_1_TURN = 10;
-    public static final int POD_1_THROUGHBORE = 1;
-
-    public static final int POD_2_DRIVE = 12; // Left Front
-    public static final int POD_2_TURN = 11;
-    public static final int POD_2_THROUGHBORE = 2;
-
-    public static final int POD_3_DRIVE = 20; // Left Rear
-    public static final int POD_3_TURN = 19;
-    public static final int POD_3_THROUGHBORE = 3;
-
-    public static final int POD_4_DRIVE = 1; // Right Rear
-    public static final int POD_4_TURN = 2;
-    public static final int POD_4_THROUGHBORE = 4;
 
     // Climber CAN IDs
     public static final int CLIMB_RIGHT = 4;
     public static final int CLIMB_RIGHT_CLAW = 5;
     public static final int CLIMB_LEFT = 17;
     public static final int CLIMB_LEFT_CLAW = 16;
-    public static final double CLIMB_GEAR_RATIO = 1.0 / 375.0;
-    public static final double CLIMB_CLAW_GEAR_RATIO = 1.0 / 371.0;
 
     // Gather Constants
     public static final int GATHER_WHEELS = 15;
-    public static final double GATHER_WHEELS_GEAR_RATIO = 1.0 / 9.0;
 
     public static final int GATHER_ARM = 14;
-    public static final double GATHER_ARM_GEAR_RATIO = 1.0 / 30.0;
 
     // Shooter CAN IDs
     public static final int SHOOTER = 7;
-    public static final double SHOOTER_GEAR_RATIO = 1.0;
 
-    // Vision
-    public static double CAMERA_HEIGHT = Units.inchesToMeters(34.5);
-    public static double CAMERA_PITCH = Units.degreesToRadians(35.0);
-    public static double CAMERA_HORIZONTAL_FOV = Units.degreesToRadians(55.02);
-    public static double CAMERA_VERTICAL_FOV = Units.degreesToRadians(30.15);
-    public static int CAMERA_PIXEL_WIDTH = 1280;
-    public static int CAMERA_PIXEL_HEIGHT = 720;
-    public static double TARGET_HEIGHT = Units.inchesToMeters(97.0); //Units.inchesToMeters(8.0 * 12.0 + 7.0);
-    public static double TARGET_TAPE_WIDTH = Units.inchesToMeters(2.0);
-    public static double TARGET_RADIUS = Units.inchesToMeters(26.0 + 11.0 / 16.0);
-    public static double TARGET_OFFSET_ANGLE = Units.degreesToRadians(9.75);
-
-    public static Translation2d ORIGIN = new Translation2d();
-
-    public static Map<Double, Double> shooterSpeedTable = Map.of(
-        1.0, 113.0,
-        2.0, 160.0,
-        3.0, 196.0,
-        4.0, 227.0,
-        5.0, 253.0,
-        6.0, 278.0,
-        7.0, 300.0,
-        8.0, 320.0
-    );
+    public static final Pose2d GOAL_POSE = new Pose2d(new Translation2d(Units.feetToMeters(27.0), Units.feetToMeters(0.5 * 27.0)), new Rotation2d(Units.degreesToRadians(24.0)));
+    public static final Translation2d TARGET_LOCK_POSITION = new Translation2d(-0.1, 4.0);
+    public static final double TARGET_HEIGHT = Units.inchesToMeters(8.0 * 12.0 + 7.0 - 2.0);
+    public static final double TARGET_TAPE_WIDTH = Units.inchesToMeters(2.0);
+    public static final double TARGET_RADIUS = Units.inchesToMeters(26.0 + 11.0 / 16.0);
+    public static final double TARGET_OFFSET_ANGLE = Units.degreesToRadians(9.75);
 }

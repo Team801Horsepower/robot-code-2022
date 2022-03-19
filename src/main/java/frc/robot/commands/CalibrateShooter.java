@@ -1,29 +1,21 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class RunShooter extends CommandBase {
-
-    Translation2d goalLocation;
-
-    public RunShooter() {
+public class CalibrateShooter extends CommandBase {
+    public CalibrateShooter() {
         addRequirements(RobotContainer.SHOOTER);
+        SmartDashboard.putData(this);
+        SmartDashboard.putNumber("Shooter Speed", 196.5);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        goalLocation = RobotContainer.VISION.getGoalLocation();
-        if (goalLocation != null) {
-            RobotContainer.SHOOTER.setRange(goalLocation.getY());
-        } else {
-            RobotContainer.SHOOTER.setSpeed(200.0);
-        }
-        RobotContainer.SHOOTER.start();
+        RobotContainer.SHOOTER.setSpeed(SmartDashboard.getNumber("Shooter Speed", 0.0));
     }
 
     @Override
@@ -41,4 +33,5 @@ public class RunShooter extends CommandBase {
     public void end(boolean interrupted) {
         RobotContainer.SHOOTER.stop();
     }
+    
 }

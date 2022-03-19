@@ -34,6 +34,7 @@ public class DriveToPose extends CommandBase {
     
     public void initialize() {
         var error = RobotContainer.CHASSIS.getCurrentPose().minus(targetPose);
+        var errorDistance = error.getTranslation().getNorm();
         var errorOmega = error.getRotation().getRadians();
         distanceController.reset();
         omegaController.reset(errorOmega);
@@ -43,13 +44,18 @@ public class DriveToPose extends CommandBase {
         var error = RobotContainer.CHASSIS.getCurrentPose().minus(targetPose);
         var errorDistance = error.getTranslation().getNorm();
         var errorOmega = error.getRotation().getRadians();
-
+        
         double distanceErr = distanceController.calculate(errorDistance);
         double distanceCalculation = distanceErr - 0.5;
         double omegaCalculation = omegaController.calculate(errorOmega);
 
         double x = distanceCalculation * error.getTranslation().getX() / errorDistance;
         double y = distanceCalculation * error.getTranslation().getY() / errorDistance;
+
+        if (distanceController.atSetpoint()) {
+            x = 0.0;
+            y = 0.0;
+        }
 
         RobotContainer.CHASSIS.fieldDrive(x, y, omegaCalculation);
     }

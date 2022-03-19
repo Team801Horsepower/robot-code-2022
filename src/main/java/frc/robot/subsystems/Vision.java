@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.TargetCorner;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,6 +24,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Vision extends SubsystemBase {
     private static final PhotonCamera goalCamera = new PhotonCamera("goalCamera");
 
+    public static final double GOAL_CAMERA_HEIGHT = Units.inchesToMeters(34.5);
+    public static final double GOAL_CAMERA_PITCH = Units.degreesToRadians(35.0);
+    public static final double GOAL_CAMERA_HORIZONTAL_FOV = Units.degreesToRadians(55.02);
+    public static final double GOAL_CAMERA_VERTICAL_FOV = Units.degreesToRadians(30.15);
+    public static final int GOAL_CAMERA_PIXEL_WIDTH = 1280;
+    public static final int GOAL_CAMERA_PIXEL_HEIGHT = 720;
+
     private Translation2d lastGoalLocation;
 
     /** Creates a new Vision. */
@@ -32,8 +40,9 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        lastGoalLocation = locateGoal(locateTargets());
+        lastGoalLocation = locateGoal(locateTargets(goalCamera.getLatestResult()));
         if (lastGoalLocation != null) {
+            System.out.println(lastGoalLocation);
             SmartDashboard.putBoolean("Targeted", Utils.almostEqual(lastGoalLocation.getX(), -0.1, 0.05) && Utils.almostEqual(lastGoalLocation.getY(), 4.0, 0.1));
             SmartDashboard.putBoolean("Ranging", lastGoalLocation.getY() > 4.0);
         }
@@ -44,20 +53,20 @@ public class Vision extends SubsystemBase {
     }
 
     public double calcYaw(double x) {
-        double w = (double)Constants.CAMERA_PIXEL_WIDTH / 2.0;
-        double length = w / Math.tan(Constants.CAMERA_HORIZONTAL_FOV / 2.0);
+        double w = (double)GOAL_CAMERA_PIXEL_WIDTH / 2.0;
+        double length = w / Math.tan(GOAL_CAMERA_HORIZONTAL_FOV / 2.0);
         return Math.atan2(x - w, length);
     }
 
     public double calcPitch(double y) {
-        double h = (double)Constants.CAMERA_PIXEL_HEIGHT / 2.0;
-        double length = h / Math.tan(Constants.CAMERA_VERTICAL_FOV / 2.0);
+        double h = (double)GOAL_CAMERA_PIXEL_HEIGHT / 2.0;
+        double length = h / Math.tan(GOAL_CAMERA_VERTICAL_FOV / 2.0);
         return Math.atan2(h - y, length);
     }
 
     public Translation2d targetOffset(double yaw, double pitch, double targetHeight) {
-        double height = targetHeight - Constants.CAMERA_HEIGHT;
-        double dist = height / Math.tan(Constants.CAMERA_PITCH + pitch);
+        double height = targetHeight - GOAL_CAMERA_HEIGHT;
+        double dist = height / Math.tan(GOAL_CAMERA_PITCH + pitch);
         double length = Math.sqrt(Math.pow(dist, 2.0) + Math.pow(height, 2.0));
         double x = Math.tan(yaw) * length;
         return new Translation2d(x, dist);
@@ -121,9 +130,7 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putNumberArray("Vision Target Locations", fieldPoints.toArray(new Double[fieldPoints.size()]));
     }
 
-    public Translation2d[][] locateTargets() {
-        var result = goalCamera.getLatestResult();
-
+    public Translation2d[][] locateTargets(PhotonPipelineResult result) {
         if (result.hasTargets()) {
             List<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
             List<TargetCorner> upperCorners = new ArrayList<TargetCorner>();
@@ -200,8 +207,7 @@ public class Vision extends SubsystemBase {
     }
 
     // Currently nonfunctional
-    double updateGyro(double gyroAngle) {
-        var targets = locateTargets();
+    double updateGyro(double gyroAngle, Translation2d[][] targets) {
         var centers = targets[2];
         if (centers.length == 0) {
             return gyroAngle;
@@ -239,29 +245,5 @@ public class Vision extends SubsystemBase {
         double confidence = 1.0 - Math.pow(1.4938, -(centers.length - 1));
         System.out.println("centers: " + centers.length + ", confidence: " + confidence);
         return gyroAngle * (1.0 - confidence) + closestPossibleAngle * confidence;
-    }
-
-    public double calcShooterSpeed(double distance) {
-        double lowerK = 0.0;
-        double lowerV = Double.NaN;
-        double upperK = Double.POSITIVE_INFINITY;
-        double upperV = Double.NaN;
-
-        for (var entry : Constants.shooterSpeedTable.entrySet()) {
-            if (entry.getKey() <= distance && entry.getKey() > lowerK) {
-                lowerK = entry.getKey();
-                lowerV = entry.getValue();
-            } else if (entry.getKey() >= distance && entry.getKey() < upperK) {
-                upperK = entry.getKey();
-                upperV = entry.getValue();
-            }
-        }
-
-        if (Double.isNaN(lowerV) || Double.isNaN(upperV)) {
-            return 0.0;
-        }
-
-        double interp = (distance - lowerK) / (upperK - lowerK);
-        return lowerV + interp * (upperV - lowerV);
     }
 }

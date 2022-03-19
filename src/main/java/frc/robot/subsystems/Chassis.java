@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.architecture.Drive;
 import frc.robot.commands.PathPlannerControllerCommand;
 import frc.robot.components.AHRSGyroEncoder;
@@ -23,9 +22,35 @@ import frc.robot.components.SwerveModule2020;
  */
 public class Chassis extends SubsystemBase {
 
+    public static final double MAX_DRIVE_SPEED = 7.0;
+    public static final double MAX_DRIVE_ACCELERATION = 2.0;
+    public static final double MAX_TURN_SPEED = Math.PI;
+    public static final double MAX_TURN_ACCELERATION = Math.PI;
+
     // Front
     // 2 1
     // 3 4
+
+    // Swerve Pod Motor CAN IDs
+    private static final int POD_1_DRIVE = 9; // Right Front
+    private static final int POD_1_TURN = 10;
+    @SuppressWarnings("unused")
+    private static final int POD_1_THROUGHBORE = 1;
+
+    private static final int POD_2_DRIVE = 12; // Left Front
+    private static final int POD_2_TURN = 11;
+    @SuppressWarnings("unused")
+    private static final int POD_2_THROUGHBORE = 2;
+
+    private static final int POD_3_DRIVE = 20; // Left Rear
+    private static final int POD_3_TURN = 19;
+    @SuppressWarnings("unused")
+    private static final int POD_3_THROUGHBORE = 3;
+
+    private static final int POD_4_DRIVE = 1; // Right Rear
+    private static final int POD_4_TURN = 2;
+    @SuppressWarnings("unused")
+    private static final int POD_4_THROUGHBORE = 4;
 
     private AHRSGyroEncoder gyro;
     private Drive drive;
@@ -44,10 +69,10 @@ public class Chassis extends SubsystemBase {
 
         drive = new SwerveDrive(
             new SwerveModule[] {
-                new SwerveModule2020(Constants.POD_1_DRIVE, Constants.POD_1_TURN, false),
-                new SwerveModule2020(Constants.POD_2_DRIVE, Constants.POD_2_TURN, false),
-                new SwerveModule2020(Constants.POD_3_DRIVE, Constants.POD_3_TURN, true),
-                new SwerveModule2020(Constants.POD_4_DRIVE, Constants.POD_4_TURN, true)
+                new SwerveModule2020(POD_1_DRIVE, POD_1_TURN, false),
+                new SwerveModule2020(POD_2_DRIVE, POD_2_TURN, false),
+                new SwerveModule2020(POD_3_DRIVE, POD_3_TURN, true),
+                new SwerveModule2020(POD_4_DRIVE, POD_4_TURN, true)
             },
             // x is forward 
             // y is leftward
@@ -85,11 +110,14 @@ public class Chassis extends SubsystemBase {
      */
     public void robotDrive(double forward, double leftward, double angular) {
         double speed = forward * forward + leftward * leftward;
-        if (speed > Constants.MAX_ROBOT_DRIVE_SPEED * Constants.MAX_ROBOT_DRIVE_SPEED)
+        if (speed > MAX_DRIVE_SPEED * MAX_DRIVE_SPEED)
         {
             speed = Math.sqrt(speed);
-            forward = forward / speed * Constants.MAX_ROBOT_DRIVE_SPEED;
-            leftward = leftward / speed * Constants.MAX_ROBOT_DRIVE_SPEED;
+            forward = forward / speed * MAX_DRIVE_SPEED;
+            leftward = leftward / speed * MAX_DRIVE_SPEED;
+        }
+        if (Math.abs(angular) > MAX_TURN_SPEED) {
+            angular = Math.signum(angular) * MAX_TURN_SPEED;
         }
         drive.setDesiredSpeeds(forward, leftward, angular);
     }

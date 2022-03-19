@@ -8,9 +8,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.IO;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Chassis;
 
 public class FieldDriveWithJoysticks extends CommandBase {
     /**
@@ -34,9 +34,9 @@ public class FieldDriveWithJoysticks extends CommandBase {
         double leftward = IO.Joystick.DriverLeft.getLeftward();
         double angular = IO.Joystick.DriverRight.getLeftward();
         
-        forward *= Constants.MAX_ROBOT_DRIVE_SPEED;
-        leftward *= Constants.MAX_ROBOT_DRIVE_SPEED;
-        angular *= Constants.MAX_ROBOT_TURN_SPEED;
+        forward *= Chassis.MAX_DRIVE_SPEED;
+        leftward *= Chassis.MAX_DRIVE_SPEED;
+        angular *= Chassis.MAX_TURN_SPEED;
 
         RobotContainer.CHASSIS.fieldDrive(forward, leftward, angular);
     }

@@ -9,7 +9,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -21,7 +20,7 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
 
     public static final String PART_NAME = "REV-21-1650";
 
-    public static final double MAX_SPEED = 5650.0; // The max speed in native units (RPM)
+    public static final double MAX_SPEED = 5700.0; // The max speed in native units (RPM)
     public static final double STALL_CURRENT = 105; // The stall current (Amps)
     public static final double STALL_TORQUE = 2.5; // The stall torque (Nm)
 
@@ -31,7 +30,8 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
 
     /** Exposed for advanced controls, for most applications do not mess with this. */
     private final RelativeEncoder ENCODER;
-    
+   
+    /** Gear ratio is defined as motor_shaft_rotations:output_shaft_rotations */
     private double gearRatio = 1.0;
     private int speedPid = 0, positionPid = 1;
 
@@ -52,7 +52,6 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
         PID = CONTROLLER.getPIDController();
 
         CONTROLLER.setSmartCurrentLimit(40);
-        SmartDashboard.putData(this);
     }
 
     @Override
@@ -64,22 +63,21 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("SparkMax");
-        builder.addBooleanProperty("inverted", () -> { return CONTROLLER.getInverted(); }, (value) -> { CONTROLLER.setInverted(value); });
-        builder.addBooleanProperty("brake", () -> { return CONTROLLER.getIdleMode() == IdleMode.kBrake; }, (value) -> { CONTROLLER.setIdleMode(value ? IdleMode.kBrake : IdleMode.kCoast); });
+        builder.addBooleanProperty("Inverted", () -> { return CONTROLLER.getInverted(); }, (value) -> { CONTROLLER.setInverted(value); });
+        builder.addBooleanProperty("Brake", () -> { return CONTROLLER.getIdleMode() == IdleMode.kBrake; }, (value) -> { CONTROLLER.setIdleMode(value ? IdleMode.kBrake : IdleMode.kCoast); });
 
         for (int i = 0; i < 4; i++) {
             final int t = i;
-            builder.addDoubleProperty("p_" + t, () -> { return PID.getP(t); }, (value) -> { PID.setP(value, t); });
-            builder.addDoubleProperty("i_" + t, () -> { return PID.getI(t); }, (value) -> { PID.setI(value, t); });
-            builder.addDoubleProperty("d_" + t, () -> { return PID.getD(t); }, (value) -> { PID.setD(value, t); });
-            builder.addDoubleProperty("ff_" + t, () -> { return PID.getFF(t); }, (value) -> { PID.setFF(value, t); });
-            builder.addDoubleProperty("iz_" + t, () -> { return PID.getIZone(t); }, (value) -> { PID.setIZone(value, t); });
+            builder.addDoubleProperty("P_" + t, () -> { return PID.getP(t); }, (value) -> { PID.setP(value, t); });
+            builder.addDoubleProperty("I_" + t, () -> { return PID.getI(t); }, (value) -> { PID.setI(value, t); });
+            builder.addDoubleProperty("D_" + t, () -> { return PID.getD(t); }, (value) -> { PID.setD(value, t); });
+            builder.addDoubleProperty("FF_" + t, () -> { return PID.getFF(t); }, (value) -> { PID.setFF(value, t); });
+            builder.addDoubleProperty("IZ_" + t, () -> { return PID.getIZone(t); }, (value) -> { PID.setIZone(value, t); });
         }
         
-        builder.addDoubleProperty("position", this::getCurrentPosition, (value) -> {});
-        builder.addDoubleProperty("speed", this::getCurrentSpeed, (value) -> {});
-
-
+        builder.addDoubleProperty("Position", this::getCurrentPosition, this::setPosition);
+        builder.addDoubleProperty("Speed", this::getCurrentSpeed, (value) -> {});
+        builder.addBooleanProperty("BURN", () -> false, (value) -> {if (value) CONTROLLER.burnFlash();});
     }
     
     /**
@@ -118,14 +116,27 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
         return ENCODER.getPosition();
     }
 
+    /**
+     * Changes which PID slot position commands read from.
+     * 
+     * @param pidSlot the slot to use [0, 3]
+     */
     public void setPositionPid(int pidSlot) {
         positionPid = pidSlot;
     }
 
+    /** 
+     * Returns the PID slot currently being used for position commands.
+     */
     public int getPositionPid() {
         return positionPid;
     }
 
+    /**
+     * Changes which PID slot velocity commands read from.
+     * 
+     * @param pidSlot the slot to use [0, 3]
+     */
     public void setSpeedPid(int pidSlot) {
         speedPid = pidSlot;
     }
@@ -140,11 +151,11 @@ public class Neo implements SpeedMotor, PositionMotor, Sendable {
 
     /**
      * Sets the ratio from the motor shaft to the output shaft.
-     * @param gearRatio the ratio output_shaft_rotations / motor_shaft_rotations
+     * @param gearRatio the ratio motor_shaft_rotations / output_shaft_rotations
      */
     public void setGearRatio(double gearRatio) {
-        ENCODER.setPositionConversionFactor(ENCODER.getPositionConversionFactor() / this.gearRatio * gearRatio);
-        ENCODER.setVelocityConversionFactor(ENCODER.getVelocityConversionFactor() / this.gearRatio * gearRatio);
+        ENCODER.setPositionConversionFactor(ENCODER.getPositionConversionFactor() * this.gearRatio / gearRatio);
+        ENCODER.setVelocityConversionFactor(ENCODER.getVelocityConversionFactor() * this.gearRatio / gearRatio);
         this.gearRatio = gearRatio;
     }
 

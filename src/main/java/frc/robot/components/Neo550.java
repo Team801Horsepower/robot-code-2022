@@ -15,6 +15,7 @@ public class Neo550 extends Neo {
      */
     public Neo550(int canId) {
         super(canId);
+        CONTROLLER.setSmartCurrentLimit(30);
     }
 
     @Override

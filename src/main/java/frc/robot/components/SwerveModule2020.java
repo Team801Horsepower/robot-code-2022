@@ -4,6 +4,21 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 public class SwerveModule2020 extends SwerveModule {
 
+    private static final double DRIVE_P = 0.005;
+    private static final double DRIVE_I = 0.0;
+    private static final double DRIVE_D = 0.0;
+
+    private static final double DRIVE_GEAR_RATIO = 1.0 / 0.1875;
+    private static final IdleMode DRIVE_IDLE_MODE = IdleMode.kCoast;
+
+    private static final double TURN_P = 0.5;
+    private static final double TURN_I = 0.004;
+    private static final double TURN_D = 0.7;
+    private static final double TURN_I_MAX_ACCUM = 0.5;
+
+    private static final double TURN_GEAR_RATIO = 60.0;
+    private static final boolean TURN_INVERTED = false;
+
     private final Neo DRIVE_MOTOR;
     private final Neo550 TURN_MOTOR;
 
@@ -24,10 +39,10 @@ public class SwerveModule2020 extends SwerveModule {
         DRIVE_MOTOR.PID.setIZone(0.0, speedPid);
         DRIVE_MOTOR.PID.setOutputRange(-1.0, 1.0);
 
-        DRIVE_MOTOR.setGearRatio(0.1875);
+        DRIVE_MOTOR.setGearRatio(DRIVE_GEAR_RATIO);
 
         DRIVE_MOTOR.CONTROLLER.setInverted(!inverted);
-        DRIVE_MOTOR.CONTROLLER.setIdleMode(IdleMode.kCoast); // TODO: Switch back to kCoast
+        DRIVE_MOTOR.CONTROLLER.setIdleMode(DRIVE_IDLE_MODE);
         DRIVE_MOTOR.CONTROLLER.setSmartCurrentLimit(40, 30);
 
         // Make settings persistent
@@ -36,17 +51,14 @@ public class SwerveModule2020 extends SwerveModule {
         // Set up the Turn Motor
         TURN_MOTOR = (Neo550) super.TURN_MOTOR;
         int positionPid = TURN_MOTOR.getPositionPid();
-        TURN_MOTOR.PID.setP(0.5, positionPid);
-        TURN_MOTOR.PID.setI(0.004, positionPid);
-        TURN_MOTOR.PID.setD(0.7, positionPid);
-        TURN_MOTOR.PID.setFF(0.0, positionPid);
-        TURN_MOTOR.PID.setIMaxAccum(0.5, positionPid);
-        TURN_MOTOR.PID.setOutputRange(-1.0, 1.0);
+        TURN_MOTOR.PID.setP(TURN_P, positionPid);
+        TURN_MOTOR.PID.setI(TURN_I, positionPid);
+        TURN_MOTOR.PID.setD(TURN_D, positionPid);
+        TURN_MOTOR.PID.setIMaxAccum(TURN_I_MAX_ACCUM, positionPid);
         
-        TURN_MOTOR.setGearRatio(1.0 / 60.0);
+        TURN_MOTOR.setGearRatio(TURN_GEAR_RATIO);
 
-        TURN_MOTOR.CONTROLLER.setInverted(false);
-        TURN_MOTOR.CONTROLLER.setIdleMode(IdleMode.kCoast); // TODO: Switch back to kBrake
+        TURN_MOTOR.CONTROLLER.setInverted(TURN_INVERTED);
         TURN_MOTOR.CONTROLLER.setSmartCurrentLimit(30, 20);
 
         // Make settings persistent

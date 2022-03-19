@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.RunClaws;
 import frc.robot.commands.RunShooter;
+import frc.robot.commands.Aim;
+import frc.robot.commands.CalibrateShooter;
 import frc.robot.commands.Climb;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.FieldDriveWithJoysticks;
@@ -63,14 +65,13 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        // Set the default commands for each subsystem
         CHASSIS.setDefaultCommand(new FieldDriveWithJoysticks());
-        // Configure the button bindings
         configureButtonBindings();
     }
 
     public void init() {
         CHASSIS.init(INITIAL_POSE);
+        GATHER.clear();
     }
 
     /**
@@ -86,15 +87,12 @@ public class RobotContainer {
         IO.Button.DriverRightTrigger.value.whileHeld(gatherCommand);
         IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
 
-        IO.Button.DriverLeftBumper.value.whenPressed(
-                GATHER.tampBall().andThen(
-                SHOOTER.revFlywheel(196.0),
-                GATHER.fireBall())
-        );
-        IO.Button.DriverRightBumper.value.whenPressed(new DriveToPose(INITIAL_POSE, 0.05, 0.05));
+        IO.Button.DriverRightBumper.value.whileHeld(new DriveToPose(INITIAL_POSE, 0.05, 0.05));
 
-        IO.Button.DriverA.value.whenPressed(GATHER.tampBall().alongWith(new InstantCommand(() -> SHOOTER.setSpeed(-10.0), SHOOTER))).whenReleased(SHOOTER::stop, SHOOTER);
+        IO.Button.DriverA.value.whenPressed(GATHER.tampBall());
+        IO.Button.DriverY.value.whenPressed(GATHER.fireBall());
         IO.Button.DriverX.value.toggleWhenPressed(new RunShooter());
+        IO.Button.DriverB.value.whenPressed(() -> GATHER.run(1.0), GATHER).whenReleased(() -> GATHER.stop(), GATHER);
 
         IO.Button.DriverLeftStick.value.toggleWhenPressed(new RobotDriveWithJoysticks());
 

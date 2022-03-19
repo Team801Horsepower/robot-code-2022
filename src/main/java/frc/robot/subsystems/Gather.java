@@ -15,7 +15,7 @@ public class Gather extends SubsystemBase {
 
     public Gather() {
         ARM = new Neo550(Constants.GATHER_ARM);
-        ARM.setGearRatio(Constants.GATHER_ARM_GEAR_RATIO);
+        ARM.setGearRatio(GATHER_ARM_GEAR_RATIO);
 
         int positionPid = ARM.getPositionPid();
         ARM.PID.setP(1.0, positionPid);
@@ -23,15 +23,16 @@ public class Gather extends SubsystemBase {
         ARM.PID.setD(0.0, positionPid);
 
         WHEELS = new Neo550(Constants.GATHER_WHEELS);
-        WHEELS.setGearRatio(Constants.GATHER_WHEELS_GEAR_RATIO);
+        WHEELS.setGearRatio(GATHER_WHEELS_GEAR_RATIO);
 
         positionPid = WHEELS.getPositionPid();
         WHEELS.PID.setP(1.0, positionPid);
         WHEELS.PID.setI(0.001, positionPid);
         WHEELS.PID.setD(0.0, positionPid);
-        WHEELS.PID.setFF(0.01, positionPid);
+        WHEELS.PID.setFF(0.0, positionPid);
+        WHEELS.PID.setIZone(0.5);
 
-        SmartDashboard.putData(WHEELS);
+        SmartDashboard.putData("WHEELS", WHEELS);
     }
 
     public void lower() {
@@ -56,13 +57,13 @@ public class Gather extends SubsystemBase {
     public void stop() {
         WHEELS.setPower(0.0);
     }
-    
+
     public Command tampBall() {
-        return WHEELS.generatePositionCommand(() -> WHEELS.getCurrentPosition() -1.9 * Math.PI, 0.01, this);
+        return WHEELS.generateRotationCommand(-2 * Math.PI, 0.01, this);
     }
 
     public Command fireBall() {
-        return WHEELS.generatePositionCommand(() -> WHEELS.getCurrentPosition() + 1.75 * Math.PI, 0.01, this);
+        return WHEELS.generateRotationCommand(2 * Math.PI, 0.01, this);
     }
 
     public boolean isRaised() {
@@ -71,6 +72,11 @@ public class Gather extends SubsystemBase {
 
     public boolean isLowered() {
         return ARM.getCurrentPosition() < Constants.ARM_LOWERED_POSITION;
+    }
+
+    public void clear() {
+        WHEELS.setPosition(0.0);
+        WHEELS.setDesiredPosition(0.0);
     }
 
     @Override
@@ -83,4 +89,7 @@ public class Gather extends SubsystemBase {
             ARM.setPower(0.0);
         }
     }
+
+    public static final double GATHER_WHEELS_GEAR_RATIO = 9.0;
+    public static final double GATHER_ARM_GEAR_RATIO = 30.0;
 }
