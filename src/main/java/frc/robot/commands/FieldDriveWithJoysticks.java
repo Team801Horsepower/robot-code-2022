@@ -13,6 +13,9 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Chassis;
 
 public class FieldDriveWithJoysticks extends CommandBase {
+    
+    double lastAngular = 0.0;
+
     /**
      * Creates a new RobotDriveWithJoysticks.
      */
@@ -37,7 +40,12 @@ public class FieldDriveWithJoysticks extends CommandBase {
         forward *= Chassis.MAX_DRIVE_SPEED;
         leftward *= Chassis.MAX_DRIVE_SPEED;
         angular *= Chassis.MAX_TURN_SPEED;
+        
+        if (lastAngular != 0.0 && angular == 0.0) {
+            RobotContainer.CHASSIS.setHeading(RobotContainer.CHASSIS.getCurrentPose().getRotation().getRadians(), true);
+        }
 
+        lastAngular = angular;
         RobotContainer.CHASSIS.fieldDrive(forward, leftward, angular);
     }
 

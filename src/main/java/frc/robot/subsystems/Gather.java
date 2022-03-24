@@ -11,6 +11,16 @@ public class Gather extends SubsystemBase {
     public final Neo550 WHEELS;
     public final Neo550 ARM;
 
+    private final double ARM_P = 1.0;
+    private final double ARM_I = 0.0;
+    private final double ARM_D = 0.0;
+
+    private final double WHEELS_P = 1.0;
+    private final double WHEELS_I = 0.001;
+    private final double WHEELS_D = 0.0;
+    private final double WHEELS_FF = 0.0;
+    private final double WHEELS_IZ = 0.5;
+
     private boolean lowering = false;
 
     public Gather() {
@@ -18,21 +28,21 @@ public class Gather extends SubsystemBase {
         ARM.setGearRatio(GATHER_ARM_GEAR_RATIO);
 
         int positionPid = ARM.getPositionPid();
-        ARM.PID.setP(1.0, positionPid);
-        ARM.PID.setI(0.0, positionPid);
-        ARM.PID.setD(0.0, positionPid);
+        ARM.PID.setP(ARM_P, positionPid);
+        ARM.PID.setI(ARM_I, positionPid);
+        ARM.PID.setD(ARM_D, positionPid);
 
         WHEELS = new Neo550(Constants.GATHER_WHEELS);
         WHEELS.setGearRatio(GATHER_WHEELS_GEAR_RATIO);
 
         positionPid = WHEELS.getPositionPid();
-        WHEELS.PID.setP(1.0, positionPid);
-        WHEELS.PID.setI(0.001, positionPid);
-        WHEELS.PID.setD(0.0, positionPid);
-        WHEELS.PID.setFF(0.0, positionPid);
-        WHEELS.PID.setIZone(0.5);
+        WHEELS.PID.setP(WHEELS_P, positionPid);
+        WHEELS.PID.setI(WHEELS_I, positionPid);
+        WHEELS.PID.setD(WHEELS_D, positionPid);
+        WHEELS.PID.setFF(WHEELS_FF, positionPid);
+        WHEELS.PID.setIZone(WHEELS_IZ);
 
-        SmartDashboard.putData("WHEELS", WHEELS);
+        // SmartDashboard.putData("WHEELS", WHEELS);
     }
 
     public void lower() {
@@ -77,6 +87,11 @@ public class Gather extends SubsystemBase {
     public void clear() {
         WHEELS.setPosition(0.0);
         WHEELS.setDesiredPosition(0.0);
+    }
+
+    public void reset() {
+        clear();
+        ARM.setPosition(0.0);
     }
 
     @Override

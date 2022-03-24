@@ -14,6 +14,9 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Chassis;
 
 public class RobotDriveWithJoysticks extends CommandBase {
+
+    double lastAngular = 0.0;
+
     /**
      * Creates a new RobotDriveWithJoysticks.
      */
@@ -24,12 +27,12 @@ public class RobotDriveWithJoysticks extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        IO.DRIVER.setRumble(RumbleType.kLeftRumble, 0.2);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        IO.DRIVER.setRumble(RumbleType.kLeftRumble, 0.2);
         
         double forward = IO.Joystick.DriverLeft.getForward();
         double leftward = IO.Joystick.DriverLeft.getLeftward();
@@ -39,6 +42,11 @@ public class RobotDriveWithJoysticks extends CommandBase {
         leftward *= Chassis.MAX_DRIVE_SPEED;
         angular *= Chassis.MAX_TURN_SPEED;
 
+        if (lastAngular != 0.0 && angular == 0.0) {
+            RobotContainer.CHASSIS.setHeading(RobotContainer.CHASSIS.getCurrentPose().getRotation().getRadians(), true);
+        }
+
+        lastAngular = angular;
         RobotContainer.CHASSIS.robotDrive(forward, leftward, angular);
     }
 

@@ -17,6 +17,16 @@ public class Shooter extends SubsystemBase {
 
     public final Neo FLYWHEEL;
 
+    public static final double FLYWHEEL_P = 0.01;
+    public static final double FLYWHEEL_I = 0.00001;
+    public static final double FLYWHEEL_D = 0.0;
+    public static final double FLYWHEEL_FF = 0.0009;
+    public static final double FLYWHEEL_IZ = 50.0;
+
+    public static final double FLYWHEEL_POSITION_P = 0.5;
+    public static final double FLYWHEEL_POSITION_I = 0.0;
+    public static final double FLYWHEEL_POSITION_D = 0.0;
+
     private double targetedRange = MIN_RANGE;
     private Double wheelSpeed = RANGE_TO_VELOCITY.get(targetedRange);
     
@@ -25,18 +35,18 @@ public class Shooter extends SubsystemBase {
         FLYWHEEL.setGearRatio(SHOOTER_GEAR_RATIO);
 
         int speedPid = FLYWHEEL.getSpeedPid();
-        FLYWHEEL.PID.setP(0.010, speedPid);
-        FLYWHEEL.PID.setI(0.00001, speedPid);
-        FLYWHEEL.PID.setD(0.0, speedPid);
-        FLYWHEEL.PID.setFF(0.0009, speedPid);
-        FLYWHEEL.PID.setIZone(50.0, speedPid);
+        FLYWHEEL.PID.setP(FLYWHEEL_P, speedPid);
+        FLYWHEEL.PID.setI(FLYWHEEL_I, speedPid);
+        FLYWHEEL.PID.setD(FLYWHEEL_D, speedPid);
+        FLYWHEEL.PID.setFF(FLYWHEEL_FF, speedPid);
+        FLYWHEEL.PID.setIZone(FLYWHEEL_IZ, speedPid);
 
         FLYWHEEL.CONTROLLER.setIdleMode(IdleMode.kBrake);
 
         int positionPid = FLYWHEEL.getPositionPid();
-        FLYWHEEL.PID.setP(0.5, positionPid);
-        FLYWHEEL.PID.setI(0.0, positionPid);
-        FLYWHEEL.PID.setD(0.0, positionPid);
+        FLYWHEEL.PID.setP(FLYWHEEL_POSITION_P, positionPid);
+        FLYWHEEL.PID.setI(FLYWHEEL_POSITION_I, positionPid);
+        FLYWHEEL.PID.setD(FLYWHEEL_POSITION_D, positionPid);
 
         // SmartDashboard.putData("FLYWHEEL", FLYWHEEL);
     }

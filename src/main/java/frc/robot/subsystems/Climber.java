@@ -15,6 +15,10 @@ public class Climber extends SubsystemBase {
     private final double CLIMB_P = 1.0;
     private final double CLIMB_I = 0.001;
     private final double CLIMB_D = 0.0;
+    
+    private final double CLAW_P = 1.0;
+    private final double CLAW_I = 0.0;
+    private final double CLAW_D = 0.0;
 
     double clawSetpoint = 0.0;
     double climbSetpoint = 0.0;
@@ -45,17 +49,17 @@ public class Climber extends SubsystemBase {
         CLAW_RIGHT.setGearRatio(CLIMB_CLAW_GEAR_RATIO);
 
         positionPid = CLAW_RIGHT.getPositionPid();
-        CLAW_RIGHT.PID.setP(1.0, positionPid);
-        CLAW_RIGHT.PID.setI(0.0, positionPid);
-        CLAW_RIGHT.PID.setD(0.0, positionPid);
+        CLAW_RIGHT.PID.setP(CLAW_P, positionPid);
+        CLAW_RIGHT.PID.setI(CLAW_I, positionPid);
+        CLAW_RIGHT.PID.setD(CLAW_D, positionPid);
 
         CLAW_LEFT = new Neo550(Constants.CLIMB_LEFT_CLAW);
         CLAW_LEFT.setGearRatio(CLIMB_CLAW_GEAR_RATIO);
 
         positionPid = CLAW_LEFT.getPositionPid();
-        CLAW_LEFT.PID.setP(1.0, positionPid);
-        CLAW_LEFT.PID.setI(0.0, positionPid);
-        CLAW_LEFT.PID.setD(0.0, positionPid);
+        CLAW_LEFT.PID.setP(CLAW_P, positionPid);
+        CLAW_LEFT.PID.setI(CLAW_I, positionPid);
+        CLAW_LEFT.PID.setD(CLAW_D, positionPid);
     }
 
     public void raiseArm() {

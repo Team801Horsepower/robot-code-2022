@@ -4,9 +4,10 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 public class SwerveModule2020 extends SwerveModule {
 
-    private static final double DRIVE_P = 0.005;
+    private static final double DRIVE_P = 0.025;
     private static final double DRIVE_I = 0.0;
     private static final double DRIVE_D = 0.0;
+    private static final double DRIVE_FF = 0.005;
 
     private static final double DRIVE_GEAR_RATIO = 1.0 / 0.1875;
     private static final IdleMode DRIVE_IDLE_MODE = IdleMode.kCoast;
@@ -32,10 +33,10 @@ public class SwerveModule2020 extends SwerveModule {
         // Set up the drive motor
         DRIVE_MOTOR = (Neo) super.DRIVE_MOTOR;
         int speedPid = DRIVE_MOTOR.getSpeedPid();
-        DRIVE_MOTOR.PID.setP(0.025, speedPid);
-        DRIVE_MOTOR.PID.setI(0.0, speedPid);
-        DRIVE_MOTOR.PID.setD(0.0, speedPid);
-        DRIVE_MOTOR.PID.setFF(0.005, speedPid);
+        DRIVE_MOTOR.PID.setP(DRIVE_P, speedPid);
+        DRIVE_MOTOR.PID.setI(DRIVE_I, speedPid);
+        DRIVE_MOTOR.PID.setD(DRIVE_D, speedPid);
+        DRIVE_MOTOR.PID.setFF(DRIVE_FF, speedPid);
         DRIVE_MOTOR.PID.setIZone(0.0, speedPid);
         DRIVE_MOTOR.PID.setOutputRange(-1.0, 1.0);
 

@@ -9,21 +9,15 @@ package frc.robot;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.RunClaws;
 import frc.robot.commands.RunShooter;
-import frc.robot.commands.Aim;
-import frc.robot.commands.CalibrateShooter;
 import frc.robot.commands.Climb;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.FieldDriveWithJoysticks;
@@ -57,8 +51,8 @@ public class RobotContainer {
 
     public static final PowerDistribution POWER_DISTRIBUTION = new PowerDistribution();
 
-    private static final PathPlannerTrajectory AUTO_PATH = PathPlanner.loadPath(Preferences.getString("AUTO_PATH", "Drive Backwards"), Constants.PATH_MAX_VELOCITY,
-            Constants.PATH_MAX_ACCELERATION);
+    private static final PathPlannerTrajectory AUTO_PATH = PathPlanner.loadPath(Preferences.getString("AUTO_PATH", "Drive Backwards"), Chassis.MAX_DRIVE_SPEED,
+            Chassis.MAX_DRIVE_ACCELERATION);
     private static final Pose2d INITIAL_POSE = new Pose2d(AUTO_PATH.getInitialPose().getTranslation(), AUTO_PATH.getInitialState().holonomicRotation);
 
     /**
@@ -74,6 +68,11 @@ public class RobotContainer {
         GATHER.clear();
     }
 
+    public void reset() {
+        CHASSIS.reset();
+        GATHER.reset();
+    }
+
     /**
      * Use this method to define your button->command mappings. Buttons can be
      * created by
@@ -87,7 +86,7 @@ public class RobotContainer {
         IO.Button.DriverRightTrigger.value.whileHeld(gatherCommand);
         IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
 
-        IO.Button.DriverRightBumper.value.whileHeld(new DriveToPose(INITIAL_POSE, 0.05, 0.05));
+        IO.Button.DriverRightBumper.value.whileHeld(new DriveToPose(INITIAL_POSE, 0.05));
 
         IO.Button.DriverA.value.whenPressed(GATHER.tampBall());
         IO.Button.DriverY.value.whenPressed(GATHER.fireBall());
@@ -116,7 +115,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        Command command =  new PathPlannerControllerCommand(AUTO_PATH, 0.05, 0.05);
+        Command command =  new PathPlannerControllerCommand(AUTO_PATH, 0.05);
         return command;
     }
 }

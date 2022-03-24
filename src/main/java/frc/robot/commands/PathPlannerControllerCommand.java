@@ -44,8 +44,8 @@ public class PathPlannerControllerCommand extends DriveToPose  {
      *
      * @param trajectory      The trajectory to follow.
      */
-    public PathPlannerControllerCommand(PathPlannerTrajectory trajectory, double distanceTolerance, double angleTolerance) {
-        super(RobotContainer.CHASSIS.getCurrentPose(), distanceTolerance, angleTolerance);
+    public PathPlannerControllerCommand(PathPlannerTrajectory trajectory, double distanceTolerance) {
+        super(RobotContainer.CHASSIS.getCurrentPose(), distanceTolerance);
         m_trajectory = trajectory;
     }
 
