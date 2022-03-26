@@ -21,7 +21,7 @@ public class RunShooter extends CommandBase {
         if (goalLocation != null) {
             RobotContainer.SHOOTER.setRange(goalLocation.getY());
         } else {
-            RobotContainer.SHOOTER.setSpeed(200.0);
+            RobotContainer.SHOOTER.setRange(3.0);
         }
         RobotContainer.SHOOTER.start();
     }
@@ -33,12 +33,12 @@ public class RunShooter extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return RobotContainer.SHOOTER.ready();
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        RobotContainer.SHOOTER.stop();
+        
     }
 }

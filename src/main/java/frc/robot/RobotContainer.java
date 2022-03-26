@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.RobotDriveWithJoysticks;
 import frc.robot.commands.RunClaws;
 import frc.robot.commands.RunShooter;
+import frc.robot.commands.Aim;
 import frc.robot.commands.Climb;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.FieldDriveWithJoysticks;
@@ -86,12 +87,26 @@ public class RobotContainer {
         IO.Button.DriverRightTrigger.value.whileHeld(gatherCommand);
         IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
 
+        IO.Button.DriverLeftBumper.value.whileHeld(new Aim());
         IO.Button.DriverRightBumper.value.whileHeld(new DriveToPose(INITIAL_POSE, 0.05));
 
         IO.Button.DriverA.value.whenPressed(GATHER.tampBall());
         IO.Button.DriverY.value.whenPressed(GATHER.fireBall());
         IO.Button.DriverX.value.toggleWhenPressed(new RunShooter());
         IO.Button.DriverB.value.whenPressed(() -> GATHER.run(1.0), GATHER).whenReleased(() -> GATHER.stop(), GATHER);
+
+        IO.Button.DriverStart.value.whenPressed(
+            GATHER.tampBall().alongWith(SHOOTER.prepare())
+            .andThen(new RunShooter())
+            .andThen(GATHER.fireBall())
+            // .andThen(new RunShooter())
+            .andThen(() -> GATHER.run(1.0))
+        ).whenReleased(
+            () -> {
+                GATHER.stop();
+                SHOOTER.stop();
+            }, GATHER, SHOOTER
+        );
 
         IO.Button.DriverLeftStick.value.toggleWhenPressed(new RobotDriveWithJoysticks());
 

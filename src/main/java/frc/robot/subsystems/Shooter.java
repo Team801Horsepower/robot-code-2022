@@ -69,15 +69,16 @@ public class Shooter extends SubsystemBase {
         targetedRange = range;
         wheelSpeed = RANGE_TO_VELOCITY.get(range);
         if (wheelSpeed == null) {
-            wheelSpeed = 0.0;
+            wheelSpeed = RANGE_TO_VELOCITY.get(MIN_RANGE);
         }
     }
 
     public void setSpeed(double speed) {
-        FLYWHEEL.setDesiredSpeed(speed);
+        wheelSpeed = speed;
     }
 
-    public boolean ready() {
+    public boolean 
+    ready() {
         return FLYWHEEL.velocityReached(VELOCITY_TOLERANCE);
     }
 
