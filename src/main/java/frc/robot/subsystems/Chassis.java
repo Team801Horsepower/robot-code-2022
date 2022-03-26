@@ -76,7 +76,6 @@ public class Chassis extends SubsystemBase {
     }
 
     public void periodic() {
-        System.out.println("Goal " + omegaController.getGoal().position);
         if (desiredSpeeds.omegaRadiansPerSecond == 0.0) {
             double output = omegaController.calculate(GYRO.getCurrentAngle());
             DRIVE.setDesiredSpeeds(

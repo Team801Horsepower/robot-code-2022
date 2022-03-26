@@ -4,7 +4,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 public class SwerveModule2020 extends SwerveModule {
 
-    private static final double DRIVE_P = 0.025;
+    private static final double DRIVE_P = 0.030;
     private static final double DRIVE_I = 0.0;
     private static final double DRIVE_D = 0.0;
     private static final double DRIVE_FF = 0.005;

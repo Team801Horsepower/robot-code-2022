@@ -15,8 +15,8 @@ public class Gather extends SubsystemBase {
     private final double ARM_I = 0.0;
     private final double ARM_D = 0.0;
 
-    private final double WHEELS_P = 1.0;
-    private final double WHEELS_I = 0.001;
+    private final double WHEELS_P = 2.0;
+    private final double WHEELS_I = 0.005;
     private final double WHEELS_D = 0.0;
     private final double WHEELS_FF = 0.0;
     private final double WHEELS_IZ = 0.5;
@@ -73,7 +73,7 @@ public class Gather extends SubsystemBase {
     }
 
     public Command fireBall() {
-        return WHEELS.generateRotationCommand(2 * Math.PI, 0.01, this);
+        return WHEELS.generateRotationCommand(1.0 * Math.PI, 0.01, this);
     }
 
     public boolean isRaised() {
