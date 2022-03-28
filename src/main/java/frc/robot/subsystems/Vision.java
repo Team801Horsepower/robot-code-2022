@@ -10,6 +10,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
 import frc.robot.utilities.Utils;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.stream.Stream;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision extends SubsystemBase {
@@ -41,10 +44,12 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
         lastGoalLocation = locateGoal(locateTargets(goalCamera.getLatestResult()));
+        goalCamera.setDriverMode(false);
         if (lastGoalLocation != null) {
             System.out.println(lastGoalLocation);
-            SmartDashboard.putBoolean("Targeted", Utils.almostEqual(lastGoalLocation.getX(), -0.1, 0.05) && Utils.almostEqual(lastGoalLocation.getY(), 4.0, 0.1));
-            SmartDashboard.putBoolean("Ranging", lastGoalLocation.getY() > 4.0);
+            SmartDashboard.putBoolean("Target Found", true);
+        } else {
+            SmartDashboard.putBoolean("Target Found", false);
         }
     }
 
