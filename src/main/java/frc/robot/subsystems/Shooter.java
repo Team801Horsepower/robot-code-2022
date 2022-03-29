@@ -77,11 +77,14 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setSpeed(double speed) {
-        wheelSpeed = speed;
+        FLYWHEEL.setDesiredSpeed(speed);
     }
 
-    public boolean 
-    ready() {
+    public void run(double speed) {
+        FLYWHEEL.setPower(speed);
+    }
+
+    public boolean ready() {
         return FLYWHEEL.velocityReached(VELOCITY_TOLERANCE);
     }
 

@@ -16,13 +16,12 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.RobotDriveWithJoysticks;
-import frc.robot.commands.RunClaws;
+// import frc.robot.commands.RunClaws;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.Aim;
 import frc.robot.commands.Climb;
-import frc.robot.commands.DriveToPose;
 import frc.robot.commands.FieldDriveWithJoysticks;
-import frc.robot.commands.GatherBall;
+import frc.robot.commands.GatherManual;
 import frc.robot.commands.PathPlannerControllerCommand;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
@@ -83,23 +82,16 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        Command gatherCommand = new GatherBall();
+        Command gatherCommand = new GatherManual();
         IO.Button.DriverRightTrigger.value.whileHeld(gatherCommand);
         IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
 
         IO.Button.DriverLeftBumper.value.whileHeld(new Aim());
-        IO.Button.DriverRightBumper.value.whileHeld(new DriveToPose(INITIAL_POSE, 0.05));
-
-        IO.Button.DriverA.value.whenPressed(GATHER.tampBall());
-        IO.Button.DriverY.value.whenPressed(GATHER.fireBall());
-        IO.Button.DriverX.value.toggleWhenPressed(new RunShooter());
-        IO.Button.DriverB.value.whenPressed(() -> GATHER.run(1.0), GATHER).whenReleased(() -> GATHER.stop(), GATHER);
-
-        IO.Button.DriverStart.value.whenPressed(
+        IO.Button.DriverRightBumper.value.whenPressed(
             GATHER.tampBall().alongWith(SHOOTER.prepare())
             .andThen(new RunShooter())
             .andThen(GATHER.fireBall())
-            // .andThen(new RunShooter())
+            .andThen(new RunShooter())
             .andThen(() -> GATHER.run(1.0))
         ).whenReleased(
             () -> {
@@ -108,18 +100,23 @@ public class RobotContainer {
             }, GATHER, SHOOTER
         );
 
-        IO.Button.DriverLeftStick.value.toggleWhenPressed(new RobotDriveWithJoysticks());
+        IO.Button.DriverA.value.whenPressed(GATHER.tampBall());
+        IO.Button.DriverY.value.whenPressed(GATHER.fireBall());
+        IO.Button.DriverX.value.toggleWhenPressed(new RunShooter());
+        IO.Button.DriverB.value.whenPressed(() -> GATHER.run(1.0), GATHER).whenReleased(() -> GATHER.stop(), GATHER);
 
-        IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(0.03));
-        IO.Button.ManipulatorRightBumper.value.whileHeld(new RunClaws(-0.03));
+        IO.Button.DriverStart.value.toggleWhenPressed(new RobotDriveWithJoysticks());
+
+        // IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(0.03));
+        // IO.Button.ManipulatorRightBumper.value.whileHeld(new RunClaws(-0.03));
 
         Command climbCommand = new Climb();
         IO.Button.ManipulatorRightTrigger.value.whileHeld(climbCommand);
         IO.Button.ManipulatorLeftTrigger.value.whileHeld(climbCommand);
 
-        IO.Button.ManipulatorX.value.whenPressed(() -> CLIMBER.setClawPosition(2.369), CLIMBER);
-        IO.Button.ManipulatorY.value.whenPressed(() -> CLIMBER.setClawPosition(-0.343), CLIMBER);
-        IO.Button.ManipulatorB.value.whenPressed(() -> CLIMBER.setClawPosition(-2.4), CLIMBER);
+        // IO.Button.ManipulatorX.value.whenPressed(() -> CLIMBER.setClawPosition(2.369), CLIMBER);
+        // IO.Button.ManipulatorY.value.whenPressed(() -> CLIMBER.setClawPosition(-0.343), CLIMBER);
+        // IO.Button.ManipulatorB.value.whenPressed(() -> CLIMBER.setClawPosition(-2.4), CLIMBER);
         IO.Button.ManipulatorA.value.whenPressed(() -> CLIMBER.raiseArm(), CLIMBER);
 
     }
