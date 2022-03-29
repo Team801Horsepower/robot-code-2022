@@ -21,6 +21,8 @@ public class Gather extends SubsystemBase {
     private final double WHEELS_FF = 0.0;
     private final double WHEELS_IZ = 0.5;
 
+    private final double POSITION_TOLERANCE = 0.01;
+
     private boolean lowering = false;
 
     public Gather() {
@@ -69,11 +71,11 @@ public class Gather extends SubsystemBase {
     }
 
     public Command tampBall() {
-        return WHEELS.generateRotationCommand(-2 * Math.PI, 0.01, this);
+        return WHEELS.generateRotationCommand(Constants.GATHER_TAMP_ROTATION, POSITION_TOLERANCE, this);
     }
 
     public Command fireBall() {
-        return WHEELS.generateRotationCommand(1.0 * Math.PI, 0.01, this);
+        return WHEELS.generateRotationCommand(Constants.GATHER_FIRE_ROTATION, POSITION_TOLERANCE, this);
     }
 
     public boolean isRaised() {
