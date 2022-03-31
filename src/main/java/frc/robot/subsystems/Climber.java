@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.components.Neo;
@@ -59,6 +60,11 @@ public class Climber extends SubsystemBase {
         // CLAW_LEFT.PID.setP(CLAW_P, positionPid);
         // CLAW_LEFT.PID.setI(CLAW_I, positionPid);
         // CLAW_LEFT.PID.setD(CLAW_D, positionPid);
+
+        CLIMB_RIGHT.setPosition(0.0);
+        CLIMB_LEFT.setPosition(0.0);
+        SmartDashboard.putData("RIGHT", CLIMB_RIGHT);
+        SmartDashboard.putData("LEFT", CLIMB_LEFT);
     }
 
     public void raiseArm() {
@@ -68,6 +74,7 @@ public class Climber extends SubsystemBase {
 
     public void driveClimb(double speed) {
         CLIMB_RIGHT.setPower(speed);
+        CLIMB_LEFT.setPower(speed);
     }
 
     // public void driveClaws(double speed) {
@@ -79,7 +86,10 @@ public class Climber extends SubsystemBase {
     // }
 
     public void stop() {
-        CLIMB_RIGHT.setDesiredPosition(CLIMB_RIGHT.getCurrentPosition());
+        CLIMB_RIGHT.setPower(0.0);
+        CLIMB_LEFT.setPower(0.0);
+        // CLIMB_RIGHT.setDesiredPosition(CLIMB_RIGHT.getCurrentPosition());
+        // CLIMB_LEFT.setDesiredPosition(CLIMB_LEFT.getCurrentPosition());
         // clawSetpoint = CLAW_RIGHT.getCurrentPosition();
         // climbSetpoint = CLIMB_RIGHT.getCurrentPosition();
     }

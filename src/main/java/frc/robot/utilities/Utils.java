@@ -1,5 +1,7 @@
 package frc.robot.utilities;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
+
 import edu.wpi.first.math.geometry.Pose2d;
 
 public class Utils {
@@ -109,5 +111,9 @@ public class Utils {
 
     public static boolean almostEqual(double a, double b, double epsilon) {
         return Math.abs(a - b) < epsilon;
+    }
+
+    public static Pose2d getInitialPose(PathPlannerTrajectory trajectory) {
+        return new Pose2d(trajectory.getInitialPose().getTranslation(), trajectory.getInitialState().holonomicRotation);
     }
 }

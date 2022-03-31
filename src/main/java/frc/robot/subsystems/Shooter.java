@@ -16,14 +16,21 @@ import frc.robot.utilities.InterpolatedLookupTable;
 
 public class Shooter extends SubsystemBase {
 
-    public final Neo FLYWHEEL;
+    private final Neo FLYWHEEL;
+    private final Neo FEEDER;
 
-    public static final double FLYWHEEL_P = 0.01;
+    private static final double FLYWHEEL_P = 0.01;
     public static final double FLYWHEEL_I = 0.00001;
     public static final double FLYWHEEL_D = 0.0;
     public static final double FLYWHEEL_FF = 0.0009;
     public static final double FLYWHEEL_IZ = 50.0;
     private static final double VELOCITY_TOLERANCE = Units.rotationsPerMinuteToRadiansPerSecond(30.0);
+
+    private static final double FEEDER_P = 0.01;
+    private static final double FEEDER_I = 0.00;
+    private static final double FEEDER_D = 0.0;
+    private static final double FEEDER_FF = 0.0;
+    private static final double POSITION_TOLERANCE = Units.degreesToRadians(5.0);
 
     // public static final double FLYWHEEL_POSITION_P = 0.5;
     // public static final double FLYWHEEL_POSITION_I = 0.0;
@@ -51,6 +58,17 @@ public class Shooter extends SubsystemBase {
         // FLYWHEEL.PID.setI(FLYWHEEL_POSITION_I, positionPid);
         // FLYWHEEL.PID.setD(FLYWHEEL_POSITION_D, positionPid);
 
+        FEEDER = new Neo(Constants.FEEDER);
+        FEEDER.setGearRatio(FEEDER_GEAR_RATIO);
+
+        int positionPid = FEEDER.getPositionPid();
+        FEEDER.PID.setP(FEEDER_P, positionPid);
+        FEEDER.PID.setI(FEEDER_P, positionPid);
+        FEEDER.PID.setD(FEEDER_P, positionPid);
+        FEEDER.PID.setFF(FEEDER_P, positionPid);
+
+        FEEDER.CONTROLLER.setIdleMode(IdleMode.kCoast);
+        
         // SmartDashboard.putData("FLYWHEEL", FLYWHEEL);
     }
 
@@ -62,7 +80,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void periodic() {
-
+        SmartDashboard.putBoolean("RPM Reached", ready());
     }
 
     /**
@@ -90,6 +108,7 @@ public class Shooter extends SubsystemBase {
 
     public void stop() {
         FLYWHEEL.setPower(0.0);
+        FEEDER.setPower(0.0);
     }
 
     /**
@@ -121,6 +140,10 @@ public class Shooter extends SubsystemBase {
         return command;
     }
 
+    public void runBelt() {
+        FEEDER.setPower(0.5);
+    }
+
     /**
      * Returns a {@link Command} which revs the shooter and returns when it's ready.
      */
@@ -145,4 +168,5 @@ public class Shooter extends SubsystemBase {
     public static final double MIN_RANGE = RANGE_TO_VELOCITY.lastKey();
     
     public static final double SHOOTER_GEAR_RATIO = 1.0;
+    public static final double FEEDER_GEAR_RATIO = 20.0;
 }

@@ -14,6 +14,7 @@ public class GatherManual extends CommandBase {
     @Override
     public void initialize() {
         RobotContainer.GATHER.lower();
+        RobotContainer.SHOOTER.runBelt();
     }
 
     @Override

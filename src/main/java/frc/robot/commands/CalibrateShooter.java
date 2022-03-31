@@ -17,12 +17,7 @@ public class CalibrateShooter extends CommandBase {
     public void initialize() {
         RobotContainer.SHOOTER.setSpeed(SmartDashboard.getNumber("Shooter Speed", 0.0));
     }
-
-    @Override
-    public void execute() {
-        SmartDashboard.putBoolean("RPM Reached", RobotContainer.SHOOTER.FLYWHEEL.velocityReached(Units.rotationsPerMinuteToRadiansPerSecond(50.0)));
-    }
-
+    
     @Override
     public boolean isFinished() {
         return false;

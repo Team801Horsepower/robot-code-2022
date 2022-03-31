@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.math.controller.PIDController;
@@ -8,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Chassis;
 
 /**
  * A command that uses two PID controllers ({@link PIDController}) and a
@@ -28,7 +30,7 @@ import frc.robot.RobotContainer;
  */
 public class PathPlannerControllerCommand extends DriveToPose  {
     private final Timer m_timer = new Timer();
-    private final PathPlannerTrajectory m_trajectory;
+    public final PathPlannerTrajectory m_trajectory;
 
     /**
      * Constructs a new ({@link PathPlannerControllerCommand}) that when executed
@@ -47,6 +49,10 @@ public class PathPlannerControllerCommand extends DriveToPose  {
     public PathPlannerControllerCommand(PathPlannerTrajectory trajectory, double distanceTolerance) {
         super(RobotContainer.CHASSIS.getCurrentPose(), distanceTolerance);
         m_trajectory = trajectory;
+    }
+
+    public PathPlannerControllerCommand(String pathName, double distanceTolerance) {
+        this(PathPlanner.loadPath(pathName, Chassis.MAX_DRIVE_SPEED, Chassis.MAX_DRIVE_ACCELERATION), distanceTolerance);
     }
 
     @Override

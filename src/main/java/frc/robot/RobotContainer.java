@@ -28,6 +28,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Gather;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
+import frc.robot.utilities.Utils;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -50,10 +51,7 @@ public class RobotContainer {
     public static final Climber CLIMBER = new Climber();
 
     public static final PowerDistribution POWER_DISTRIBUTION = new PowerDistribution();
-
-    private static final PathPlannerTrajectory AUTO_PATH = PathPlanner.loadPath(Preferences.getString("AUTO_PATH", "Drive Backwards"), Chassis.MAX_DRIVE_SPEED,
-            Chassis.MAX_DRIVE_ACCELERATION);
-    private static final Pose2d INITIAL_POSE = new Pose2d(AUTO_PATH.getInitialPose().getTranslation(), AUTO_PATH.getInitialState().holonomicRotation);
+    public static final Constants.AutonomousRoutine AUTONOMOUS_ROUTINE = Constants.AUTO_ROUTINES[Preferences.getInt("AUTO_ROUNTINE", 0)];
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -64,7 +62,7 @@ public class RobotContainer {
     }
 
     public void init() {
-        CHASSIS.init(INITIAL_POSE);
+        CHASSIS.init(AUTONOMOUS_ROUTINE.INITIAL_POSE);
         GATHER.clear();
     }
 
@@ -106,6 +104,7 @@ public class RobotContainer {
         IO.Button.DriverB.value.whenPressed(() -> GATHER.run(1.0), GATHER).whenReleased(() -> GATHER.stop(), GATHER);
 
         IO.Button.DriverStart.value.toggleWhenPressed(new RobotDriveWithJoysticks());
+        IO.Button.DriverBack.value.whenPressed(SHOOTER::runBelt).whenReleased(SHOOTER::stop);
 
         // IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(0.03));
         // IO.Button.ManipulatorRightBumper.value.whileHeld(new RunClaws(-0.03));
@@ -127,7 +126,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        Command command =  new PathPlannerControllerCommand(AUTO_PATH, 0.05);
-        return command;
+        return AUTONOMOUS_ROUTINE.COMMAND;
     }
 }
