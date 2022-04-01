@@ -25,6 +25,7 @@ import frc.robot.commands.GatherManual;
 import frc.robot.commands.PathPlannerControllerCommand;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Gather;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
@@ -49,6 +50,7 @@ public class RobotContainer {
     public static final Gather GATHER = new Gather();
     public static final Shooter SHOOTER = new Shooter();
     public static final Climber CLIMBER = new Climber();
+    public static final Feeder FEEDER = new Feeder();
 
     public static final PowerDistribution POWER_DISTRIBUTION = new PowerDistribution();
     public static final Constants.AutonomousRoutine AUTONOMOUS_ROUTINE = Constants.AUTO_ROUTINES[Preferences.getInt("AUTO_ROUNTINE", 0)];
@@ -86,16 +88,18 @@ public class RobotContainer {
 
         IO.Button.DriverLeftBumper.value.whileHeld(new Aim());
         IO.Button.DriverRightBumper.value.whenPressed(
-            GATHER.tampBall().alongWith(SHOOTER.prepare())
+            FEEDER.feed(false).alongWith(SHOOTER.prepare())
             .andThen(new RunShooter())
-            .andThen(GATHER.fireBall())
+            .andThen(FEEDER.feed(true))
             .andThen(new RunShooter())
             .andThen(() -> GATHER.run(1.0))
+            .andThen(() -> FEEDER.run(1.0))
         ).whenReleased(
             () -> {
                 GATHER.stop();
+                FEEDER.stop();
                 SHOOTER.stop();
-            }, GATHER, SHOOTER
+            }, GATHER, SHOOTER, FEEDER
         );
 
         IO.Button.DriverA.value.whenPressed(GATHER.tampBall());
@@ -104,7 +108,7 @@ public class RobotContainer {
         IO.Button.DriverB.value.whenPressed(() -> GATHER.run(1.0), GATHER).whenReleased(() -> GATHER.stop(), GATHER);
 
         IO.Button.DriverStart.value.toggleWhenPressed(new RobotDriveWithJoysticks());
-        IO.Button.DriverBack.value.whenPressed(SHOOTER::runBelt).whenReleased(SHOOTER::stop);
+        //IO.Button.DriverBack.value.whenPressed(SHOOTER::runBelt).whenReleased(SHOOTER::stop);
 
         // IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(0.03));
         // IO.Button.ManipulatorRightBumper.value.whileHeld(new RunClaws(-0.03));

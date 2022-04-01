@@ -7,6 +7,7 @@ import frc.robot.RobotContainer;
 public class GatherManual extends CommandBase {
 
     public GatherManual() {
+        addRequirements(RobotContainer.FEEDER);
         addRequirements(RobotContainer.SHOOTER);
         addRequirements(RobotContainer.GATHER);
     }
@@ -14,14 +15,14 @@ public class GatherManual extends CommandBase {
     @Override
     public void initialize() {
         RobotContainer.GATHER.lower();
-        RobotContainer.SHOOTER.runBelt();
     }
 
     @Override
     public void execute() {
         double speed = 0.5 * (IO.Axis.DriverRightTrigger.get() - IO.Axis.DriverLeftTrigger.get());
-        RobotContainer.SHOOTER.run(Math.abs(speed));
+        RobotContainer.SHOOTER.run(-Math.abs(speed));
         RobotContainer.GATHER.run(speed);
+        RobotContainer.FEEDER.run(speed);
     }
 
     @Override
@@ -32,5 +33,6 @@ public class GatherManual extends CommandBase {
     public void end(boolean interrupted) {
         RobotContainer.SHOOTER.stop();
         RobotContainer.GATHER.stop();
+        RobotContainer.FEEDER.stop();
     }
 }

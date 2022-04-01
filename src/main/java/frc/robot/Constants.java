@@ -35,7 +35,9 @@ public class Constants {
     public static final double FLYWHEEL_FREE_BALL_ROTATION = Units.degreesToRadians(-270.0);
     public static final double GATHER_FIRE_ROTATION = Math.PI;
     public static final double GATHER_TAMP_ROTATION = -2.0 * Math.PI;
-    
+
+    public static final double FEEDER_1_BALL = 6.0 * Math.PI;
+    public static final double FEEDER_TAMP_BALL = -2.0 * Math.PI;
     // HARDWARE CONFIGURATIONS
 
     // Climber CAN IDs
