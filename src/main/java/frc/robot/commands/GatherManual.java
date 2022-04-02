@@ -7,9 +7,7 @@ import frc.robot.RobotContainer;
 public class GatherManual extends CommandBase {
 
     public GatherManual() {
-        addRequirements(RobotContainer.FEEDER);
-        addRequirements(RobotContainer.SHOOTER);
-        addRequirements(RobotContainer.GATHER);
+        addRequirements(RobotContainer.FEEDER, RobotContainer.SHOOTER, RobotContainer.GATHER);
     }
 
     @Override
