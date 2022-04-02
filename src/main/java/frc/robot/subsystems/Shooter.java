@@ -130,10 +130,11 @@ public class Shooter extends SubsystemBase {
     
     private static final InterpolatedLookupTable<Double, Double> RANGE_TO_VELOCITY = new InterpolatedLookupTable<>(
         Collections.unmodifiableNavigableMap(new TreeMap<Double, Double>(Map.of(
-            2.4, 200.0,
-            2.7, 205.0,
+            2.4, 210.0,
+            2.7, 215.0,
             3.2, 230.0,
-            3.7, 260.0,
+            3.7, 250.0,
+            4.1, 265.0,
             4.2, 287.0,
             4.7, 310.0,
             5.2, 375.0

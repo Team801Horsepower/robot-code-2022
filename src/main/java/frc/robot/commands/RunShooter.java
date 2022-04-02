@@ -18,7 +18,7 @@ public class RunShooter extends CommandBase {
     public void initialize() {
         goalLocation = RobotContainer.VISION.getGoalLocation();
         if (goalLocation != null) {
-            RobotContainer.SHOOTER.setRange(goalLocation.getY());
+            RobotContainer.SHOOTER.setRange(Math.sqrt(Math.pow(goalLocation.getX(), 2.0) + Math.pow(goalLocation.getY(), 2.0)));
         } else {
             RobotContainer.SHOOTER.setRange(3.0);
         }
