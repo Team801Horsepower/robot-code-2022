@@ -4,9 +4,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.IO;
 import frc.robot.RobotContainer;
 
-public class GatherManual extends CommandBase {
+public class Gather extends CommandBase {
 
-    public GatherManual() {
+    private boolean manual = false;
+
+    public Gather(boolean manual) {
+        this.manual = manual;
+
         addRequirements(RobotContainer.FEEDER, RobotContainer.SHOOTER, RobotContainer.GATHER);
     }
 
@@ -17,7 +21,10 @@ public class GatherManual extends CommandBase {
 
     @Override
     public void execute() {
-        double speed = 0.5 * (IO.Axis.DriverRightTrigger.get() - IO.Axis.DriverLeftTrigger.get());
+        double speed = 0.33;
+        if (manual) {
+            speed *= IO.Axis.DriverRightTrigger.get() - IO.Axis.DriverLeftTrigger.get();
+        }
 
         var proximity = RobotContainer.FEEDER.COLOR_SENSOR.getProximity();
         boolean inProximity = proximity > 400;

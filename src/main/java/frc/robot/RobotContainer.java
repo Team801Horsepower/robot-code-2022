@@ -21,12 +21,12 @@ import frc.robot.commands.RunShooter;
 import frc.robot.commands.Aim;
 import frc.robot.commands.Climb;
 import frc.robot.commands.FieldDriveWithJoysticks;
-import frc.robot.commands.GatherManual;
+import frc.robot.commands.Gather;
 import frc.robot.commands.PathPlannerControllerCommand;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.Gather;
+import frc.robot.subsystems.Gatherer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.utilities.Utils;
@@ -47,7 +47,7 @@ public class RobotContainer {
 
     public static final Chassis CHASSIS = new Chassis();
     public static final Vision VISION = new Vision();
-    public static final Gather GATHER = new Gather();
+    public static final Gatherer GATHER = new Gatherer();
     public static final Shooter SHOOTER = new Shooter();
     public static final Climber CLIMBER = new Climber();
     public static final Feeder FEEDER = new Feeder();
@@ -82,7 +82,7 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        Command gatherCommand = new GatherManual();
+        Command gatherCommand = new Gather(true);
         IO.Button.DriverRightTrigger.value.whileHeld(gatherCommand);
         IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
 
