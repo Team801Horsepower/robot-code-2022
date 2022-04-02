@@ -12,8 +12,9 @@ public class Climber extends SubsystemBase {
     // private final Neo550 CLAW_RIGHT;
     // private final Neo550 CLAW_LEFT;
     
-    private final double CLIMB_P = 1.0;
-    private final double CLIMB_I = 0.001;
+    // TODO: Finish tuning this PID
+    private final double CLIMB_P = 0.8;
+    private final double CLIMB_I = 0.0;
     private final double CLIMB_D = 0.0;
 
     // private final double CLAW_P = 1.0;
@@ -75,6 +76,11 @@ public class Climber extends SubsystemBase {
     public void driveClimb(double speed) {
         CLIMB_RIGHT.setPower(speed);
         CLIMB_LEFT.setPower(speed);
+    }
+
+    public void setDesiredPosition(double position) {
+        CLIMB_RIGHT.setDesiredPosition(position);
+        CLIMB_LEFT.setDesiredPosition(position);
     }
 
     // public void driveClaws(double speed) {

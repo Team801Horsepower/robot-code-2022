@@ -88,8 +88,7 @@ public class RobotContainer {
 
         IO.Button.DriverLeftBumper.value.whileHeld(new Aim());
         IO.Button.DriverRightBumper.value.whenPressed(
-            FEEDER.feed(false).alongWith(SHOOTER.prepare())
-            .andThen(new RunShooter())
+            (new RunShooter())
             .andThen(FEEDER.feed(true))
             .andThen(new RunShooter())
             .andThen(() -> GATHER.run(1.0))
@@ -120,8 +119,12 @@ public class RobotContainer {
         // IO.Button.ManipulatorX.value.whenPressed(() -> CLIMBER.setClawPosition(2.369), CLIMBER);
         // IO.Button.ManipulatorY.value.whenPressed(() -> CLIMBER.setClawPosition(-0.343), CLIMBER);
         // IO.Button.ManipulatorB.value.whenPressed(() -> CLIMBER.setClawPosition(-2.4), CLIMBER);
-        IO.Button.ManipulatorA.value.whenPressed(() -> CLIMBER.raiseArm(), CLIMBER);
-
+        // IO.Button.ManipulatorA.value.whenPressed(() -> CLIMBER.raiseArm(), CLIMBER);
+        IO.Button.ManipulatorStart.value.whenPressed(() -> CLIMBER.setDesiredPosition(1.088));
+        IO.Button.ManipulatorA.value.whenPressed(() -> CLIMBER.setDesiredPosition(-1.5));
+        IO.Button.ManipulatorX.value.whenPressed(() -> CLIMBER.setDesiredPosition(0.0));
+        IO.Button.ManipulatorY.value.whenPressed(() -> CLIMBER.setDesiredPosition(-4.67));
+        IO.Button.ManipulatorB.value.whenPressed(() -> CLIMBER.setDesiredPosition(-Math.PI));
     }
 
     /**
