@@ -106,7 +106,7 @@ public class RobotContainer {
         IO.Button.DriverX.value.toggleWhenPressed(new RunShooter());
         IO.Button.DriverB.value.whenPressed(() -> GATHER.run(1.0), GATHER).whenReleased(() -> GATHER.stop(), GATHER);
 
-        IO.Button.DriverStart.value.toggleWhenPressed(new RobotDriveWithJoysticks());
+        IO.Button.DriverLeftStick.value.toggleWhenPressed(new RobotDriveWithJoysticks());
         //IO.Button.DriverBack.value.whenPressed(SHOOTER::runBelt).whenReleased(SHOOTER::stop);
 
         // IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(0.03));
