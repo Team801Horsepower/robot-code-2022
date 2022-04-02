@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -10,6 +11,7 @@ import frc.robot.components.Neo;
 
 public class Feeder extends SubsystemBase {
     public final Neo FEEDER;
+    public final ColorSensorV3 COLOR_SENSOR;
 
     private final double FEEDER_P = 1.0;
     private final double FEEDER_I = 0.0;
@@ -32,6 +34,8 @@ public class Feeder extends SubsystemBase {
         FEEDER.CONTROLLER.setIdleMode(IdleMode.kBrake);
 
         FEEDER.setPosition(0.0);
+
+        COLOR_SENSOR = new ColorSensorV3(edu.wpi.first.wpilibj.I2C.Port.kOnboard);
     }
 
     /**

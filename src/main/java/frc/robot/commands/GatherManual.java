@@ -18,9 +18,17 @@ public class GatherManual extends CommandBase {
     @Override
     public void execute() {
         double speed = 0.5 * (IO.Axis.DriverRightTrigger.get() - IO.Axis.DriverLeftTrigger.get());
-        RobotContainer.SHOOTER.run(-Math.abs(speed));
-        RobotContainer.GATHER.run(speed);
-        RobotContainer.FEEDER.run(speed);
+
+        var proximity = RobotContainer.FEEDER.COLOR_SENSOR.getProximity();
+        boolean inProximity = proximity > 400;
+
+        if (!inProximity || speed < 0.0) {
+            RobotContainer.GATHER.run(speed);
+            RobotContainer.FEEDER.run(speed);
+        } else {
+            RobotContainer.GATHER.run(speed * 0.85);
+            RobotContainer.FEEDER.stop();
+        }
     }
 
     @Override
