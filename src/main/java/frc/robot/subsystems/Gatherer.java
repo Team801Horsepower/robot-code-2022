@@ -25,7 +25,7 @@ public class Gatherer extends SubsystemBase {
 
     private final double POSITION_TOLERANCE = 0.01;
 
-    public static final double GATHER_WHEELS_GEAR_RATIO = 3.0;
+    public static final double GATHER_WHEELS_GEAR_RATIO = 15.0;
     public static final double GATHER_ARM_GEAR_RATIO = 30.0;
 
     private boolean lowering = false;
