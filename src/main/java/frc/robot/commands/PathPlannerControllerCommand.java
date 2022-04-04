@@ -3,6 +3,9 @@ package frc.robot.commands;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+
+import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -10,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Chassis;
+
 
 /**
  * A command that uses two PID controllers ({@link PIDController}) and a
@@ -28,7 +32,7 @@ import frc.robot.subsystems.Chassis;
  * <p>
  * This class is provided by the NewCommands VendorDep
  */
-public class PathPlannerControllerCommand extends DriveToPose  {
+public class PathPlannerControllerCommand extends DriveToPose {
     private final Timer m_timer = new Timer();
     public final PathPlannerTrajectory m_trajectory;
 
@@ -68,7 +72,26 @@ public class PathPlannerControllerCommand extends DriveToPose  {
         var desiredState = (PathPlannerState) m_trajectory.sample(curTime);
 
         targetPose = new Pose2d(desiredState.poseMeters.getTranslation(), desiredState.holonomicRotation);
-        super.execute();
+
+        var error = RobotContainer.CHASSIS.getCurrentPose().minus(targetPose);
+        var errorDistance = error.getTranslation().getNorm();
+        
+        double distanceOutput = distanceController.calculate(errorDistance);
+
+        double x = distanceOutput * error.getTranslation().getX() / errorDistance;
+        double y = distanceOutput * error.getTranslation().getY() / errorDistance;
+
+        if (distanceController.atSetpoint()) {
+            x = 0.0;
+            y = 0.0;
+        }
+
+        double vx = desiredState.velocityMetersPerSecond * desiredState.poseMeters.getRotation().getCos();
+        double vy = desiredState.velocityMetersPerSecond * desiredState.poseMeters.getRotation().getSin();
+
+        // The order of these is important.
+        RobotContainer.CHASSIS.fieldDrive(x/* + vx */, y /*+ vy */, 0.0);
+        RobotContainer.CHASSIS.setHeading(targetPose.getRotation().getRadians(), false);
     }
 
     @Override
@@ -79,6 +102,6 @@ public class PathPlannerControllerCommand extends DriveToPose  {
 
     @Override
     public boolean isFinished() {
-        return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds()) && super.isFinished();
+        return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());// && super.isFinished();
     }
 }

@@ -12,14 +12,15 @@ import frc.robot.IO;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Chassis;
 
-public class FieldDriveWithJoysticks extends CommandBase {
+public class DriveWithJoysticks extends CommandBase {
     
     double lastAngular = 0.0;
+    boolean fieldOrient = true;
 
     /**
      * Creates a new RobotDriveWithJoysticks.
      */
-    public FieldDriveWithJoysticks() {
+    public DriveWithJoysticks(boolean fieldOrient) {
         addRequirements(RobotContainer.CHASSIS);
     }
 
@@ -46,7 +47,15 @@ public class FieldDriveWithJoysticks extends CommandBase {
         }
 
         lastAngular = angular;
-        RobotContainer.CHASSIS.fieldDrive(forward, leftward, angular);
+        if (fieldOrient) {
+            RobotContainer.CHASSIS.fieldDrive(forward, leftward, angular);
+        } else {
+            RobotContainer.CHASSIS.robotDrive(forward, leftward, angular);
+        }
+    }
+
+    public void toggleMode() {
+        fieldOrient = !fieldOrient;
     }
 
     // Called once the command ends or is interrupted.

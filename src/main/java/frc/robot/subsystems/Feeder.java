@@ -5,13 +5,12 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.components.Neo;
 
 public class Feeder extends SubsystemBase {
-    public final Neo FEEDER;
-    public final ColorSensorV3 COLOR_SENSOR;
+    private final Neo FEEDER;
+    private final ColorSensorV3 COLOR_SENSOR;
 
     private final double FEEDER_P = 1.0;
     private final double FEEDER_I = 0.0;
@@ -20,6 +19,8 @@ public class Feeder extends SubsystemBase {
 
     private final double POSITION_TOLERANCE = 0.01;
     private final double FEEDER_GEAR_RATIO = 14.2857143;
+
+    private boolean loaded = false;
 
     public Feeder() {
         FEEDER = new Neo(Constants.FEEDER);
@@ -38,6 +39,15 @@ public class Feeder extends SubsystemBase {
         COLOR_SENSOR = new ColorSensorV3(edu.wpi.first.wpilibj.I2C.Port.kOnboard);
     }
 
+    public void periodic() {
+        loaded = COLOR_SENSOR.getProximity() > Constants.FEEDER_THRESHOLD;
+        SmartDashboard.putBoolean("Feeder Loaded", loaded);
+    }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
     /**
      * Run positive values to feed. Negative values to spit. 
      * 
@@ -52,12 +62,8 @@ public class Feeder extends SubsystemBase {
         FEEDER.setPower(0.0);
     }
 
-    public Command feed(boolean fire) {
-        if (fire) {
-            return FEEDER.generateRotationCommand(Constants.FEEDER_1_BALL, POSITION_TOLERANCE, this);
-        } else {
-            return FEEDER.generateRotationCommand(Constants.FEEDER_TAMP_BALL, POSITION_TOLERANCE, this);
-        }
+    public Command feed() {
+        return FEEDER.generateRotationCommand(Constants.FEEDER_1_BALL, POSITION_TOLERANCE, this);
     }
 
     public void reset() {

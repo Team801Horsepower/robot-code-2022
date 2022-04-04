@@ -7,29 +7,22 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.RobotDriveWithJoysticks;
-// import frc.robot.commands.RunClaws;
-import frc.robot.commands.RunShooter;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.Aim;
 import frc.robot.commands.Climb;
-import frc.robot.commands.FieldDriveWithJoysticks;
+import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.Gather;
-import frc.robot.commands.PathPlannerControllerCommand;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Gatherer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-import frc.robot.utilities.Utils;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -53,13 +46,15 @@ public class RobotContainer {
     public static final Feeder FEEDER = new Feeder();
 
     public static final PowerDistribution POWER_DISTRIBUTION = new PowerDistribution();
-    public static final Constants.AutonomousRoutine AUTONOMOUS_ROUTINE = Constants.AUTO_ROUTINES[Preferences.getInt("AUTO_ROUNTINE", 0)];
+    public static final Constants.AutonomousRoutine AUTONOMOUS_ROUTINE = Constants.AUTO_ROUTINES[Preferences.getInt("AUTO_ROUTINE", 0)];
 
+    private final DriveWithJoysticks DRIVE_COMMAND = new DriveWithJoysticks(true);
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        CHASSIS.setDefaultCommand(new FieldDriveWithJoysticks());
+        Preferences.setInt("AUTO_ROUTINE", Preferences.getInt("AUTO_ROUTINE", 0));
+        CHASSIS.setDefaultCommand(DRIVE_COMMAND);
         configureButtonBindings();
     }
 
@@ -87,39 +82,17 @@ public class RobotContainer {
         IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
 
         IO.Button.DriverLeftBumper.value.whileHeld(new Aim());
-        IO.Button.DriverRightBumper.value.whenPressed(
-            (new RunShooter())
-            .andThen(FEEDER.feed(true))
-            .andThen(new RunShooter())
-            .andThen(() -> GATHER.run(1.0))
-            .andThen(() -> FEEDER.run(1.0))
-        ).whenReleased(
-            () -> {
-                GATHER.stop();
-                FEEDER.stop();
-                SHOOTER.stop();
-            }, GATHER, SHOOTER, FEEDER
-        );
+        IO.Button.DriverRightBumper.value.whileHeld(new Shoot());
 
-        IO.Button.DriverA.value.whenPressed(GATHER.tampBall());
-        IO.Button.DriverY.value.whenPressed(GATHER.fireBall());
-        IO.Button.DriverX.value.toggleWhenPressed(new RunShooter());
+        IO.Button.DriverX.value.whenPressed(() -> SHOOTER.stop(), SHOOTER);
         IO.Button.DriverB.value.whenPressed(() -> GATHER.run(1.0), GATHER).whenReleased(() -> GATHER.stop(), GATHER);
 
-        IO.Button.DriverLeftStick.value.toggleWhenPressed(new RobotDriveWithJoysticks());
-        //IO.Button.DriverBack.value.whenPressed(SHOOTER::runBelt).whenReleased(SHOOTER::stop);
-
-        // IO.Button.ManipulatorLeftBumper.value.whileHeld(new RunClaws(0.03));
-        // IO.Button.ManipulatorRightBumper.value.whileHeld(new RunClaws(-0.03));
+        IO.Button.DriverLeftStick.value.whenPressed(DRIVE_COMMAND::toggleMode);
 
         Command climbCommand = new Climb();
         IO.Button.ManipulatorRightTrigger.value.whileHeld(climbCommand);
         IO.Button.ManipulatorLeftTrigger.value.whileHeld(climbCommand);
 
-        // IO.Button.ManipulatorX.value.whenPressed(() -> CLIMBER.setClawPosition(2.369), CLIMBER);
-        // IO.Button.ManipulatorY.value.whenPressed(() -> CLIMBER.setClawPosition(-0.343), CLIMBER);
-        // IO.Button.ManipulatorB.value.whenPressed(() -> CLIMBER.setClawPosition(-2.4), CLIMBER);
-        // IO.Button.ManipulatorA.value.whenPressed(() -> CLIMBER.raiseArm(), CLIMBER);
         IO.Button.ManipulatorStart.value.whenPressed(() -> CLIMBER.setDesiredPosition(1.088));
         IO.Button.ManipulatorA.value.whenPressed(() -> CLIMBER.setDesiredPosition(-1.5));
         IO.Button.ManipulatorX.value.whenPressed(() -> CLIMBER.setDesiredPosition(0.0));

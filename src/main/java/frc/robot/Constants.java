@@ -1,14 +1,14 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.Aim;
+import frc.robot.commands.Gather;
 import frc.robot.commands.PathPlannerControllerCommand;
+import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Chassis;
 import frc.robot.utilities.Utils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.pathplanner.lib.PathPlanner;
@@ -38,6 +38,8 @@ public class Constants {
 
     public static final double FEEDER_1_BALL = 6.0 * Math.PI;
     public static final double FEEDER_TAMP_BALL = -2.0 * Math.PI;
+    public static final int FEEDER_THRESHOLD = 800;
+
     // HARDWARE CONFIGURATIONS
 
     // Climber CAN IDs
@@ -64,13 +66,24 @@ public class Constants {
 
     // AUTO PATHS
     public static final Map<String, PathPlannerTrajectory> AUTO_PATHS = Map.of(
-        "Drive Backwards", PathPlanner.loadPath("Drive Backwards", Chassis.MAX_DRIVE_SPEED, Chassis.MAX_DRIVE_ACCELERATION)
+        "Drive Backwards", PathPlanner.loadPath("Drive Backwards", Chassis.MAX_DRIVE_SPEED, Chassis.MAX_DRIVE_ACCELERATION),
+        "Bottom 2 Ball", PathPlanner.loadPath("Bottom 2 Ball", Chassis.MAX_DRIVE_SPEED, Chassis.MAX_DRIVE_ACCELERATION)
+        
     );
     
     public static final AutonomousRoutine[] AUTO_ROUTINES = {
         new AutonomousRoutine(
-            new PathPlannerControllerCommand(AUTO_PATHS.get("Drive Backwards"), 0.05),
+            new PathPlannerControllerCommand(AUTO_PATHS.get("Drive Backwards"), 0.25).andThen(
+            new Aim(),
+            new Shoot()),
             Utils.getInitialPose(AUTO_PATHS.get("Drive Backwards"))
+        ),
+        new AutonomousRoutine(
+            new PathPlannerControllerCommand(AUTO_PATHS.get("Bottom 2 Ball"), 0.1)
+            .alongWith(new Gather(false))
+            .andThen(new Aim())
+            .andThen(new Shoot().andThen(new Shoot())), 
+            Utils.getInitialPose(AUTO_PATHS.get("Bottom 2 Ball"))
         )
     };
 

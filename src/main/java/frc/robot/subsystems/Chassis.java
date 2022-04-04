@@ -19,8 +19,8 @@ import frc.robot.components.SwerveModule2020;
  */
 public class Chassis extends SubsystemBase {
 
-    public static final double MAX_DRIVE_SPEED = 7.0;
-    public static final double MAX_DRIVE_ACCELERATION = 2.0;
+    public static final double MAX_DRIVE_SPEED = 5.0;
+    public static final double MAX_DRIVE_ACCELERATION = 1.0;
     public static final double MAX_TURN_SPEED = Math.PI;
     public static final double MAX_TURN_ACCELERATION = 2 * Math.PI;
 

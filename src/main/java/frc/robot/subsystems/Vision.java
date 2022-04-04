@@ -10,10 +10,8 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
-import frc.robot.utilities.Utils;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -21,7 +19,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision extends SubsystemBase {
@@ -72,7 +69,7 @@ public class Vision extends SubsystemBase {
     public Translation2d targetOffset(double yaw, double pitch, double targetHeight) {
         double height = targetHeight - GOAL_CAMERA_HEIGHT;
         double dist = height / Math.tan(GOAL_CAMERA_PITCH + pitch);
-        double length = Math.sqrt(Math.pow(dist, 2.0) + Math.pow(height, 2.0));
+        double length = Math.sqrt(dist * dist + height * height);
         double x = Math.tan(yaw) * length;
         return new Translation2d(x, dist);
     }
@@ -220,7 +217,7 @@ public class Vision extends SubsystemBase {
         Translation2d closestCenter = null;
         double minSqrDist = Double.POSITIVE_INFINITY;
         for (var center : centers) {
-            double sqrDist = Math.pow(center.getX(), 2.0) + Math.pow(center.getY(), 2.0);
+            double sqrDist = center.getX() * center.getX() + center.getY() * center.getY();
             if (sqrDist < minSqrDist) {
                 closestCenter = center;
                 minSqrDist = sqrDist;

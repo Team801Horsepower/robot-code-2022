@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.Shooter;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -10,12 +9,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class Aim extends CommandBase {
 
-    private static final double RANGE_P = 1.0;
-    private static final double RANGE_I = 0.0;
-    private static final double RANGE_D = 0.0;
-
     private static final double ANGLE_P = 1.0;
-    private static final double ANGLE_I = 0.0;
+    private static final double ANGLE_I = 0.01;
     private static final double ANGLE_D = 0.0;
 
     private boolean goalLocated = false;

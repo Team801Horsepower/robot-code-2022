@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax.IdleMode;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.components.Neo;
@@ -17,15 +15,7 @@ public class Gatherer extends SubsystemBase {
     private final double ARM_I = 0.0;
     private final double ARM_D = 0.0;
 
-    private final double WHEELS_P = 2.0;
-    private final double WHEELS_I = 0.005;
-    private final double WHEELS_D = 0.0;
-    private final double WHEELS_FF = 0.0;
-    private final double WHEELS_IZ = 0.5;
-
-    private final double POSITION_TOLERANCE = 0.01;
-
-    public static final double GATHER_WHEELS_GEAR_RATIO = 15.0;
+    public static final double GATHER_WHEELS_GEAR_RATIO = 9.0;
     public static final double GATHER_ARM_GEAR_RATIO = 30.0;
 
     private boolean lowering = false;
@@ -38,16 +28,11 @@ public class Gatherer extends SubsystemBase {
         ARM.PID.setP(ARM_P, positionPid);
         ARM.PID.setI(ARM_I, positionPid);
         ARM.PID.setD(ARM_D, positionPid);
+        ARM.CONTROLLER.setSmartCurrentLimit(5, 20);
 
         WHEELS = new Neo(Constants.GATHER_WHEELS);
         WHEELS.setGearRatio(GATHER_WHEELS_GEAR_RATIO);
-
-        positionPid = WHEELS.getPositionPid();
-        WHEELS.PID.setP(WHEELS_P, positionPid);
-        WHEELS.PID.setI(WHEELS_I, positionPid);
-        WHEELS.PID.setD(WHEELS_D, positionPid);
-        WHEELS.PID.setFF(WHEELS_FF, positionPid);
-        WHEELS.PID.setIZone(WHEELS_IZ);
+        WHEELS.CONTROLLER.setSmartCurrentLimit(3, 20);
 
         WHEELS.CONTROLLER.setIdleMode(IdleMode.kBrake);
 
@@ -55,7 +40,7 @@ public class Gatherer extends SubsystemBase {
     }
 
     public void lower() {
-        ARM.setPower(-0.2);
+        ARM.setPower(-0.5);
         lowering = true;
     }
 
@@ -70,19 +55,11 @@ public class Gatherer extends SubsystemBase {
      * @param power [-1.0, 1.0]
      */
     public void run(double power) {
-        WHEELS.setPower(power);
+        WHEELS.setPower(0.4 * power);
     }
 
     public void stop() {
         WHEELS.setPower(0.0);
-    }
-
-    public Command tampBall() {
-        return WHEELS.generateRotationCommand(Constants.GATHER_TAMP_ROTATION, POSITION_TOLERANCE, this);
-    }
-
-    public Command fireBall() {
-        return WHEELS.generateRotationCommand(Constants.GATHER_FIRE_ROTATION, POSITION_TOLERANCE, this);
     }
 
     public boolean isRaised() {
@@ -106,6 +83,7 @@ public class Gatherer extends SubsystemBase {
     @Override
     public void periodic() {
         super.periodic();
+        System.out.println(isLowered());
         if (lowering && isLowered()) {
             ARM.setPower(0.0);
         }

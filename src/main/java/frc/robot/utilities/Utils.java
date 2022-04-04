@@ -14,7 +14,7 @@ public class Utils {
     }
 
     public static double magnitude(final double x, final double y) {
-        return Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
+        return Math.sqrt(x * x + y * y);
     }
 
     /**

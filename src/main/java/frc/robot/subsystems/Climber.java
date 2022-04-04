@@ -64,8 +64,8 @@ public class Climber extends SubsystemBase {
 
         CLIMB_RIGHT.setPosition(0.0);
         CLIMB_LEFT.setPosition(0.0);
-        SmartDashboard.putData("RIGHT", CLIMB_RIGHT);
-        SmartDashboard.putData("LEFT", CLIMB_LEFT);
+        // SmartDashboard.putData("RIGHT", CLIMB_RIGHT);
+        // SmartDashboard.putData("LEFT", CLIMB_LEFT);
     }
 
     public void raiseArm() {

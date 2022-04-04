@@ -7,12 +7,10 @@ import frc.robot.RobotContainer;
 public class Gather extends CommandBase {
 
     private boolean manual = false;
-    private static final int FEEDER_THRESHOLD = 600;
 
     public Gather(boolean manual) {
         this.manual = manual;
-
-        addRequirements(RobotContainer.FEEDER, RobotContainer.SHOOTER, RobotContainer.GATHER);
+        addRequirements(RobotContainer.FEEDER, RobotContainer.GATHER);
     }
 
     @Override
@@ -22,15 +20,12 @@ public class Gather extends CommandBase {
 
     @Override
     public void execute() {
-        double speed = 0.5;
+        double speed = 1.0;
         if (manual) {
             speed *= IO.Axis.DriverRightTrigger.get() - IO.Axis.DriverLeftTrigger.get();
         }
 
-        var proximity = RobotContainer.FEEDER.COLOR_SENSOR.getProximity();
-        boolean inProximity = proximity > FEEDER_THRESHOLD;
-
-        if (!inProximity || speed < 0.0) {
+        if (!RobotContainer.FEEDER.isLoaded() || speed < 0.0) {
             RobotContainer.GATHER.run(speed);
             RobotContainer.FEEDER.run(speed);
         } else {
@@ -45,7 +40,6 @@ public class Gather extends CommandBase {
     }
 
     public void end(boolean interrupted) {
-        RobotContainer.SHOOTER.stop();
         RobotContainer.GATHER.stop();
         RobotContainer.FEEDER.stop();
     }

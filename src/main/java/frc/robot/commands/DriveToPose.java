@@ -2,27 +2,30 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Chassis;
 
 public class DriveToPose extends CommandBase {
     protected Pose2d targetPose;
 
-    PIDController distanceController; // TODO: Change to trapezoidal and use Chassis.MAX_SPEED;
+    ProfiledPIDController distanceController;
 
     public DriveToPose(Pose2d targetPose, double toleranceDistance) {
         this.targetPose = targetPose;
         addRequirements(RobotContainer.CHASSIS);
 
-        distanceController = new PIDController(0.4, 0.0, 0.075);
+        distanceController = new ProfiledPIDController(0.5, 0.0, 0.075, new TrapezoidProfile.Constraints(Chassis.MAX_DRIVE_SPEED, Chassis.MAX_DRIVE_ACCELERATION));
         distanceController.setTolerance(toleranceDistance);
-        distanceController.setSetpoint(0.0);
+        distanceController.setGoal(0.0);
     }
     
     public void initialize() {
         var error = RobotContainer.CHASSIS.getCurrentPose().minus(targetPose);
         var errorDistance = error.getTranslation().getNorm(); // TODO: needed for trapezoidal
-        distanceController.reset();
+        distanceController.reset(errorDistance);
         RobotContainer.CHASSIS.setHeading(targetPose.getRotation().getRadians(), true);
     }
 

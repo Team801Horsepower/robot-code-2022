@@ -1,15 +1,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class RunShooter extends CommandBase {
+public class StartShooter extends CommandBase {
 
     Translation2d goalLocation;
 
-    public RunShooter() {
+    public StartShooter() {
         addRequirements(RobotContainer.SHOOTER);
     }
 
@@ -18,7 +17,7 @@ public class RunShooter extends CommandBase {
     public void initialize() {
         goalLocation = RobotContainer.VISION.getGoalLocation();
         if (goalLocation != null) {
-            RobotContainer.SHOOTER.setRange(Math.sqrt(Math.pow(goalLocation.getX(), 2.0) + Math.pow(goalLocation.getY(), 2.0)));
+            RobotContainer.SHOOTER.setRange(goalLocation.getNorm());
         } else {
             RobotContainer.SHOOTER.setRange(3.0);
         }
