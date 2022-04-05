@@ -17,7 +17,7 @@ public class DriveToPose extends CommandBase {
         this.targetPose = targetPose;
         addRequirements(RobotContainer.CHASSIS);
 
-        distanceController = new ProfiledPIDController(0.5, 0.0, 0.075, new TrapezoidProfile.Constraints(Chassis.MAX_DRIVE_SPEED, Chassis.MAX_DRIVE_ACCELERATION));
+        distanceController = new ProfiledPIDController(1.0, 0.001, 0.075, new TrapezoidProfile.Constraints(Chassis.MAX_DRIVE_SPEED, Chassis.MAX_DRIVE_ACCELERATION));
         distanceController.setTolerance(toleranceDistance);
         distanceController.setGoal(0.0);
     }
@@ -44,12 +44,14 @@ public class DriveToPose extends CommandBase {
         }
 
         // The order of these is important.
-        RobotContainer.CHASSIS.fieldDrive(x, y, 0.0);
+        System.out.println("Driving");
+        RobotContainer.CHASSIS.robotDrive(x, y, 0.0);
         RobotContainer.CHASSIS.setHeading(targetPose.getRotation().getRadians(), false);
     }
 
     public boolean isFinished() {
-        return distanceController.atSetpoint() && RobotContainer.CHASSIS.headingReached();
+        System.out.println(RobotContainer.CHASSIS.headingReached());
+        return distanceController.atGoal() && RobotContainer.CHASSIS.headingReached();
     }
 
     public void end(boolean interrupted) {

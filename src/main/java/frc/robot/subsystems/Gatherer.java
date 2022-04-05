@@ -28,11 +28,11 @@ public class Gatherer extends SubsystemBase {
         ARM.PID.setP(ARM_P, positionPid);
         ARM.PID.setI(ARM_I, positionPid);
         ARM.PID.setD(ARM_D, positionPid);
-        ARM.CONTROLLER.setSmartCurrentLimit(5, 20);
+        // ARM.CONTROLLER.setSmartCurrentLimit(5, 20);
 
         WHEELS = new Neo(Constants.GATHER_WHEELS);
         WHEELS.setGearRatio(GATHER_WHEELS_GEAR_RATIO);
-        WHEELS.CONTROLLER.setSmartCurrentLimit(3, 20);
+        // WHEELS.CONTROLLER.setSmartCurrentLimit(3, 20);
 
         WHEELS.CONTROLLER.setIdleMode(IdleMode.kBrake);
 
@@ -40,7 +40,7 @@ public class Gatherer extends SubsystemBase {
     }
 
     public void lower() {
-        ARM.setPower(-0.5);
+        ARM.setPower(-0.75);
         lowering = true;
     }
 
@@ -90,5 +90,9 @@ public class Gatherer extends SubsystemBase {
         if (!lowering && isRaised()) {
             ARM.setPower(0.0);
         }
+    }
+
+    public boolean isJammed() {
+        return WHEELS.CONTROLLER.getOutputCurrent() > 40.0;
     }
 }

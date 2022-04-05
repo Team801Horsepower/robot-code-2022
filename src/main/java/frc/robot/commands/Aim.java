@@ -36,6 +36,7 @@ public class Aim extends CommandBase {
 
     @Override
     public void execute() {
+        System.out.println("Aiming");
         Translation2d goalLocation = RobotContainer.VISION.getGoalLocation();
         if (goalLocation != null) {
             double angleSpeed = angleController.calculate(Math.atan2(goalLocation.getX(), goalLocation.getY()));

@@ -86,11 +86,11 @@ public class PathPlannerControllerCommand extends DriveToPose {
             y = 0.0;
         }
 
-        double vx = desiredState.velocityMetersPerSecond * desiredState.poseMeters.getRotation().getCos();
-        double vy = desiredState.velocityMetersPerSecond * desiredState.poseMeters.getRotation().getSin();
+        double vx = desiredState.velocityMetersPerSecond * RobotContainer.CHASSIS.getCurrentPose().getRotation().getCos();
+        double vy = desiredState.velocityMetersPerSecond * RobotContainer.CHASSIS.getCurrentPose().getRotation().getSin();
 
         // The order of these is important.
-        RobotContainer.CHASSIS.fieldDrive(x/* + vx */, y /*+ vy */, 0.0);
+        RobotContainer.CHASSIS.robotDrive(x/* + vx */, y /*+ vy */, 0.0);
         RobotContainer.CHASSIS.setHeading(targetPose.getRotation().getRadians(), false);
     }
 
@@ -102,6 +102,6 @@ public class PathPlannerControllerCommand extends DriveToPose {
 
     @Override
     public boolean isFinished() {
-        return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());// && super.isFinished();
+        return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds()) && super.isFinished();
     }
 }

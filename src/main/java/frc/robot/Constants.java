@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.Aim;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.Gather;
 import frc.robot.commands.PathPlannerControllerCommand;
 import frc.robot.commands.Shoot;
@@ -73,10 +74,18 @@ public class Constants {
     
     public static final AutonomousRoutine[] AUTO_ROUTINES = {
         new AutonomousRoutine(
-            new PathPlannerControllerCommand(AUTO_PATHS.get("Drive Backwards"), 0.25).andThen(
-            new Aim(),
-            new Shoot()),
-            Utils.getInitialPose(AUTO_PATHS.get("Drive Backwards"))
+                new DriveToPose(new Pose2d(4.39, 4.09, new Rotation2d(0.0)), 0.1).andThen(
+                new Aim(),
+                new Shoot()),
+            new Pose2d(6.09, 4.09, new Rotation2d(0.0))
+        ),
+        new AutonomousRoutine(
+                new DriveToPose(new Pose2d(5.06, 6.16, Rotation2d.fromDegrees(129.19)), 0.1)
+                .alongWith(new Gather(false)).andThen(
+                new DriveToPose(new Pose2d(5.56, 5.66, Rotation2d.fromDegrees(339.04)), 0.25),
+                new Aim(),
+                new Shoot()),
+            new Pose2d(7.01, 4.74, Rotation2d.fromDegrees(159.04))
         ),
         new AutonomousRoutine(
             new PathPlannerControllerCommand(AUTO_PATHS.get("Bottom 2 Ball"), 0.1)

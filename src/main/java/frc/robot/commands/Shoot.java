@@ -7,14 +7,17 @@ public class Shoot extends SequentialCommandGroup {
 
     public Shoot() {
         super(
-            new StartShooter().alongWith(new LoadBall()),
+            new StartShooter(true).alongWith(new LoadBall()),
+            RobotContainer.FEEDER.feed(),
+            new StartShooter(false).alongWith(new LoadBall()),
             RobotContainer.FEEDER.feed()
         );
+        System.out.println("Shooting");
         addRequirements(RobotContainer.FEEDER, RobotContainer.SHOOTER, RobotContainer.GATHER);
     }
     
     public void end(boolean interrupted) {
-        RobotContainer.SHOOTER.stop();
+        // RobotContainer.SHOOTER.stop();
         RobotContainer.GATHER.stop();
         RobotContainer.FEEDER.stop();
     }

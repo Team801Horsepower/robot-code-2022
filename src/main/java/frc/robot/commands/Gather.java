@@ -7,6 +7,7 @@ import frc.robot.RobotContainer;
 public class Gather extends CommandBase {
 
     private boolean manual = false;
+    private double speed = 0.0;
 
     public Gather(boolean manual) {
         this.manual = manual;
@@ -20,7 +21,7 @@ public class Gather extends CommandBase {
 
     @Override
     public void execute() {
-        double speed = 1.0;
+        speed = 1.0;
         if (manual) {
             speed *= IO.Axis.DriverRightTrigger.get() - IO.Axis.DriverLeftTrigger.get();
         }
@@ -29,14 +30,14 @@ public class Gather extends CommandBase {
             RobotContainer.GATHER.run(speed);
             RobotContainer.FEEDER.run(speed);
         } else {
-            RobotContainer.GATHER.run(speed * 0.85);
+            RobotContainer.GATHER.run(speed * 0.55);
             RobotContainer.FEEDER.stop();
         }
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return RobotContainer.FEEDER.isLoaded() && (speed > 0.0 && RobotContainer.GATHER.isJammed());
     }
 
     public void end(boolean interrupted) {

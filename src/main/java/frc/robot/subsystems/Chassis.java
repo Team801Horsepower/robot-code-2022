@@ -59,8 +59,8 @@ public class Chassis extends SubsystemBase {
             GYRO
         );
 
-        omegaController = new ProfiledPIDController(0.5, 0.0, 0.0, new TrapezoidProfile.Constraints(MAX_TURN_SPEED, MAX_TURN_ACCELERATION));
-        omegaController.setTolerance(0.025);
+        omegaController = new ProfiledPIDController(0.5, 0.001, 0.0, new TrapezoidProfile.Constraints(MAX_TURN_SPEED, MAX_TURN_ACCELERATION));
+        omegaController.setTolerance(0.2);
         omegaController.enableContinuousInput(0, 2 * Math.PI);
     }
 

@@ -7,8 +7,10 @@ import frc.robot.RobotContainer;
 public class StartShooter extends CommandBase {
 
     Translation2d goalLocation;
+    boolean setRange;
 
-    public StartShooter() {
+    public StartShooter(boolean setRange) {
+        this.setRange = setRange;
         addRequirements(RobotContainer.SHOOTER);
     }
 
@@ -16,10 +18,12 @@ public class StartShooter extends CommandBase {
     @Override
     public void initialize() {
         goalLocation = RobotContainer.VISION.getGoalLocation();
-        if (goalLocation != null) {
-            RobotContainer.SHOOTER.setRange(goalLocation.getNorm());
-        } else {
-            RobotContainer.SHOOTER.setRange(3.0);
+        if(setRange) {
+            if (goalLocation != null) {
+                RobotContainer.SHOOTER.setRange(goalLocation.getNorm());
+            } else {
+                RobotContainer.SHOOTER.setRange(3.0);
+            }
         }
         RobotContainer.SHOOTER.start();
     }

@@ -18,11 +18,11 @@ public class Shooter extends SubsystemBase {
     private final Neo FLYWHEEL;
 
     private static final double FLYWHEEL_P = 0.01;
-    public static final double FLYWHEEL_I = 0.00001;
+    public static final double FLYWHEEL_I = 0.00002;
     public static final double FLYWHEEL_D = 0.0;
     public static final double FLYWHEEL_FF = 0.0009;
     public static final double FLYWHEEL_IZ = 50.0;
-    private static final double VELOCITY_TOLERANCE = Units.rotationsPerMinuteToRadiansPerSecond(30.0);
+    private static final double VELOCITY_TOLERANCE = Units.rotationsPerMinuteToRadiansPerSecond(20.0);
 
     private double targetedRange = MIN_RANGE;
     private Double wheelSpeed = RANGE_TO_VELOCITY.get(targetedRange);

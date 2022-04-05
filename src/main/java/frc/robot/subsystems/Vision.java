@@ -43,7 +43,7 @@ public class Vision extends SubsystemBase {
         lastGoalLocation = locateGoal(locateTargets(goalCamera.getLatestResult()));
         goalCamera.setDriverMode(false);
         if (lastGoalLocation != null) {
-            System.out.println(lastGoalLocation);
+            // System.out.println(lastGoalLocation);
             SmartDashboard.putBoolean("Target Found", true);
         } else {
             SmartDashboard.putBoolean("Target Found", false);

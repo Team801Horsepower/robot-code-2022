@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Aim;
 import frc.robot.commands.Climb;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.Gather;
 import frc.robot.subsystems.Chassis;
@@ -78,7 +79,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         Command gatherCommand = new Gather(true);
-        IO.Button.DriverRightTrigger.value.whileHeld(gatherCommand);
+        IO.Button.DriverRightTrigger.value.whenPressed(gatherCommand);
         IO.Button.DriverLeftTrigger.value.whileHeld(gatherCommand);
 
         IO.Button.DriverLeftBumper.value.whileHeld(new Aim());
@@ -88,6 +89,7 @@ public class RobotContainer {
         IO.Button.DriverB.value.whenPressed(() -> GATHER.run(1.0), GATHER).whenReleased(() -> GATHER.stop(), GATHER);
 
         IO.Button.DriverLeftStick.value.whenPressed(DRIVE_COMMAND::toggleMode);
+        IO.Button.DriverStart.value.whenPressed(new DriveToPose(AUTONOMOUS_ROUTINE.INITIAL_POSE, 0.25)).whenReleased(DRIVE_COMMAND);
 
         Command climbCommand = new Climb();
         IO.Button.ManipulatorRightTrigger.value.whileHeld(climbCommand);
