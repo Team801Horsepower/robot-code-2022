@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -7,6 +9,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.architecture.Drive;
 import frc.robot.components.AHRSGyroEncoder;
@@ -141,6 +145,21 @@ public class Chassis extends SubsystemBase {
             omegaController.reset(GYRO.getCurrentAngle(), GYRO.getCurrentSpeed());
         }
         omegaController.setGoal(angle);
+    }
+
+    public Command headingCommand(double angle) {
+        var c = new CommandBase() {
+            
+            public void initialize() {
+                setHeading(angle, true);
+            }
+
+            public boolean isFinished() {
+                return headingReached();
+            }
+        };
+        c.addRequirements(this);
+        return c;
     }
     
     public void stop() {

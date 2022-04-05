@@ -83,7 +83,6 @@ public class Gatherer extends SubsystemBase {
     @Override
     public void periodic() {
         super.periodic();
-        System.out.println(isLowered());
         if (lowering && isLowered()) {
             ARM.setPower(0.0);
         }

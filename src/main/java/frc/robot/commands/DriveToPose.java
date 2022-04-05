@@ -45,12 +45,13 @@ public class DriveToPose extends CommandBase {
 
         // The order of these is important.
         System.out.println("Driving");
+        System.out.println(RobotContainer.CHASSIS.headingReached());
+        System.out.println(distanceController.atGoal());
         RobotContainer.CHASSIS.robotDrive(x, y, 0.0);
         RobotContainer.CHASSIS.setHeading(targetPose.getRotation().getRadians(), false);
     }
 
     public boolean isFinished() {
-        System.out.println(RobotContainer.CHASSIS.headingReached());
         return distanceController.atGoal() && RobotContainer.CHASSIS.headingReached();
     }
 

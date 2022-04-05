@@ -56,6 +56,9 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         RobotContainer.GATHER.clear();
+        RobotContainer.SHOOTER.stop();
+        RobotContainer.GATHER.stop();
+        RobotContainer.FEEDER.stop();
     }
 
     @Override

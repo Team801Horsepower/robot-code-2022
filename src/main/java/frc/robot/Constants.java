@@ -76,24 +76,23 @@ public class Constants {
         new AutonomousRoutine(
                 new DriveToPose(new Pose2d(4.39, 4.09, new Rotation2d(0.0)), 0.1).andThen(
                 new Aim(),
-                new Shoot()),
+                new Shoot().deadlineWith(new Aim())),
             new Pose2d(6.09, 4.09, new Rotation2d(0.0))
         ),
         new AutonomousRoutine(
-                new DriveToPose(new Pose2d(5.06, 6.16, Rotation2d.fromDegrees(129.19)), 0.1)
-                .alongWith(new Gather(false)).andThen(
-                new DriveToPose(new Pose2d(5.56, 5.66, Rotation2d.fromDegrees(339.04)), 0.25),
-                new Aim(),
-                new Shoot()),
+                new DriveToPose(new Pose2d(5.06, 6.16, Rotation2d.fromDegrees(129.19)), 0.1).alongWith(new Gather(false)).andThen(
+                    RobotContainer.CHASSIS.headingCommand(Units.degreesToRadians(340.0)),
+                    new Aim(),
+                    new Shoot().deadlineWith(new Aim())),
             new Pose2d(7.01, 4.74, Rotation2d.fromDegrees(159.04))
         ),
         new AutonomousRoutine(
-            new PathPlannerControllerCommand(AUTO_PATHS.get("Bottom 2 Ball"), 0.1)
-            .alongWith(new Gather(false))
-            .andThen(new Aim())
-            .andThen(new Shoot().andThen(new Shoot())), 
-            Utils.getInitialPose(AUTO_PATHS.get("Bottom 2 Ball"))
-        )
+                new DriveToPose(new Pose2d(5.20, 1.92, Rotation2d.fromDegrees(-163.93 + 360.0)), 0.1).alongWith(new Gather(false)).andThen(
+                    RobotContainer.CHASSIS.headingCommand(Units.degreesToRadians(40.0)),
+                    new Aim(),
+                    new Shoot().deadlineWith(new Aim())),
+            new Pose2d(7.65, 2.87, Rotation2d.fromDegrees(-110.56 + 360.0))
+        ),
     };
 
     public static class AutonomousRoutine {
