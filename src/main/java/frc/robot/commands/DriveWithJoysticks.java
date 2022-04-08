@@ -48,8 +48,10 @@ public class DriveWithJoysticks extends CommandBase {
 
         lastAngular = angular;
         if (fieldOrient) {
+            IO.DRIVER.setRumble(RumbleType.kLeftRumble, 0.0);
             RobotContainer.CHASSIS.fieldDrive(forward, leftward, angular);
         } else {
+            IO.DRIVER.setRumble(RumbleType.kLeftRumble, 0.2);
             RobotContainer.CHASSIS.robotDrive(forward, leftward, angular);
         }
     }
@@ -61,7 +63,7 @@ public class DriveWithJoysticks extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-
+        IO.DRIVER.setRumble(RumbleType.kLeftRumble, 0.0);
     }
 
     // Returns true when the command should end.
