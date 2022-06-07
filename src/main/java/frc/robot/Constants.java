@@ -5,10 +5,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.Aim;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.Gather;
-import frc.robot.commands.PathPlannerControllerCommand;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Chassis;
-import frc.robot.utilities.Utils;
 
 import java.util.Map;
 
