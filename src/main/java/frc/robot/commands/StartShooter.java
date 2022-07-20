@@ -18,13 +18,15 @@ public class StartShooter extends CommandBase {
     @Override
     public void initialize() {
         goalLocation = RobotContainer.VISION.getGoalLocation();
-        if(setRange) {
-            if (goalLocation != null) {
-                RobotContainer.SHOOTER.setRange(goalLocation.getNorm());
-            } else {
-                RobotContainer.SHOOTER.setRange(3.0);
-            }
-        }
+        // if(setRange) {
+        //     if (goalLocation != null) {
+        //         RobotContainer.SHOOTER.setRange(goalLocation.getNorm());
+        //     } else {
+        //         RobotContainer.SHOOTER.setRange(3.0);
+        //     }
+        // }
+        RobotContainer.SHOOTER.setSpeed(150.0); // TODO: Update the lookup table to accomodate smaller
+                                               //       range, and use that functionality here instead.
         RobotContainer.SHOOTER.start();
     }
     
