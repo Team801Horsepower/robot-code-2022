@@ -12,8 +12,6 @@ public class CalibrateVision extends CommandBase {
     }
 
     public void execute() {
-        double odometryDistance = RobotContainer.CHASSIS.getCurrentPose().minus(Constants.GOAL_POSE).getTranslation().getNorm();
-        SmartDashboard.putNumberArray("CalibrateVision", new double[] {odometryDistance});
     }
     
 }
