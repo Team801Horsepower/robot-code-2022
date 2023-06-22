@@ -203,8 +203,8 @@ public class Chassis extends SubsystemBase {
     @SuppressWarnings("unused")
     private static final int POD_3_THROUGHBORE = 3;
 
-    private static final int POD_4_DRIVE = 1; // Right Rear
-    private static final int POD_4_TURN = 2;
+    private static final int POD_4_DRIVE = 2; // Right Rear
+    private static final int POD_4_TURN = 1;
     @SuppressWarnings("unused")
     private static final int POD_4_THROUGHBORE = 4;
 }
